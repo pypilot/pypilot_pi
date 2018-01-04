@@ -24,18 +24,23 @@
  ***************************************************************************
  */
 
-#include "signalk_client.h"
-
+#include "pypilotUI.h"
 
 class pypilot_pi;
-class pypilot_SignalKClient : public SignalKClient
+
+class CalibrationDialog : public CalibrationDialogBase
 {
 public:
-    pypilot_SignalKClient( pypilot_pi &_pypilot_pi );
-    
-    virtual void OnConnected();
-    virtual void OnDisconnected();
+    CalibrationDialog( pypilot_pi &_pypilot_pi, wxWindow* parent);
+    ~CalibrationDialog();
+
+    void Receive(wxString &name, wxJSONValue &value);
+    const char **GetWatchlist();
 
 private:
+    void OnClose( wxCommandEvent& event );
+    void OnLevel( wxCommandEvent& event );
+
+    double m_pitch;
     pypilot_pi &m_pypilot_pi;
 };

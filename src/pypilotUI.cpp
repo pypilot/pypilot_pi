@@ -128,6 +128,7 @@ pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxS
 	this->Centre( wxBOTH );
 	
 	// Connect Events
+	this->Connect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( pypilotDialogBase::OnClose ) );
 	m_bConfiguration->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnConfiguration ), NULL, this );
 	m_bStatistics->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnStatistics ), NULL, this );
 	m_bClose->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnClose ), NULL, this );
@@ -136,6 +137,7 @@ pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxS
 pypilotDialogBase::~pypilotDialogBase()
 {
 	// Disconnect Events
+	this->Disconnect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( pypilotDialogBase::OnClose ) );
 	m_bConfiguration->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnConfiguration ), NULL, this );
 	m_bStatistics->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnStatistics ), NULL, this );
 	m_bClose->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnClose ), NULL, this );
@@ -161,8 +163,8 @@ ConfigurationDialogBase::ConfigurationDialogBase( wxWindow* parent, wxWindowID i
 	m_staticText6->Wrap( -1 );
 	fgSizer16->Add( m_staticText6, 0, wxALL, 5 );
 	
-	m_textCtrl2 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	fgSizer16->Add( m_textCtrl2, 0, wxALL|wxEXPAND, 5 );
+	m_tHost = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer16->Add( m_tHost, 0, wxALL|wxEXPAND, 5 );
 	
 	
 	fgSizer4->Add( fgSizer16, 1, wxEXPAND, 5 );
@@ -180,14 +182,14 @@ ConfigurationDialogBase::ConfigurationDialogBase( wxWindow* parent, wxWindowID i
 	fgSizer17->SetFlexibleDirection( wxBOTH );
 	fgSizer17->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
-	m_cbForwardnema = new wxCheckBox( this, wxID_ANY, _("Forward nmea"), wxDefaultPosition, wxDefaultSize, 0 );
-	fgSizer17->Add( m_cbForwardnema, 0, wxALL, 5 );
+	m_cbForwardnmea = new wxCheckBox( this, wxID_ANY, _("Forward nmea"), wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer17->Add( m_cbForwardnmea, 0, wxALL, 5 );
 	
 	m_bAboutForwardnema = new wxButton( this, wxID_ANY, _("?"), wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer17->Add( m_bAboutForwardnema, 0, wxALL, 5 );
 	
-	m_cbEnableOverlay = new wxCheckBox( this, wxID_ANY, _("Enable Graphical Overlay"), wxDefaultPosition, wxDefaultSize, 0 );
-	fgSizer17->Add( m_cbEnableOverlay, 0, wxALL, 5 );
+	m_cbEnableGraphicOverlay = new wxCheckBox( this, wxID_ANY, _("Enable Graphical Overlay"), wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer17->Add( m_cbEnableGraphicOverlay, 0, wxALL, 5 );
 	
 	m_bAboutEnableOverlay = new wxButton( this, wxID_ANY, _("?"), wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer17->Add( m_bAboutEnableOverlay, 0, wxALL, 5 );
@@ -215,12 +217,12 @@ ConfigurationDialogBase::ConfigurationDialogBase( wxWindow* parent, wxWindowID i
 	m_staticText5->Wrap( -1 );
 	fgSizer15->Add( m_staticText5, 0, wxALL, 5 );
 	
-	m_staticText61 = new wxStaticText( this, wxID_ANY, _("--"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText61->Wrap( -1 );
-	fgSizer15->Add( m_staticText61, 0, wxALL, 5 );
+	m_stPeriod = new wxStaticText( this, wxID_ANY, _("-------"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_stPeriod->Wrap( -1 );
+	fgSizer15->Add( m_stPeriod, 0, wxALL, 5 );
 	
-	m_spinBtn2 = new wxSpinButton( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
-	fgSizer15->Add( m_spinBtn2, 0, wxALL, 5 );
+	m_sPeriod = new wxSpinButton( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer15->Add( m_sPeriod, 0, wxALL, 5 );
 	
 	m_staticText7 = new wxStaticText( this, wxID_ANY, _("Seconds"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText7->Wrap( -1 );
@@ -230,7 +232,7 @@ ConfigurationDialogBase::ConfigurationDialogBase( wxWindow* parent, wxWindowID i
 	fgSizer14->Add( fgSizer15, 1, wxEXPAND, 5 );
 	
 	wxFlexGridSizer* fgSizer161;
-	fgSizer161 = new wxFlexGridSizer( 0, 3, 0, 0 );
+	fgSizer161 = new wxFlexGridSizer( 1, 0, 0, 0 );
 	fgSizer161->SetFlexibleDirection( wxBOTH );
 	fgSizer161->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
@@ -238,41 +240,53 @@ ConfigurationDialogBase::ConfigurationDialogBase( wxWindow* parent, wxWindowID i
 	m_staticText8->Wrap( -1 );
 	fgSizer161->Add( m_staticText8, 0, wxALL, 5 );
 	
-	m_tMaxCurrent = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	fgSizer161->Add( m_tMaxCurrent, 0, wxALL, 5 );
+	m_stMaxCurrent = new wxStaticText( this, wxID_ANY, _("-------"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_stMaxCurrent->Wrap( -1 );
+	fgSizer161->Add( m_stMaxCurrent, 0, wxALL, 5 );
+	
+	m_sMaxCurrent = new wxSpinButton( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer161->Add( m_sMaxCurrent, 0, wxALL, 5 );
 	
 	m_staticText9 = new wxStaticText( this, wxID_ANY, _("Amps"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText9->Wrap( -1 );
 	fgSizer161->Add( m_staticText9, 0, wxALL, 5 );
 	
+	
+	fgSizer14->Add( fgSizer161, 1, wxEXPAND, 5 );
+	
+	wxFlexGridSizer* fgSizer21;
+	fgSizer21 = new wxFlexGridSizer( 0, 3, 0, 0 );
+	fgSizer21->SetFlexibleDirection( wxBOTH );
+	fgSizer21->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
 	m_staticText10 = new wxStaticText( this, wxID_ANY, _("Min Speed"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText10->Wrap( -1 );
-	fgSizer161->Add( m_staticText10, 0, wxALL, 5 );
+	fgSizer21->Add( m_staticText10, 0, wxALL, 5 );
 	
 	m_sMinSpeed = new wxSpinCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 100 );
 	m_sMinSpeed->SetMaxSize( wxSize( 100,-1 ) );
 	
-	fgSizer161->Add( m_sMinSpeed, 0, wxALL, 5 );
+	fgSizer21->Add( m_sMinSpeed, 0, wxALL, 5 );
 	
 	m_staticText11 = new wxStaticText( this, wxID_ANY, _("%"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText11->Wrap( -1 );
-	fgSizer161->Add( m_staticText11, 0, wxALL, 5 );
+	fgSizer21->Add( m_staticText11, 0, wxALL, 5 );
 	
 	m_staticText101 = new wxStaticText( this, wxID_ANY, _("Max Speed"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText101->Wrap( -1 );
-	fgSizer161->Add( m_staticText101, 0, wxALL, 5 );
+	fgSizer21->Add( m_staticText101, 0, wxALL, 5 );
 	
 	m_sMaxSpeed = new wxSpinCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 100 );
 	m_sMaxSpeed->SetMaxSize( wxSize( 100,-1 ) );
 	
-	fgSizer161->Add( m_sMaxSpeed, 0, wxALL, 5 );
+	fgSizer21->Add( m_sMaxSpeed, 0, wxALL, 5 );
 	
 	m_staticText111 = new wxStaticText( this, wxID_ANY, _("%"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText111->Wrap( -1 );
-	fgSizer161->Add( m_staticText111, 0, wxALL, 5 );
+	fgSizer21->Add( m_staticText111, 0, wxALL, 5 );
 	
 	
-	fgSizer14->Add( fgSizer161, 1, wxEXPAND, 5 );
+	fgSizer14->Add( fgSizer21, 1, wxEXPAND, 5 );
 	
 	
 	sbSizer2->Add( fgSizer14, 1, wxEXPAND, 5 );
@@ -314,22 +328,24 @@ ConfigurationDialogBase::ConfigurationDialogBase( wxWindow* parent, wxWindowID i
 	this->Centre( wxBOTH );
 	
 	// Connect Events
+	this->Connect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( ConfigurationDialogBase::OnClose ) );
 	m_bAboutForwardnema->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnAboutForwardnema ), NULL, this );
 	m_bAboutEnableOverlay->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnAboutEnableOverlay ), NULL, this );
 	m_bCalibration->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnCalibration ), NULL, this );
 	m_bInformation->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnInformation ), NULL, this );
-	m_sdbSizer2Cancel->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnCancel ), NULL, this );
+	m_sdbSizer2Cancel->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnClose ), NULL, this );
 	m_sdbSizer2OK->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnOk ), NULL, this );
 }
 
 ConfigurationDialogBase::~ConfigurationDialogBase()
 {
 	// Disconnect Events
+	this->Disconnect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( ConfigurationDialogBase::OnClose ) );
 	m_bAboutForwardnema->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnAboutForwardnema ), NULL, this );
 	m_bAboutEnableOverlay->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnAboutEnableOverlay ), NULL, this );
 	m_bCalibration->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnCalibration ), NULL, this );
 	m_bInformation->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnInformation ), NULL, this );
-	m_sdbSizer2Cancel->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnCancel ), NULL, this );
+	m_sdbSizer2Cancel->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnClose ), NULL, this );
 	m_sdbSizer2OK->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnOk ), NULL, this );
 	
 }
@@ -352,7 +368,7 @@ StatisticsDialogBase::StatisticsDialogBase( wxWindow* parent, wxWindowID id, con
 	m_staticText18->Wrap( -1 );
 	fgSizer19->Add( m_staticText18, 0, wxALL, 5 );
 	
-	m_stWatts = new wxStaticText( this, wxID_ANY, _("---"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_stWatts = new wxStaticText( this, wxID_ANY, _("-------"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_stWatts->Wrap( -1 );
 	fgSizer19->Add( m_stWatts, 0, wxALL, 5 );
 	
@@ -364,7 +380,7 @@ StatisticsDialogBase::StatisticsDialogBase( wxWindow* parent, wxWindowID id, con
 	m_staticText21->Wrap( -1 );
 	fgSizer19->Add( m_staticText21, 0, wxALL, 5 );
 	
-	m_stAmpHours = new wxStaticText( this, wxID_ANY, _("---"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_stAmpHours = new wxStaticText( this, wxID_ANY, _("-------"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_stAmpHours->Wrap( -1 );
 	fgSizer19->Add( m_stAmpHours, 0, wxALL, 5 );
 	
@@ -375,9 +391,9 @@ StatisticsDialogBase::StatisticsDialogBase( wxWindow* parent, wxWindowID id, con
 	m_staticText24->Wrap( -1 );
 	fgSizer19->Add( m_staticText24, 0, wxALL, 5 );
 	
-	m_staticText25 = new wxStaticText( this, wxID_ANY, _("---"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText25->Wrap( -1 );
-	fgSizer19->Add( m_staticText25, 0, wxALL, 5 );
+	m_stControllerTemp = new wxStaticText( this, wxID_ANY, _("-------"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_stControllerTemp->Wrap( -1 );
+	fgSizer19->Add( m_stControllerTemp, 0, wxALL, 5 );
 	
 	m_staticText26 = new wxStaticText( this, wxID_ANY, _("C"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText26->Wrap( -1 );
@@ -387,9 +403,9 @@ StatisticsDialogBase::StatisticsDialogBase( wxWindow* parent, wxWindowID id, con
 	m_staticText27->Wrap( -1 );
 	fgSizer19->Add( m_staticText27, 0, wxALL, 5 );
 	
-	m_staticText28 = new wxStaticText( this, wxID_ANY, _("---"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText28->Wrap( -1 );
-	fgSizer19->Add( m_staticText28, 0, wxALL, 5 );
+	m_stMotorTemp = new wxStaticText( this, wxID_ANY, _("-------"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_stMotorTemp->Wrap( -1 );
+	fgSizer19->Add( m_stMotorTemp, 0, wxALL, 5 );
 	
 	m_staticText29 = new wxStaticText( this, wxID_ANY, _("C"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText29->Wrap( -1 );
@@ -413,12 +429,106 @@ StatisticsDialogBase::StatisticsDialogBase( wxWindow* parent, wxWindowID id, con
 	this->Centre( wxBOTH );
 	
 	// Connect Events
+	this->Connect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( StatisticsDialogBase::OnClose ) );
 	m_bResetAmpHours->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( StatisticsDialogBase::OnResetAmpHours ), NULL, this );
+	m_sdbSizer2OK->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( StatisticsDialogBase::OnClose ), NULL, this );
 }
 
 StatisticsDialogBase::~StatisticsDialogBase()
 {
 	// Disconnect Events
+	this->Disconnect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( StatisticsDialogBase::OnClose ) );
 	m_bResetAmpHours->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( StatisticsDialogBase::OnResetAmpHours ), NULL, this );
+	m_sdbSizer2OK->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( StatisticsDialogBase::OnClose ), NULL, this );
+	
+}
+
+CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+	
+	wxFlexGridSizer* fgSizer19;
+	fgSizer19 = new wxFlexGridSizer( 0, 1, 0, 0 );
+	fgSizer19->SetFlexibleDirection( wxBOTH );
+	fgSizer19->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
+	wxStaticBoxSizer* sbSizer4;
+	sbSizer4 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Compass") ), wxVERTICAL );
+	
+	wxFlexGridSizer* fgSizer22;
+	fgSizer22 = new wxFlexGridSizer( 0, 2, 0, 0 );
+	fgSizer22->AddGrowableCol( 1 );
+	fgSizer22->SetFlexibleDirection( wxBOTH );
+	fgSizer22->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
+	m_staticText30 = new wxStaticText( this, wxID_ANY, _("Age"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText30->Wrap( -1 );
+	fgSizer22->Add( m_staticText30, 0, wxALL, 5 );
+	
+	m_stCompassCalibrationAge = new wxStaticText( this, wxID_ANY, _("-----"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_stCompassCalibrationAge->Wrap( -1 );
+	fgSizer22->Add( m_stCompassCalibrationAge, 0, wxALL|wxEXPAND, 5 );
+	
+	
+	sbSizer4->Add( fgSizer22, 1, wxEXPAND, 5 );
+	
+	
+	fgSizer19->Add( sbSizer4, 1, wxEXPAND, 5 );
+	
+	wxStaticBoxSizer* sbSizer3;
+	sbSizer3 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Alignment") ), wxVERTICAL );
+	
+	wxFlexGridSizer* fgSizer20;
+	fgSizer20 = new wxFlexGridSizer( 0, 2, 0, 0 );
+	fgSizer20->SetFlexibleDirection( wxBOTH );
+	fgSizer20->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
+	m_staticText25 = new wxStaticText( this, wxID_ANY, _("Pitch / Roll"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText25->Wrap( -1 );
+	fgSizer20->Add( m_staticText25, 0, wxALL, 5 );
+	
+	m_stPitchRoll = new wxStaticText( this, wxID_ANY, _("N/A"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_stPitchRoll->Wrap( -1 );
+	fgSizer20->Add( m_stPitchRoll, 0, wxALL, 5 );
+	
+	m_gLevel = new wxGauge( this, wxID_ANY, 100, wxDefaultPosition, wxDefaultSize, wxGA_HORIZONTAL );
+	m_gLevel->SetValue( 0 ); 
+	fgSizer20->Add( m_gLevel, 0, wxALL, 5 );
+	
+	m_bLevel = new wxButton( this, wxID_ANY, _("Level"), wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer20->Add( m_bLevel, 0, wxALL, 5 );
+	
+	
+	sbSizer3->Add( fgSizer20, 1, wxEXPAND, 5 );
+	
+	
+	fgSizer19->Add( sbSizer3, 1, wxEXPAND, 5 );
+	
+	m_sdbSizer3 = new wxStdDialogButtonSizer();
+	m_sdbSizer3OK = new wxButton( this, wxID_OK );
+	m_sdbSizer3->AddButton( m_sdbSizer3OK );
+	m_sdbSizer3->Realize();
+	
+	fgSizer19->Add( m_sdbSizer3, 1, wxEXPAND, 5 );
+	
+	
+	this->SetSizer( fgSizer19 );
+	this->Layout();
+	fgSizer19->Fit( this );
+	
+	this->Centre( wxBOTH );
+	
+	// Connect Events
+	this->Connect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( CalibrationDialogBase::OnClose ) );
+	m_bLevel->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnLevel ), NULL, this );
+	m_sdbSizer3OK->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnClose ), NULL, this );
+}
+
+CalibrationDialogBase::~CalibrationDialogBase()
+{
+	// Disconnect Events
+	this->Disconnect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( CalibrationDialogBase::OnClose ) );
+	m_bLevel->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnLevel ), NULL, this );
+	m_sdbSizer3OK->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnClose ), NULL, this );
 	
 }

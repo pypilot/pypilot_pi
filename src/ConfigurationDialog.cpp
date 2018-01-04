@@ -5,7 +5,7 @@
  * Author:   Sean D'Epagnier
  *
  ***************************************************************************
- *   Copyright (C) 2017 by Sean D'Epagnier                                 *
+ *   Copyright (C) 2018 by Sean D'Epagnier                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -25,39 +25,101 @@
  */
 
 #include "pypilotUI.h"
+#include "pypilot_pi.h"
 #include "ConfigurationDialog.h"
+#include "CalibrationDialog.h"
 
-ConfigurationDialog::ConfigurationDialog(wxWindow* parent) :
-    ConfigurationDialogBase(parent)
+ConfigurationDialog::ConfigurationDialog( pypilot_pi &_pypilot_pi, wxWindow* parent)
+    : ConfigurationDialogBase(parent),
+      m_pypilot_pi(_pypilot_pi)
+{    
+}
+
+ConfigurationDialog::~ConfigurationDialog()
 {
 }
 
-void ConfigurationDialog::Open()
+bool ConfigurationDialog::Show( bool show )
 {
+    if(show) {
+        wxFileConfig *pConf = GetOCPNConfigObject();
+        pConf->SetPath ( _T( "/Settings/pypilot" ) );
+        m_tHost->SetValue(pConf->Read ( _T ( "Host" ), "192.168.14.1" ));
+        m_cbForwardnmea->SetValue(pConf->Read ( _T ( "Forwardnema" ), 0L ));
+        m_cbEnableGraphicOverlay->SetValue(pConf->Read ( _T ( "EnableGraphicOverlay" ), 0L ));
+    }
+    return ConfigurationDialogBase::Show(show);
+}
+
+void ConfigurationDialog::Receive(wxString &name, wxJSONValue &value)
+{
+    if(name == "servo.period")
+        m_stPeriod->SetLabel(jsonformat("%.1f", value));
+    else if(name == "servo.max_current")
+        m_stMaxCurrent->SetLabel(jsonformat("%.1f", value));
+    else if(name == "servo.min_speed")
+        m_sMinSpeed->SetValue(jsondouble(value)*100);
+    else if(name == "servo.max_speed")
+        m_sMaxSpeed->SetValue(jsondouble(value)*100);
+}
+
+const char **ConfigurationDialog::GetWatchlist()
+{
+    static const char *watchlist[] =
+        {"servo.period", "servo.max_current", "servo.min_speed", "servo.max_speed", 0};
+    return watchlist;
 }
 
 void ConfigurationDialog::OnAboutForwardnema( wxCommandEvent& event )
 {
+    wxMessageDialog mdlg(GetOCPNCanvasWindow(), _("\
+Eliminates the need to make the tcp connection to the autopilot from the OpenCPN connections list"),
+                         _("Watchdog"), wxOK | wxICON_WARNING);
+    mdlg.ShowModal();
 }
 
 void ConfigurationDialog::OnAboutEnableOverlay( wxCommandEvent& event )
 {
+    wxMessageDialog mdlg(GetOCPNCanvasWindow(),
+                         _("Displays lines on the chart showing the autopilot's configured headings"),
+                         _("Watchdog"), wxOK | wxICON_WARNING);
+    mdlg.ShowModal();
 }
 
 void ConfigurationDialog::OnCalibration( wxCommandEvent& event )
 {
+    m_pypilot_pi.m_CalibrationDialog->Show();
+    m_pypilot_pi.UpdateWatchlist();
 }
 
 void ConfigurationDialog::OnInformation( wxCommandEvent& event )
 {
-}
-
-void ConfigurationDialog::OnCancel( wxCommandEvent& event )
-{
-    Hide();
+    wxLaunchDefaultBrowser(_T("http://www.github.com/pypilot/pypilot_pi"));
 }
 
 void ConfigurationDialog::OnOk( wxCommandEvent& event )
 {
-   
+    double x;
+    if(m_stPeriod->GetLabel().ToDouble(&x))
+        m_pypilot_pi.m_client.set("servo.period", x);
+    if(m_stMaxCurrent->GetLabel().ToDouble(&x))
+        m_pypilot_pi.m_client.set("servo.max_current", x);
+    m_pypilot_pi.m_client.set("servo.min_speed", m_sMinSpeed->GetValue()/100.0);
+    m_pypilot_pi.m_client.set("servo.max_speed", m_sMaxSpeed->GetValue()/100.0);
+
+    wxFileConfig *pConf = GetOCPNConfigObject();
+    pConf->SetPath ( _T( "/Settings/pypilot" ) );
+    pConf->Write ( _T ( "Host" ), m_tHost->GetValue());
+    pConf->Write ( _T ( "Forwardnema" ), m_cbForwardnmea->GetValue( ));
+    pConf->Write ( _T ( "EnableGraphicOverlay" ), m_cbEnableGraphicOverlay->GetValue() );
+    m_pypilot_pi.ReadConfig();
+    
+    Hide();
+    m_pypilot_pi.UpdateWatchlist();
+}
+
+void ConfigurationDialog::OnClose( wxCommandEvent& event )
+{
+    Hide();
+    m_pypilot_pi.UpdateWatchlist();
 }

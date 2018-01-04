@@ -5,7 +5,7 @@
  * Author:   Sean D'Epagnier
  *
  ***************************************************************************
- *   Copyright (C) 2017 by Sean D'Epagnier                                 *
+ *   Copyright (C) 2018 by Sean D'Epagnier                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -38,10 +38,13 @@ public:
     SignalKClient();
 
     void connect(wxString host, int port=0);
+    void disconnect() { m_sock.Close(); }
     bool connected() { return m_sock.IsConnected(); }
-    bool receive(wxJSONValue &value);
+    bool receive(wxString &name, wxJSONValue &value);
+
     void get(wxString name);
     void set(wxString name, wxJSONValue &value);
+    void set(wxString name, double value);
     void watch(wxString name, bool on=true);
     void request_list_values();
 
@@ -55,6 +58,6 @@ private:
 
     wxSocketClient      m_sock;
     std::string         m_sock_buffer;
-    std::deque<wxJSONValue> m_values;
+    std::deque<std::pair<wxString, wxJSONValue> > m_values;
 DECLARE_EVENT_TABLE()
 };

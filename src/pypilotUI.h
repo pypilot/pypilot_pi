@@ -28,6 +28,7 @@
 #include <wx/statbox.h>
 #include <wx/spinbutt.h>
 #include <wx/spinctrl.h>
+#include <wx/gauge.h>
 
 #include "wxWTranslateCatalog.h"
 
@@ -52,6 +53,7 @@ class pypilotDialogBase : public wxDialog
 		wxButton* m_bClose;
 		
 		// Virtual event handlers, overide them in your derived class
+		virtual void OnClose( wxCloseEvent& event ) { event.Skip(); }
 		virtual void OnConfiguration( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnStatistics( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnClose( wxCommandEvent& event ) { event.Skip(); }
@@ -74,17 +76,18 @@ class ConfigurationDialogBase : public wxDialog
 	
 	protected:
 		wxStaticText* m_staticText6;
-		wxTextCtrl* m_textCtrl2;
-		wxCheckBox* m_cbForwardnema;
+		wxTextCtrl* m_tHost;
+		wxCheckBox* m_cbForwardnmea;
 		wxButton* m_bAboutForwardnema;
-		wxCheckBox* m_cbEnableOverlay;
+		wxCheckBox* m_cbEnableGraphicOverlay;
 		wxButton* m_bAboutEnableOverlay;
 		wxStaticText* m_staticText5;
-		wxStaticText* m_staticText61;
-		wxSpinButton* m_spinBtn2;
+		wxStaticText* m_stPeriod;
+		wxSpinButton* m_sPeriod;
 		wxStaticText* m_staticText7;
 		wxStaticText* m_staticText8;
-		wxTextCtrl* m_tMaxCurrent;
+		wxStaticText* m_stMaxCurrent;
+		wxSpinButton* m_sMaxCurrent;
 		wxStaticText* m_staticText9;
 		wxStaticText* m_staticText10;
 		wxSpinCtrl* m_sMinSpeed;
@@ -99,11 +102,12 @@ class ConfigurationDialogBase : public wxDialog
 		wxButton* m_sdbSizer2Cancel;
 		
 		// Virtual event handlers, overide them in your derived class
+		virtual void OnClose( wxCloseEvent& event ) { event.Skip(); }
 		virtual void OnAboutForwardnema( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnAboutEnableOverlay( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnCalibration( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnInformation( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnCancel( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnClose( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnOk( wxCommandEvent& event ) { event.Skip(); }
 		
 	
@@ -129,22 +133,54 @@ class StatisticsDialogBase : public wxDialog
 		wxStaticText* m_stAmpHours;
 		wxButton* m_bResetAmpHours;
 		wxStaticText* m_staticText24;
-		wxStaticText* m_staticText25;
+		wxStaticText* m_stControllerTemp;
 		wxStaticText* m_staticText26;
 		wxStaticText* m_staticText27;
-		wxStaticText* m_staticText28;
+		wxStaticText* m_stMotorTemp;
 		wxStaticText* m_staticText29;
 		wxStdDialogButtonSizer* m_sdbSizer2;
 		wxButton* m_sdbSizer2OK;
 		
 		// Virtual event handlers, overide them in your derived class
+		virtual void OnClose( wxCloseEvent& event ) { event.Skip(); }
 		virtual void OnResetAmpHours( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnClose( wxCommandEvent& event ) { event.Skip(); }
 		
 	
 	public:
 		
 		StatisticsDialogBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("pypilot stats"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE ); 
 		~StatisticsDialogBase();
+	
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class CalibrationDialogBase
+///////////////////////////////////////////////////////////////////////////////
+class CalibrationDialogBase : public wxDialog 
+{
+	private:
+	
+	protected:
+		wxStaticText* m_staticText30;
+		wxStaticText* m_stCompassCalibrationAge;
+		wxStaticText* m_staticText25;
+		wxStaticText* m_stPitchRoll;
+		wxGauge* m_gLevel;
+		wxButton* m_bLevel;
+		wxStdDialogButtonSizer* m_sdbSizer3;
+		wxButton* m_sdbSizer3OK;
+		
+		// Virtual event handlers, overide them in your derived class
+		virtual void OnClose( wxCloseEvent& event ) { event.Skip(); }
+		virtual void OnLevel( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnClose( wxCommandEvent& event ) { event.Skip(); }
+		
+	
+	public:
+		
+		CalibrationDialogBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE ); 
+		~CalibrationDialogBase();
 	
 };
 

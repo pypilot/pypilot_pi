@@ -5,7 +5,7 @@
  * Author:   Sean D'Epagnier
  *
  ***************************************************************************
- *   Copyright (C) 2017 by Sean D'Epagnier                                 *
+ *   Copyright (C) 2018 by Sean D'Epagnier                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -59,20 +59,23 @@ void SignalKClient::connect(wxString host, int port)
     m_sock.Connect(addr, false);
 }
 
-bool SignalKClient::receive(wxJSONValue &value)
+bool SignalKClient::receive(wxString &name, wxJSONValue &value)
 {
     if(m_values.empty())
         return false;
 
-    value = m_values.front();
+    std::pair<wxString, wxJSONValue> val = m_values.front();
     m_values.pop_front();
+    
+    name = val.first;
+    value = val.second;
     return true;
 }
 
 void SignalKClient::get(wxString name)
 {
     wxJSONValue request;
-    request["method"] = "get";
+    request["method"] = wxString("get");
     request["name"] = name;
     send(request);
 }
@@ -80,16 +83,24 @@ void SignalKClient::get(wxString name)
 void SignalKClient::set(wxString name, wxJSONValue &value)
 {
     wxJSONValue request;
-    request["method"] = "get";
+    request["method"] = wxString("set");
     request["name"] = name;
     request["value"] = value;
     send(request);
 }
 
+void SignalKClient::set(wxString name, double value)
+{
+    wxJSONValue v(value);
+    set(name, v);
+}
+
 void SignalKClient::watch(wxString name, bool on)
 {
+    if(on)
+        get(name);
     wxJSONValue request;
-    request["method"] = "watch";
+    request["method"] = wxString("watch");
     request["name"] = name;
     request["value"] = on;
     send(request);
@@ -107,7 +118,7 @@ void SignalKClient::request_list_values()
 
 void SignalKClient::send(wxJSONValue &request)
 {
-    wxJSONWriter writer;
+    wxJSONWriter writer(wxJSONWRITER_NONE);
     wxString str;
     writer.Write(request, str);
     str += "\n";
@@ -141,27 +152,38 @@ void SignalKClient::OnSocketEvent(wxSocketEvent& event)
                 }
             }
 
-            size_t line_end = m_sock_buffer.find_first_of("*\r\n");
-            std::string json_line = m_sock_buffer.substr(0, line_end);
-            wxJSONValue value;
-            wxJSONReader reader;
-            if(reader.Parse(json_line, &value)) {
-                const wxArrayString& errors = reader.GetErrors();
-                wxString sLogMessage;
-                sLogMessage.Append(wxT("pypilot_pi: Error parsing JSON message - "));
-                sLogMessage.Append( json_line );
-                for(size_t i = 0; i < errors.GetCount(); i++)
-                {
-                    sLogMessage.append( errors.Item( i ) );
+            for(;;) {
+                int line_end = m_sock_buffer.find_first_of("\n");
+                if(line_end <= 0)
+                    break;
+                std::string json_line = m_sock_buffer.substr(0, line_end);
+                wxJSONValue value;
+                wxJSONReader reader;
+                if(reader.Parse(json_line, &value)) {
+                    const wxArrayString& errors = reader.GetErrors();
+                    wxString sLogMessage;
+                    sLogMessage.Append(wxT("pypilot_pi: Error parsing JSON message - "));
+                    sLogMessage.Append( json_line );
+                    for(size_t i = 0; i < errors.GetCount(); i++)
+                        sLogMessage.append( errors.Item( i ) );
+                    wxLogMessage( sLogMessage );
+                } else {
+                    if(m_values.size() >= 4096) {
+                        wxLogMessage( "SignalK client message overflow" );
+                        m_values.clear();
+                    }
+                    wxArrayString names = value.GetMemberNames();
+                    for(unsigned int i=0; i<names.Count(); i++) {
+                        std::pair<wxString, wxJSONValue> val(names[i], value[names[i]]);
+                        m_values.push_back(val);
+                    }
                 }
-                wxLogMessage( sLogMessage );
-            } else {
-                m_values.push_back(value);
+
+                if(line_end > (int)m_sock_buffer.size())
+                    m_sock_buffer.clear();
+                else
+                    m_sock_buffer = m_sock_buffer.substr(line_end+1);
             }
-            if(line_end > m_sock_buffer.size())
-                m_sock_buffer.clear();
-            else
-                m_sock_buffer = m_sock_buffer.substr(line_end);
             break;
     }
 }

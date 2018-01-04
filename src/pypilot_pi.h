@@ -5,7 +5,7 @@
  * Author:   Sean D'Epagnier
  *
  ***************************************************************************
- *   Copyright (C) 2017 by Sean D'Epagnier                                 *
+ *   Copyright (C) 2018 by Sean D'Epagnier                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -27,8 +27,9 @@
 #ifndef _PYPILOTPI_H_
 #define _PYPILOTPI_H_
 
-#include "wx/wx.h"
+#include <map>
 
+#include "wx/wx.h"
 #include <wx/fileconf.h>
 
 #include "version.h"
@@ -70,7 +71,8 @@
 class pyDC;
 class pypilotDialog;
 class ConfigurationDialog;
-
+class StatisticsDialog;
+class CalibrationDialog;
 
 class pypilot_pi : public wxEvtHandler, public opencpn_plugin_110
 {
@@ -97,6 +99,7 @@ public:
       bool RenderOverlay(wxDC &dc, PlugIn_ViewPort *vp);
       bool RenderGLOverlay(wxGLContext *pcontext, PlugIn_ViewPort *vp);
       void Render(pyDC &dc, PlugIn_ViewPort &vp);
+      void ReadConfig();
 
       void OnTimer( wxTimerEvent & );
 
@@ -112,26 +115,43 @@ public:
       double Declination();
       void OnConnected();
       void OnDisconnected();
-
-      pypilotDialog   *m_pypilotDialog;
+      void UpdateWatchlist();
 
       pypilot_SignalKClient m_client;
+
+      pypilotDialog  *m_pypilotDialog;
+      ConfigurationDialog *m_ConfigurationDialog;
+      StatisticsDialog   *m_StatisticsDialog;
+      CalibrationDialog  *m_CalibrationDialog;
       
 private:
-
       void SetNMEASentence(wxString &sentence);
       void SetPositionFixEx(PlugIn_Position_Fix_Ex &pfix);
       void SetPluginMessage(wxString &message_id, wxString &message_body);
+      void              RearrangeWindow();
+      void Receive(wxString &name, wxJSONValue &value);
+      void UpdateStatus();
 
       int               m_leftclick_tool_id;
-
-      void              RearrangeWindow();
 
       wxTimer m_Timer;
 
       double m_declination;
       wxDateTime m_declinationTime;
+
+      std::map<wxString, bool> m_watchlist;
+
+      wxString m_status;
+
+      wxString m_host;
+      bool m_bForwardnmea;
+      bool m_bEnableGraphicOverlay;
+
+      PlugIn_Position_Fix_Ex m_lastfix;
+      double m_ap_heading, m_ap_heading_command;
 };
 
+wxString jsonformat(const char *format, wxJSONValue &value);
+double jsondouble(wxJSONValue &value);
 
 #endif

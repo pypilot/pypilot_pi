@@ -5,7 +5,7 @@
  * Author:   Sean D'Epagnier
  *
  ***************************************************************************
- *   Copyright (C) 2017 by Sean D'Epagnier                                 *
+ *   Copyright (C) 2018 by Sean D'Epagnier                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -25,8 +25,6 @@
  */
 
 #include "pypilotUI.h"
-#include "ConfigurationDialog.h"
-#include "StatisticsDialog.h"
 
 class pypilot_pi;
 
@@ -36,13 +34,13 @@ public:
     pypilotDialog( pypilot_pi &_pypilot_pi, wxWindow* parent);
     ~pypilotDialog();
 
-
+    void Receive(wxString &name, wxJSONValue &value);
+    const char **GetWatchlist();
+    
 private:
     void OnConfiguration( wxCommandEvent& event );
     void OnStatistics( wxCommandEvent& event );
-    void OnClose( wxCommandEvent& event ) { Hide(); }
-    
-    ConfigurationDialog m_ConfigurationDialog;
-    StatisticsDialog    m_StatisticsDialog;
+    void OnClose( wxCommandEvent& event );
+
     pypilot_pi &m_pypilot_pi;
 };

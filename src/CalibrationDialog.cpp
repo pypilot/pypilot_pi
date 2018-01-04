@@ -24,18 +24,50 @@
  ***************************************************************************
  */
 
-#include "signalk_client.h"
+#include "pypilotUI.h"
+#include "pypilot_pi.h"
+#include "CalibrationDialog.h"
 
-
-class pypilot_pi;
-class pypilot_SignalKClient : public SignalKClient
+CalibrationDialog::CalibrationDialog(pypilot_pi &_pypilot_pi, wxWindow* parent) :
+    CalibrationDialogBase(parent),
+    m_pypilot_pi(_pypilot_pi)
 {
-public:
-    pypilot_SignalKClient( pypilot_pi &_pypilot_pi );
-    
-    virtual void OnConnected();
-    virtual void OnDisconnected();
+}
 
-private:
-    pypilot_pi &m_pypilot_pi;
-};
+CalibrationDialog::~CalibrationDialog()
+{
+}
+
+void CalibrationDialog::Receive(wxString &name, wxJSONValue &value)
+{
+    if(name == "imu.pitch" || name == "imu.roll") {
+        if(name == "imu.pitch")
+            m_pitch = jsondouble(value);
+        else {
+            double roll = jsondouble(value);
+            m_stPitchRoll->SetLabel(wxString::Format("%.1f / %.1f", m_pitch, roll));
+        }
+    } else if(name == "imu.alignmentCounter")
+        m_gLevel->SetValue(100-jsondouble(value));
+    else if(name == "imu.compass_calibration_age")
+        m_stCompassCalibrationAge->SetLabel(value.AsString());
+}
+
+const char **CalibrationDialog::GetWatchlist()
+{
+    static const char *watchlist[] =
+        {"imu.pitch", "imu.roll", "imu.alignmentCounter", "imu.compass_calibration_age", 0};
+
+    return watchlist;
+}
+
+void CalibrationDialog::OnClose( wxCommandEvent& event )
+{
+    Hide();
+    m_pypilot_pi.UpdateWatchlist();
+}
+
+void CalibrationDialog::OnLevel( wxCommandEvent& event )
+{
+    m_pypilot_pi.m_client.set("imu.alignmentCounter", 100);
+}
