@@ -42,6 +42,7 @@ pypilotDialog::pypilotDialog( pypilot_pi &_pypilot_pi, wxWindow* parent)
 #endif
     Move(pConf->Read ( _T ( "DialogPosX" ), 20L ), pConf->Read ( _T ( "DialogPosY" ), 20L ));
 
+    RebuildControlAngles();
     this->GetSizer()->Fit( this );
     this->Layout();
     this->SetSizeHints( GetSize().x, GetSize().y );
@@ -78,6 +79,33 @@ const char **pypilotDialog::GetWatchlist()
     return watchlist;
 }
 
+void pypilotDialog::RebuildControlAngles()
+{
+    wxFileConfig *pConf = GetOCPNConfigObject();
+    pConf->SetPath ( _T( "/Settings/pypilot" ) );
+    wxString ControlAngles = pConf->Read ( _T ( "ControlAngles" ), "1;5;10;30;110;" );
+    m_fgControlAnglesPos->DeleteWindows();
+    m_fgControlAnglesNeg->DeleteWindows();
+    while(ControlAngles.size()) {
+        wxString angle = ControlAngles.BeforeFirst(';');
+        long a;
+        if(angle.ToLong(&a)) {
+            for(int sign=-1; sign<2; sign+=2) {
+                wxButton *button = new wxButton( this, wxID_ANY, wxString::Format("%ld", a*sign));
+                button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialog::OnControlAngle ), NULL, this );
+                if(sign > 0)
+                    m_fgControlAnglesPos->Add( button, 0, wxALL, 5 );
+                else
+                    m_fgControlAnglesNeg->Add( button, 0, wxALL, 5 );
+            }
+        }
+        ControlAngles = ControlAngles.AfterFirst(';');
+    }
+    this->GetSizer()->Fit(this);
+    Fit();
+    this->SetSize(wxSize(400,400));
+}
+
 void pypilotDialog::OnConfiguration( wxCommandEvent& event )
 {
     m_pypilot_pi.m_ConfigurationDialog->Show();
@@ -94,4 +122,13 @@ void pypilotDialog::OnClose( wxCommandEvent& event )
 {
     Hide();
     m_pypilot_pi.UpdateWatchlist();
+}
+
+void pypilotDialog::OnControlAngle( wxCommandEvent& event )
+{
+    wxButton *button = static_cast<wxButton*>(event.GetEventObject());
+    wxString angle = button->GetLabel(), heading_command = m_stCommand->GetLabel();
+    double a, b;
+    if(heading_command.ToDouble(&a) && angle.ToDouble(&b))
+        m_pypilot_pi.m_client.set("ap.heading_command", a + b);
 }

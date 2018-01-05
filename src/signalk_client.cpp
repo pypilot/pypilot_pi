@@ -35,7 +35,11 @@ BEGIN_EVENT_TABLE(SignalKClient, wxEvtHandler)
     EVT_SOCKET(-1, SignalKClient::OnSocketEvent)
 END_EVENT_TABLE()
 
-SignalKClient::SignalKClient()
+/* queue mode queues up data, where map mode replaces incoming data with most recent
+   if receive is not called as often as the incoming data, map mode reduces processing
+   but for scopes or loggers, we need queue mode */
+SignalKClient::SignalKClient(bool queue_mode, bool request_list)
+: m_bQueueMode(queue_mode), m_bRequestList(request_list)
 {
 //    m_sock.Connect(wxEVT_SOCKET, wxSocketEventHandler(SignalKClient::OnSocketEvent), NULL, this);
     
@@ -61,14 +65,25 @@ void SignalKClient::connect(wxString host, int port)
 
 bool SignalKClient::receive(wxString &name, wxJSONValue &value)
 {
-    if(m_values.empty())
+    if(m_bQueueMode) {
+        if(m_queue.empty())
+            return false;
+
+        std::pair<wxString, wxJSONValue> val = m_queue.front();
+        m_queue.pop_front();
+    
+        name = val.first;
+        value = val.second;
+        return true;
+    }
+
+    if(m_map.empty())
         return false;
 
-    std::pair<wxString, wxJSONValue> val = m_values.front();
-    m_values.pop_front();
-    
-    name = val.first;
-    value = val.second;
+    std::map<wxString, wxJSONValue>::iterator it = m_map.begin();
+    name = it->first;
+    value = it->second;
+    m_map.erase(it);
     return true;
 }
 
@@ -106,14 +121,17 @@ void SignalKClient::watch(wxString name, bool on)
     send(request);
 }
 
+bool SignalKClient::info(wxString name, wxJSONValue &info)
+{
+    info = m_list[name];
+    return !info.IsNull();
+}
+
 void SignalKClient::request_list_values()
 {
-    m_values.clear();
-
     wxJSONValue request;
     request["method"] = "list";
     send(request);
-//    m_bRequestList = true;
 }
 
 void SignalKClient::send(wxJSONValue &request)
@@ -130,6 +148,14 @@ void SignalKClient::OnSocketEvent(wxSocketEvent& event)
     switch(event.GetSocketEvent())
     {
         case wxSOCKET_CONNECTION:
+            m_queue.clear();
+            m_map.clear();
+            m_sock_buffer.clear();
+            if(m_bRequestList) {
+                m_list = wxJSONValue();
+                request_list_values();
+                m_bRequestingList = true;
+            }
             OnConnected();
             break;
 
@@ -147,7 +173,6 @@ void SignalKClient::OnSocketEvent(wxSocketEvent& event)
                 if(count)
                 {
                     data[count]=0;
-//                    m_sock_buffer.Append(data);
                     m_sock_buffer += (&data.front());
                 }
             }
@@ -168,14 +193,22 @@ void SignalKClient::OnSocketEvent(wxSocketEvent& event)
                         sLogMessage.append( errors.Item( i ) );
                     wxLogMessage( sLogMessage );
                 } else {
-                    if(m_values.size() >= 4096) {
-                        wxLogMessage( "SignalK client message overflow" );
-                        m_values.clear();
-                    }
-                    wxArrayString names = value.GetMemberNames();
-                    for(unsigned int i=0; i<names.Count(); i++) {
-                        std::pair<wxString, wxJSONValue> val(names[i], value[names[i]]);
-                        m_values.push_back(val);
+                    if(m_bRequestingList) {
+                        m_list = value;
+                        m_bRequestingList = false;
+                    } else {
+                        wxArrayString names = value.GetMemberNames();
+                        for(unsigned int i=0; i<names.Count(); i++) {
+                            if(m_bQueueMode) {
+                                if(m_queue.size() >= 4096) {
+                                    wxLogMessage( "SignalK client message overflow" );
+                                    m_queue.clear();
+                                }
+                                std::pair<wxString, wxJSONValue> val(names[i], value[names[i]]);
+                                m_queue.push_back(val);
+                            } else
+                                m_map[names[i]] = value[names[i]];
+                        }
                     }
                 }
 

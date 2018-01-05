@@ -241,6 +241,9 @@ static void MergeWatchlist(std::map<wxString, bool> &watchlist, const char **lis
 
 void pypilot_pi::UpdateWatchlist()
 {
+    if(!m_client.connected())
+        return;
+
     std::map<wxString, bool> watchlist;
     if(m_pypilotDialog) {
         // map allows watchlists to overlap if needed
@@ -258,19 +261,24 @@ void pypilot_pi::UpdateWatchlist()
     }
 
     if(m_bEnableGraphicOverlay) {
-        static const char *wl[] = {"ap.heading", "ap.heading_command"};
+        static const char *wl[] = {"ap.heading", "ap.heading_command", 0};
         MergeWatchlist(watchlist, wl);
     }
 
     // watch new keys we weren't watching
     for(std::map<wxString, bool>::iterator it = watchlist.begin(); it != watchlist.end(); it++)
-        if(m_watchlist.find(it->first) == m_watchlist.end())
+        if(m_watchlist.find(it->first) == m_watchlist.end()) {
+//            printf("add watch %s\n", it->first.mb_str().data());
             m_client.watch(it->first);
+        } else
+            m_client.get(it->first); // make sure we get the value again to update dialog here
 
     // unwatch old keys we don't need
     for(std::map<wxString, bool>::iterator it = m_watchlist.begin(); it != m_watchlist.end(); it++)
-        if(watchlist.find(it->first) == watchlist.end())
+        if(watchlist.find(it->first) == watchlist.end()) {
+//            printf("remove watch %s\n", it->first.mb_str().data());
             m_client.watch(it->first, false);
+        }
 
     m_watchlist = watchlist;
 }
@@ -331,15 +339,15 @@ void pypilot_pi::Render(pyDC &dc, PlugIn_ViewPort &vp)
     wxPoint boat;
     GetCanvasPixLL(&vp, &boat, m_lastfix.Lat, m_lastfix.Lon);
 
-    double r = 100;
+    double r = wxMin(vp.pix_width, vp.pix_height)/4;
     wxPoint p1(boat.x + r*sin(deg2rad(m_ap_heading)),
-               boat.y + r*cos(deg2rad(m_ap_heading)));
-    dc.SetPen(wxPen(*wxRED));
+               boat.y - r*cos(deg2rad(m_ap_heading)));
+    dc.SetPen(wxPen(*wxRED, 4));
     dc.DrawLine(boat.x, boat.y, p1.x, p1.y);
 
     wxPoint p2(boat.x + r*sin(deg2rad(m_ap_heading_command)),
-               boat.y + r*cos(deg2rad(m_ap_heading_command)));
-    dc.SetPen(wxPen(*wxGREEN));
+               boat.y - r*cos(deg2rad(m_ap_heading_command)));
+    dc.SetPen(wxPen(*wxGREEN, 4));
     dc.DrawLine(boat.x, boat.y, p2.x, p2.y);
 }
 
@@ -348,10 +356,15 @@ void pypilot_pi::ReadConfig()
     wxFileConfig *pConf = GetOCPNConfigObject();
     pConf->SetPath ( _T( "/Settings/pypilot" ) );
     wxString host = pConf->Read ( _T ( "Host" ), "192.168.14.1" );
-    if(host != m_host)
+    if(host != m_host) {
         m_client.disconnect();
+        m_host = host;
+    }
     m_bForwardnmea = pConf->Read ( _T ( "Forwardnema" ), 0L);
     m_bEnableGraphicOverlay = pConf->Read ( _T ( "EnableGraphicOverlay" ), 0L);
+    if(m_pypilotDialog)
+        m_pypilotDialog->RebuildControlAngles();
+            
     UpdateWatchlist();
 }
 
@@ -369,10 +382,12 @@ void pypilot_pi::OnTimer( wxTimerEvent & )
         //printf("msg %s %s\n", name.mb_str().data(), value.mb_str().data());
 
         wxJSONValue val = data["value"];
-        m_pypilotDialog->Receive(name, val);
-        m_ConfigurationDialog->Receive(name, val);
-        m_StatisticsDialog->Receive(name, val);
-        m_CalibrationDialog->Receive(name, val);
+        if(m_pypilotDialog) {
+            m_pypilotDialog->Receive(name, val);
+            m_ConfigurationDialog->Receive(name, val);
+            m_StatisticsDialog->Receive(name, val);
+            m_CalibrationDialog->Receive(name, val);
+        }
         Receive(name, val);
     }
 }
@@ -387,6 +402,7 @@ void pypilot_pi::OnConnected()
 void pypilot_pi::OnDisconnected()
 {
     m_status = _("Disconnected");
+    m_watchlist.clear();
     UpdateStatus();
 }
 

@@ -51,7 +51,7 @@ pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxS
 	fgSizer38->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
 	wxFlexGridSizer* fgSizer39;
-	fgSizer39 = new wxFlexGridSizer( 0, 2, 0, 0 );
+	fgSizer39 = new wxFlexGridSizer( 0, 1, 0, 0 );
 	fgSizer39->AddGrowableCol( 0 );
 	fgSizer39->SetFlexibleDirection( wxBOTH );
 	fgSizer39->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
@@ -59,6 +59,28 @@ pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxS
 	m_stStatus = new wxStaticText( this, wxID_ANY, _("Status"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_stStatus->Wrap( -1 );
 	fgSizer39->Add( m_stStatus, 0, wxALL|wxEXPAND, 5 );
+	
+	wxFlexGridSizer* fgSizer29;
+	fgSizer29 = new wxFlexGridSizer( 0, 2, 0, 0 );
+	fgSizer29->SetFlexibleDirection( wxBOTH );
+	fgSizer29->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
+	m_fgControlAnglesNeg = new wxFlexGridSizer( 0, 3, 0, 0 );
+	m_fgControlAnglesNeg->SetFlexibleDirection( wxBOTH );
+	m_fgControlAnglesNeg->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
+	
+	fgSizer29->Add( m_fgControlAnglesNeg, 1, wxEXPAND, 5 );
+	
+	m_fgControlAnglesPos = new wxFlexGridSizer( 0, 3, 0, 0 );
+	m_fgControlAnglesPos->SetFlexibleDirection( wxBOTH );
+	m_fgControlAnglesPos->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
+	
+	fgSizer29->Add( m_fgControlAnglesPos, 1, wxEXPAND, 5 );
+	
+	
+	fgSizer39->Add( fgSizer29, 1, wxEXPAND, 5 );
 	
 	
 	fgSizer38->Add( fgSizer39, 1, wxEXPAND, 5 );
@@ -174,6 +196,11 @@ ConfigurationDialogBase::ConfigurationDialogBase( wxWindow* parent, wxWindowID i
 	fgSizer171->SetFlexibleDirection( wxBOTH );
 	fgSizer171->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
+	wxFlexGridSizer* fgSizer24;
+	fgSizer24 = new wxFlexGridSizer( 0, 1, 0, 0 );
+	fgSizer24->SetFlexibleDirection( wxBOTH );
+	fgSizer24->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
 	wxStaticBoxSizer* sbSizer1;
 	sbSizer1 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("OpenCPN Settings") ), wxVERTICAL );
 	
@@ -198,7 +225,52 @@ ConfigurationDialogBase::ConfigurationDialogBase( wxWindow* parent, wxWindowID i
 	sbSizer1->Add( fgSizer17, 1, wxEXPAND, 5 );
 	
 	
-	fgSizer171->Add( sbSizer1, 1, wxEXPAND, 5 );
+	fgSizer24->Add( sbSizer1, 1, wxEXPAND, 5 );
+	
+	wxStaticBoxSizer* sbSizer5;
+	sbSizer5 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Control Angles") ), wxVERTICAL );
+	
+	wxFlexGridSizer* fgSizer25;
+	fgSizer25 = new wxFlexGridSizer( 0, 2, 0, 0 );
+	fgSizer25->SetFlexibleDirection( wxBOTH );
+	fgSizer25->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
+	wxFlexGridSizer* fgSizer26;
+	fgSizer26 = new wxFlexGridSizer( 0, 1, 0, 0 );
+	fgSizer26->SetFlexibleDirection( wxBOTH );
+	fgSizer26->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
+	m_sControlAngle = new wxSpinCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 180, 0 );
+	fgSizer26->Add( m_sControlAngle, 0, wxALL, 5 );
+	
+	m_lControlAngles = new wxListBox( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 ); 
+	fgSizer26->Add( m_lControlAngles, 0, wxALL|wxEXPAND, 5 );
+	
+	
+	fgSizer25->Add( fgSizer26, 1, wxEXPAND, 5 );
+	
+	wxFlexGridSizer* fgSizer27;
+	fgSizer27 = new wxFlexGridSizer( 0, 1, 0, 0 );
+	fgSizer27->SetFlexibleDirection( wxBOTH );
+	fgSizer27->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
+	m_bAddControlAngle = new wxButton( this, wxID_ANY, _("Add"), wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer27->Add( m_bAddControlAngle, 0, wxALL, 5 );
+	
+	m_button11 = new wxButton( this, wxID_ANY, _("Remove"), wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer27->Add( m_button11, 0, wxALL, 5 );
+	
+	
+	fgSizer25->Add( fgSizer27, 1, wxEXPAND, 5 );
+	
+	
+	sbSizer5->Add( fgSizer25, 1, wxEXPAND, 5 );
+	
+	
+	fgSizer24->Add( sbSizer5, 1, wxEXPAND, 5 );
+	
+	
+	fgSizer171->Add( fgSizer24, 1, wxEXPAND, 5 );
 	
 	wxStaticBoxSizer* sbSizer2;
 	sbSizer2 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("pypilot Servo Settings") ), wxVERTICAL );
@@ -221,7 +293,7 @@ ConfigurationDialogBase::ConfigurationDialogBase( wxWindow* parent, wxWindowID i
 	m_stPeriod->Wrap( -1 );
 	fgSizer15->Add( m_stPeriod, 0, wxALL, 5 );
 	
-	m_sPeriod = new wxSpinButton( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
+	m_sPeriod = new wxSpinButton( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS|wxSP_VERTICAL );
 	fgSizer15->Add( m_sPeriod, 0, wxALL, 5 );
 	
 	m_staticText7 = new wxStaticText( this, wxID_ANY, _("Seconds"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -285,6 +357,32 @@ ConfigurationDialogBase::ConfigurationDialogBase( wxWindow* parent, wxWindowID i
 	m_staticText111->Wrap( -1 );
 	fgSizer21->Add( m_staticText111, 0, wxALL, 5 );
 	
+	m_staticText30 = new wxStaticText( this, wxID_ANY, _("Max Controller Temp"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText30->Wrap( -1 );
+	fgSizer21->Add( m_staticText30, 0, wxALL, 5 );
+	
+	m_sMaxControllerTemp = new wxSpinCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 30, 80, 30 );
+	m_sMaxControllerTemp->SetMaxSize( wxSize( 100,-1 ) );
+	
+	fgSizer21->Add( m_sMaxControllerTemp, 0, wxALL, 5 );
+	
+	m_staticText31 = new wxStaticText( this, wxID_ANY, _("C"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText31->Wrap( -1 );
+	fgSizer21->Add( m_staticText31, 0, wxALL, 5 );
+	
+	m_staticText32 = new wxStaticText( this, wxID_ANY, _("Max Motor Temp"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText32->Wrap( -1 );
+	fgSizer21->Add( m_staticText32, 0, wxALL, 5 );
+	
+	m_sMaxMotorTemp = new wxSpinCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 30, 80, 30 );
+	m_sMaxMotorTemp->SetMaxSize( wxSize( 100,-1 ) );
+	
+	fgSizer21->Add( m_sMaxMotorTemp, 0, wxALL, 5 );
+	
+	m_staticText311 = new wxStaticText( this, wxID_ANY, _("C"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText311->Wrap( -1 );
+	fgSizer21->Add( m_staticText311, 0, wxALL, 5 );
+	
 	
 	fgSizer14->Add( fgSizer21, 1, wxEXPAND, 5 );
 	
@@ -298,7 +396,8 @@ ConfigurationDialogBase::ConfigurationDialogBase( wxWindow* parent, wxWindowID i
 	fgSizer4->Add( fgSizer171, 1, wxEXPAND, 5 );
 	
 	wxFlexGridSizer* fgSizer18;
-	fgSizer18 = new wxFlexGridSizer( 0, 2, 0, 0 );
+	fgSizer18 = new wxFlexGridSizer( 1, 0, 0, 0 );
+	fgSizer18->AddGrowableCol( 2 );
 	fgSizer18->SetFlexibleDirection( wxBOTH );
 	fgSizer18->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
@@ -308,9 +407,6 @@ ConfigurationDialogBase::ConfigurationDialogBase( wxWindow* parent, wxWindowID i
 	m_bInformation = new wxButton( this, wxID_ANY, _("Information"), wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer18->Add( m_bInformation, 0, wxALL, 5 );
 	
-	
-	fgSizer4->Add( fgSizer18, 1, wxEXPAND, 5 );
-	
 	m_sdbSizer2 = new wxStdDialogButtonSizer();
 	m_sdbSizer2OK = new wxButton( this, wxID_OK );
 	m_sdbSizer2->AddButton( m_sdbSizer2OK );
@@ -318,7 +414,10 @@ ConfigurationDialogBase::ConfigurationDialogBase( wxWindow* parent, wxWindowID i
 	m_sdbSizer2->AddButton( m_sdbSizer2Cancel );
 	m_sdbSizer2->Realize();
 	
-	fgSizer4->Add( m_sdbSizer2, 1, wxEXPAND, 5 );
+	fgSizer18->Add( m_sdbSizer2, 1, wxEXPAND|wxRIGHT, 5 );
+	
+	
+	fgSizer4->Add( fgSizer18, 1, wxEXPAND, 5 );
 	
 	
 	this->SetSizer( fgSizer4 );
@@ -331,6 +430,10 @@ ConfigurationDialogBase::ConfigurationDialogBase( wxWindow* parent, wxWindowID i
 	this->Connect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( ConfigurationDialogBase::OnClose ) );
 	m_bAboutForwardnema->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnAboutForwardnema ), NULL, this );
 	m_bAboutEnableOverlay->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnAboutEnableOverlay ), NULL, this );
+	m_bAddControlAngle->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnAddControlAngle ), NULL, this );
+	m_button11->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnRemoveControlAngle ), NULL, this );
+	m_sPeriod->Connect( wxEVT_SCROLL_THUMBTRACK, wxSpinEventHandler( ConfigurationDialogBase::OnPeriod ), NULL, this );
+	m_sMaxCurrent->Connect( wxEVT_SCROLL_THUMBTRACK, wxSpinEventHandler( ConfigurationDialogBase::OnMaxCurrent ), NULL, this );
 	m_bCalibration->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnCalibration ), NULL, this );
 	m_bInformation->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnInformation ), NULL, this );
 	m_sdbSizer2Cancel->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnClose ), NULL, this );
@@ -343,6 +446,10 @@ ConfigurationDialogBase::~ConfigurationDialogBase()
 	this->Disconnect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( ConfigurationDialogBase::OnClose ) );
 	m_bAboutForwardnema->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnAboutForwardnema ), NULL, this );
 	m_bAboutEnableOverlay->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnAboutEnableOverlay ), NULL, this );
+	m_bAddControlAngle->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnAddControlAngle ), NULL, this );
+	m_button11->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnRemoveControlAngle ), NULL, this );
+	m_sPeriod->Disconnect( wxEVT_SCROLL_THUMBTRACK, wxSpinEventHandler( ConfigurationDialogBase::OnPeriod ), NULL, this );
+	m_sMaxCurrent->Disconnect( wxEVT_SCROLL_THUMBTRACK, wxSpinEventHandler( ConfigurationDialogBase::OnMaxCurrent ), NULL, this );
 	m_bCalibration->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnCalibration ), NULL, this );
 	m_bInformation->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnInformation ), NULL, this );
 	m_sdbSizer2Cancel->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnClose ), NULL, this );

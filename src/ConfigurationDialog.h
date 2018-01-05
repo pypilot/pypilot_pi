@@ -41,6 +41,10 @@ public:
 private:
     void OnAboutForwardnema( wxCommandEvent& event );
     void OnAboutEnableOverlay( wxCommandEvent& event );
+    void OnAddControlAngle( wxCommandEvent& event );
+    void OnRemoveControlAngle( wxCommandEvent& event );
+    void OnPeriod( wxSpinEvent& event );
+    void OnMaxCurrent( wxSpinEvent& event );
     void OnCalibration( wxCommandEvent& event );
     void OnInformation( wxCommandEvent& event );
     void OnOk( wxCommandEvent& event );

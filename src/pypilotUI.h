@@ -26,8 +26,9 @@
 #include <wx/textctrl.h>
 #include <wx/checkbox.h>
 #include <wx/statbox.h>
-#include <wx/spinbutt.h>
 #include <wx/spinctrl.h>
+#include <wx/listbox.h>
+#include <wx/spinbutt.h>
 #include <wx/gauge.h>
 
 #include "wxWTranslateCatalog.h"
@@ -45,6 +46,8 @@ class pypilotDialogBase : public wxDialog
 	protected:
 		wxToggleButton* m_bAP;
 		wxChoice* m_cMode;
+		wxFlexGridSizer* m_fgControlAnglesNeg;
+		wxFlexGridSizer* m_fgControlAnglesPos;
 		wxStaticText* m_stCommand;
 		wxStaticText* m_stHeading;
 		wxScrolledWindow* m_swGains;
@@ -81,6 +84,10 @@ class ConfigurationDialogBase : public wxDialog
 		wxButton* m_bAboutForwardnema;
 		wxCheckBox* m_cbEnableGraphicOverlay;
 		wxButton* m_bAboutEnableOverlay;
+		wxSpinCtrl* m_sControlAngle;
+		wxListBox* m_lControlAngles;
+		wxButton* m_bAddControlAngle;
+		wxButton* m_button11;
 		wxStaticText* m_staticText5;
 		wxStaticText* m_stPeriod;
 		wxSpinButton* m_sPeriod;
@@ -95,6 +102,12 @@ class ConfigurationDialogBase : public wxDialog
 		wxStaticText* m_staticText101;
 		wxSpinCtrl* m_sMaxSpeed;
 		wxStaticText* m_staticText111;
+		wxStaticText* m_staticText30;
+		wxSpinCtrl* m_sMaxControllerTemp;
+		wxStaticText* m_staticText31;
+		wxStaticText* m_staticText32;
+		wxSpinCtrl* m_sMaxMotorTemp;
+		wxStaticText* m_staticText311;
 		wxButton* m_bCalibration;
 		wxButton* m_bInformation;
 		wxStdDialogButtonSizer* m_sdbSizer2;
@@ -105,6 +118,10 @@ class ConfigurationDialogBase : public wxDialog
 		virtual void OnClose( wxCloseEvent& event ) { event.Skip(); }
 		virtual void OnAboutForwardnema( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnAboutEnableOverlay( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnAddControlAngle( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnRemoveControlAngle( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnPeriod( wxSpinEvent& event ) { event.Skip(); }
+		virtual void OnMaxCurrent( wxSpinEvent& event ) { event.Skip(); }
 		virtual void OnCalibration( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnInformation( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnClose( wxCommandEvent& event ) { event.Skip(); }

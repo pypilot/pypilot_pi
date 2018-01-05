@@ -27,7 +27,7 @@
 #include "pypilot_pi.h"
 
 pypilot_SignalKClient::pypilot_SignalKClient( pypilot_pi &_pypilot_pi )
-        : SignalKClient(), m_pypilot_pi(_pypilot_pi) {}
+        : SignalKClient(false), m_pypilot_pi(_pypilot_pi) {}
     
 void pypilot_SignalKClient::OnConnected()
 {

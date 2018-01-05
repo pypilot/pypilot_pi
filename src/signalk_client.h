@@ -25,6 +25,7 @@
  */
 
 #include <deque>
+#include <map>
 
 #include <wx/wx.h>
 #include <wx/socket.h>
@@ -35,22 +36,24 @@
 class SignalKClient : public wxEvtHandler
 {
 public:
-    SignalKClient();
+    SignalKClient(bool queue_mode = true, bool request_list = true);
 
     void connect(wxString host, int port=0);
     void disconnect() { m_sock.Close(); }
     bool connected() { return m_sock.IsConnected(); }
-    bool receive(wxString &name, wxJSONValue &value);
+    virtual bool receive(wxString &name, wxJSONValue &value);
 
     void get(wxString name);
     void set(wxString name, wxJSONValue &value);
     void set(wxString name, double value);
     void watch(wxString name, bool on=true);
-    void request_list_values();
+
+    bool info(wxString name, wxJSONValue &info);
 
 protected:
     virtual void OnConnected() = 0;
     virtual void OnDisconnected() = 0;
+    void request_list_values();
 
 private:
     void send(wxJSONValue &request);
@@ -58,6 +61,13 @@ private:
 
     wxSocketClient      m_sock;
     std::string         m_sock_buffer;
-    std::deque<std::pair<wxString, wxJSONValue> > m_values;
+    std::deque<std::pair<wxString, wxJSONValue> > m_queue;
+    std::map<wxString, wxJSONValue> m_map;
+
+    bool m_bQueueMode;
+    
+    wxJSONValue m_list;
+    bool m_bRequestList, m_bRequestingList;
+
 DECLARE_EVENT_TABLE()
 };

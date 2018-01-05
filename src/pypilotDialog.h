@@ -36,11 +36,14 @@ public:
 
     void Receive(wxString &name, wxJSONValue &value);
     const char **GetWatchlist();
+
+    void RebuildControlAngles();
     
 private:
     void OnConfiguration( wxCommandEvent& event );
     void OnStatistics( wxCommandEvent& event );
     void OnClose( wxCommandEvent& event );
+    void OnControlAngle( wxCommandEvent& event );
 
     pypilot_pi &m_pypilot_pi;
 };
