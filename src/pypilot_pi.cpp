@@ -110,6 +110,7 @@ pypilot_pi::pypilot_pi(void *ppimgr)
     // Create the PlugIn icons
     initialize_images();
     m_declination = NAN;
+    m_lastfix.nSats = 0;
 }
 
 //---------------------------------------------------------------------------------------------------------
@@ -336,6 +337,8 @@ bool pypilot_pi::RenderGLOverlay(wxGLContext *pcontext, PlugIn_ViewPort *vp)
 
 void pypilot_pi::Render(pyDC &dc, PlugIn_ViewPort &vp)
 {
+    if(m_lastfix.nSats == 0)
+        return;
     wxPoint boat;
     GetCanvasPixLL(&vp, &boat, m_lastfix.Lat, m_lastfix.Lon);
 

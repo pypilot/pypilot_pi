@@ -40,10 +40,17 @@ public:
     void RebuildControlAngles();
     
 private:
+    void OnAP( wxCommandEvent& event );
+    void OnManualPortLong( wxCommandEvent& event ) { Manual(-3); }
+    void OnManualPortShort( wxCommandEvent& event ) { Manual(-1); }
+    void OnManualStarboardShort( wxCommandEvent& event ) { Manual(1); }
+    void OnManualStarboardLong( wxCommandEvent& event ) { Manual(3); }
     void OnConfiguration( wxCommandEvent& event );
     void OnStatistics( wxCommandEvent& event );
     void OnClose( wxCommandEvent& event );
     void OnControlAngle( wxCommandEvent& event );
 
+    void Manual(int amount);
+    void AddButton(int angle, wxSizer *sizer);
     pypilot_pi &m_pypilot_pi;
 };

@@ -24,6 +24,8 @@
  ***************************************************************************
  */
 
+#include <vector>
+
 #include "pypilot_pi.h"
 #include "pypilotDialog.h"
 #include "ConfigurationDialog.h"
@@ -67,8 +69,12 @@ void pypilotDialog::Receive(wxString &name, wxJSONValue &value)
         m_stHeading->SetLabel(wxString::Format("%.1f", value.AsDouble()));
     else if(name == "ap.mode")
         m_cMode->SetStringSelection(value.AsString());
-    else if(name == "ap.enabled")
+    else if(name == "ap.enabled") {
         m_bAP->SetValue(value.AsBool());
+        m_fgControlAnglesPos->Show(value.AsBool());
+        m_fgControlAnglesNeg->Show(value.AsBool());
+        m_fgControlManual->Show(!value.AsBool());
+    }
 }
 
 const char **pypilotDialog::GetWatchlist()
@@ -83,27 +89,40 @@ void pypilotDialog::RebuildControlAngles()
 {
     wxFileConfig *pConf = GetOCPNConfigObject();
     pConf->SetPath ( _T( "/Settings/pypilot" ) );
-    wxString ControlAngles = pConf->Read ( _T ( "ControlAngles" ), "1;5;10;30;110;" );
-    m_fgControlAnglesPos->DeleteWindows();
-    m_fgControlAnglesNeg->DeleteWindows();
+    wxString ControlAngles = pConf->Read ( _T ( "ControlAngles" ), "1;10;110;" );
+    while(!m_fgControlAnglesPos->IsEmpty())
+        m_fgControlAnglesPos->Remove(0);
+    while(!m_fgControlAnglesNeg->IsEmpty())
+        m_fgControlAnglesNeg->Remove(0);
+    std::vector<int> angles;
     while(ControlAngles.size()) {
         wxString angle = ControlAngles.BeforeFirst(';');
         long a;
-        if(angle.ToLong(&a)) {
-            for(int sign=-1; sign<2; sign+=2) {
-                wxButton *button = new wxButton( this, wxID_ANY, wxString::Format("%ld", a*sign));
-                button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialog::OnControlAngle ), NULL, this );
-                if(sign > 0)
-                    m_fgControlAnglesPos->Add( button, 0, wxALL, 5 );
-                else
-                    m_fgControlAnglesNeg->Add( button, 0, wxALL, 5 );
-            }
-        }
+        if(angle.ToLong(&a))
+            angles.push_back(a);
         ControlAngles = ControlAngles.AfterFirst(';');
+    }
+    int cols = 3;
+    for(unsigned int i=0; i<angles.size()+cols-1; i++) {
+        if(i < angles.size())
+            AddButton(angles[i], m_fgControlAnglesPos);
+        unsigned int negind = cols-1-i%cols+i/cols*cols; 
+        if(negind < angles.size())
+            AddButton(-angles[negind], m_fgControlAnglesNeg);
+        else
+            m_fgControlAnglesNeg->AddSpacer(0);
     }
     this->GetSizer()->Fit(this);
     Fit();
     this->SetSize(wxSize(400,400));
+}
+
+void pypilotDialog::OnAP( wxCommandEvent& event )
+{
+    m_pypilot_pi.m_client.set("ap.enabled", m_bAP->GetValue());
+    double heading;
+    if(m_stHeading->GetLabel().ToDouble(&heading))
+        m_pypilot_pi.m_client.set("ap.heading_command", heading); 
 }
 
 void pypilotDialog::OnConfiguration( wxCommandEvent& event )
@@ -131,4 +150,18 @@ void pypilotDialog::OnControlAngle( wxCommandEvent& event )
     double a, b;
     if(heading_command.ToDouble(&a) && angle.ToDouble(&b))
         m_pypilot_pi.m_client.set("ap.heading_command", a + b);
+}
+
+void pypilotDialog::Manual(int amount)
+{
+    double cmd = amount > 1 ? 1 : -1;
+    m_pypilot_pi.m_client.set("servo.command", cmd);
+}
+
+void pypilotDialog::AddButton(int angle, wxSizer *sizer)
+{
+    wxButton *button = new wxButton( this, wxID_ANY, wxString::Format("%ld", angle));
+    button->Connect( wxEVT_COMMAND_BUTTON_CLICKED,
+                     wxCommandEventHandler( pypilotDialog::OnControlAngle ), NULL, this );
+    sizer->Add( button, 0, wxALL, 5 );
 }

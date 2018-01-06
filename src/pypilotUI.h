@@ -20,8 +20,8 @@
 #include <wx/choice.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
-#include <wx/scrolwin.h>
 #include <wx/button.h>
+#include <wx/scrolwin.h>
 #include <wx/dialog.h>
 #include <wx/textctrl.h>
 #include <wx/checkbox.h>
@@ -46,10 +46,15 @@ class pypilotDialogBase : public wxDialog
 	protected:
 		wxToggleButton* m_bAP;
 		wxChoice* m_cMode;
-		wxFlexGridSizer* m_fgControlAnglesNeg;
-		wxFlexGridSizer* m_fgControlAnglesPos;
 		wxStaticText* m_stCommand;
 		wxStaticText* m_stHeading;
+		wxFlexGridSizer* m_fgControlAnglesNeg;
+		wxFlexGridSizer* m_fgControlAnglesPos;
+		wxFlexGridSizer* m_fgControlManual;
+		wxButton* m_button12;
+		wxButton* m_button13;
+		wxButton* m_button14;
+		wxButton* m_button15;
 		wxScrolledWindow* m_swGains;
 		wxButton* m_bConfiguration;
 		wxButton* m_bStatistics;
@@ -57,6 +62,11 @@ class pypilotDialogBase : public wxDialog
 		
 		// Virtual event handlers, overide them in your derived class
 		virtual void OnClose( wxCloseEvent& event ) { event.Skip(); }
+		virtual void OnAP( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnManualPortLong( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnManualPortShort( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnManualStarboardShort( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnManualStarboardLong( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnConfiguration( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnStatistics( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnClose( wxCommandEvent& event ) { event.Skip(); }

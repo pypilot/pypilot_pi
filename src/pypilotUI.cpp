@@ -60,28 +60,6 @@ pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxS
 	m_stStatus->Wrap( -1 );
 	fgSizer39->Add( m_stStatus, 0, wxALL|wxEXPAND, 5 );
 	
-	wxFlexGridSizer* fgSizer29;
-	fgSizer29 = new wxFlexGridSizer( 0, 2, 0, 0 );
-	fgSizer29->SetFlexibleDirection( wxBOTH );
-	fgSizer29->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
-	
-	m_fgControlAnglesNeg = new wxFlexGridSizer( 0, 3, 0, 0 );
-	m_fgControlAnglesNeg->SetFlexibleDirection( wxBOTH );
-	m_fgControlAnglesNeg->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
-	
-	
-	fgSizer29->Add( m_fgControlAnglesNeg, 1, wxEXPAND, 5 );
-	
-	m_fgControlAnglesPos = new wxFlexGridSizer( 0, 3, 0, 0 );
-	m_fgControlAnglesPos->SetFlexibleDirection( wxBOTH );
-	m_fgControlAnglesPos->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
-	
-	
-	fgSizer29->Add( m_fgControlAnglesPos, 1, wxEXPAND, 5 );
-	
-	
-	fgSizer39->Add( fgSizer29, 1, wxEXPAND, 5 );
-	
 	
 	fgSizer38->Add( fgSizer39, 1, wxEXPAND, 5 );
 	
@@ -106,6 +84,55 @@ pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxS
 	
 	
 	fgSizer38->Add( fgSizer12, 1, wxEXPAND, 5 );
+	
+	wxFlexGridSizer* fgSizer29;
+	fgSizer29 = new wxFlexGridSizer( 0, 2, 0, 0 );
+	fgSizer29->SetFlexibleDirection( wxBOTH );
+	fgSizer29->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
+	m_fgControlAnglesNeg = new wxFlexGridSizer( 0, 3, 0, 0 );
+	m_fgControlAnglesNeg->SetFlexibleDirection( wxBOTH );
+	m_fgControlAnglesNeg->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
+	
+	fgSizer29->Add( m_fgControlAnglesNeg, 1, wxEXPAND, 5 );
+	
+	m_fgControlAnglesPos = new wxFlexGridSizer( 0, 3, 0, 0 );
+	m_fgControlAnglesPos->SetFlexibleDirection( wxBOTH );
+	m_fgControlAnglesPos->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
+	
+	fgSizer29->Add( m_fgControlAnglesPos, 1, wxEXPAND, 5 );
+	
+	
+	fgSizer38->Add( fgSizer29, 1, wxEXPAND, 5 );
+	
+	m_fgControlManual = new wxFlexGridSizer( 1, 0, 0, 0 );
+	m_fgControlManual->SetFlexibleDirection( wxBOTH );
+	m_fgControlManual->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
+	m_button12 = new wxButton( this, wxID_ANY, _("<<"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_button12->SetMaxSize( wxSize( 40,-1 ) );
+	
+	m_fgControlManual->Add( m_button12, 0, wxALL, 5 );
+	
+	m_button13 = new wxButton( this, wxID_ANY, _("<"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_button13->SetMaxSize( wxSize( 40,-1 ) );
+	
+	m_fgControlManual->Add( m_button13, 0, wxALL, 5 );
+	
+	m_button14 = new wxButton( this, wxID_ANY, _(">"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_button14->SetMaxSize( wxSize( 40,-1 ) );
+	
+	m_fgControlManual->Add( m_button14, 0, wxALL, 5 );
+	
+	m_button15 = new wxButton( this, wxID_ANY, _(">>"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_button15->SetMaxSize( wxSize( 40,-1 ) );
+	
+	m_fgControlManual->Add( m_button15, 0, wxALL, 5 );
+	
+	
+	fgSizer38->Add( m_fgControlManual, 1, wxEXPAND, 5 );
 	
 	
 	fgSizer37->Add( fgSizer38, 1, wxEXPAND, 5 );
@@ -151,6 +178,11 @@ pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxS
 	
 	// Connect Events
 	this->Connect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( pypilotDialogBase::OnClose ) );
+	m_bAP->Connect( wxEVT_COMMAND_TOGGLEBUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnAP ), NULL, this );
+	m_button12->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnManualPortLong ), NULL, this );
+	m_button13->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnManualPortShort ), NULL, this );
+	m_button14->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnManualStarboardShort ), NULL, this );
+	m_button15->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnManualStarboardLong ), NULL, this );
 	m_bConfiguration->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnConfiguration ), NULL, this );
 	m_bStatistics->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnStatistics ), NULL, this );
 	m_bClose->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnClose ), NULL, this );
@@ -160,6 +192,11 @@ pypilotDialogBase::~pypilotDialogBase()
 {
 	// Disconnect Events
 	this->Disconnect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( pypilotDialogBase::OnClose ) );
+	m_bAP->Disconnect( wxEVT_COMMAND_TOGGLEBUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnAP ), NULL, this );
+	m_button12->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnManualPortLong ), NULL, this );
+	m_button13->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnManualPortShort ), NULL, this );
+	m_button14->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnManualStarboardShort ), NULL, this );
+	m_button15->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnManualStarboardLong ), NULL, this );
 	m_bConfiguration->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnConfiguration ), NULL, this );
 	m_bStatistics->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnStatistics ), NULL, this );
 	m_bClose->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnClose ), NULL, this );

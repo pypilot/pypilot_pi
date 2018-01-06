@@ -51,7 +51,7 @@ bool ConfigurationDialog::Show( bool show )
         m_cbEnableGraphicOverlay->SetValue(pConf->Read ( _T ( "EnableGraphicOverlay" ), 0L ));
 
         m_lControlAngles->Clear();
-        wxString ControlAngles = pConf->Read ( _T ( "ControlAngles" ), "1;5;10;30;110;" );
+        wxString ControlAngles = pConf->Read ( _T ( "ControlAngles" ), "1;10;110;" );
         while(ControlAngles.size()) {
             wxString angle = ControlAngles.BeforeFirst(';');
             long a;
@@ -107,7 +107,7 @@ void ConfigurationDialog::OnAboutEnableOverlay( wxCommandEvent& event )
 void ConfigurationDialog::OnAddControlAngle( wxCommandEvent& event )
 {
     int angle = m_sControlAngle->GetValue();
-    int i = 0;
+    unsigned int i = 0;
     while(i<m_lControlAngles->GetCount()) {
         long a;
         m_lControlAngles->GetString(i).ToLong(&a);
