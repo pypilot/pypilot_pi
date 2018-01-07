@@ -24,50 +24,31 @@
  ***************************************************************************
  */
 
+#include <list>
+
 #include "pypilotUI.h"
-#include "pypilot_pi.h"
-#include "StatisticsDialog.h"
+class pypilot_pi;
 
-StatisticsDialog::StatisticsDialog(pypilot_pi &_pypilot_pi, wxWindow* parent) :
-    StatisticsDialogBase(parent),
-    m_pypilot_pi(_pypilot_pi)
-{
-}
+class Gain;
 
-StatisticsDialog::~StatisticsDialog()
+class GainsDialog : public GainsDialogBase
 {
-}
+public:
+    GainsDialog( pypilot_pi &_pypilot_pi, wxWindow* parent);
+    ~GainsDialog();
 
-void StatisticsDialog::Receive(wxString &name, wxJSONValue &value)
-{
-    if(name == "imu.uptime")
-        m_stUptime->SetLabel(value.AsString());
-    else if(name == "ap.runtime")
-        m_stAPRuntime->SetLabel(value.AsString());
-    else if(name == "servo.watts")
-        m_stWatts->SetLabel(jsonformat("%.1f", value));
-    else if(name == "servo.amp_hours")
-        m_stAmpHours->SetLabel(jsonformat("%.1f", value));
-    else if(name == "servo.controller_temp")
-        m_stControllerTemp->SetLabel(jsonformat("%.1f", value));
-    else if(name == "servo.motor_temp")
-        m_stMotorTemp->SetLabel(jsonformat("%.1f", value));
-}
+    bool Show( bool show=true );
 
-const char **StatisticsDialog::GetWatchlist()
-{
-    static const char *watchlist[] =
-        {"imu.uptime", "ap.runtime", "servo.watts", "servo.amp_hours", "servo.controller_temp", "servo.motor_temp", 0};
-    return watchlist;
-}
+    void Receive(wxString &name, wxJSONValue &value);
+    std::list<wxString> GetWatchlist();
 
-void StatisticsDialog::OnClose( wxCommandEvent& event )
-{
-    Hide();
-    m_pypilot_pi.UpdateWatchlist();
-}
+private:
+    void OnClose( wxCommandEvent& event );
+    void OnTimer( wxTimerEvent & );
+    void OnGainSlider( wxScrollEvent& event );
 
-void StatisticsDialog::OnResetAmpHours( wxCommandEvent& event )
-{
-    m_pypilot_pi.m_client.set("servo.amp_hours", 0);
-}
+    wxTimer m_Timer;
+    std::list<wxString> m_watchlist;
+    std::map<wxString, Gain*> m_gains;
+    pypilot_pi &m_pypilot_pi;
+};

@@ -41,6 +41,7 @@ public:
 private:
     void OnAboutForwardnema( wxCommandEvent& event );
     void OnAboutEnableOverlay( wxCommandEvent& event );
+    void OnAboutTrueNorth( wxCommandEvent& event );
     void OnAddControlAngle( wxCommandEvent& event );
     void OnRemoveControlAngle( wxCommandEvent& event );
     void OnPeriod( wxSpinEvent& event );
@@ -50,5 +51,7 @@ private:
     void OnOk( wxCommandEvent& event );
     void OnClose( wxCommandEvent& event );
 
+    double ApplyTrueNorth(double value);
+    
     pypilot_pi &m_pypilot_pi;
 };

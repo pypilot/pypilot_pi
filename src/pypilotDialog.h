@@ -38,19 +38,30 @@ public:
     const char **GetWatchlist();
 
     void RebuildControlAngles();
+    void Fit();
     
 private:
     void OnAP( wxCommandEvent& event );
+    void OnMode( wxCommandEvent& event );
     void OnManualPortLong( wxCommandEvent& event ) { Manual(-3); }
     void OnManualPortShort( wxCommandEvent& event ) { Manual(-1); }
     void OnManualStarboardShort( wxCommandEvent& event ) { Manual(1); }
     void OnManualStarboardLong( wxCommandEvent& event ) { Manual(3); }
+    void OnGains( wxCommandEvent& event );
     void OnConfiguration( wxCommandEvent& event );
     void OnStatistics( wxCommandEvent& event );
     void OnClose( wxCommandEvent& event );
     void OnControlAngle( wxCommandEvent& event );
 
+    void UpdateModes();
     void Manual(int amount);
     void AddButton(int angle, wxSizer *sizer);
+
+    bool m_bAPHaveGPS, m_bAPHaveWind;
+    wxString m_sAPMode;
+    
+    double ApplyTrueNorth(double value);
+
+    bool m_bTrueNorthMode;
     pypilot_pi &m_pypilot_pi;
 };

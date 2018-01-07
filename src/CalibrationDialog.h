@@ -40,7 +40,12 @@ public:
 private:
     void OnClose( wxCommandEvent& event );
     void OnLevel( wxCommandEvent& event );
+    void OnAboutLevel( wxCommandEvent& event );
+    void OnHeadingOffset( wxSpinEvent& event );
+    void OnAboutHeadingOffset( wxCommandEvent& event );
 
     double m_pitch;
     pypilot_pi &m_pypilot_pi;
+    wxDateTime m_lastOffsetTime;
+
 };

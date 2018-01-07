@@ -51,12 +51,15 @@ void CalibrationDialog::Receive(wxString &name, wxJSONValue &value)
         m_gLevel->SetValue(100-jsondouble(value));
     else if(name == "imu.compass_calibration_age")
         m_stCompassCalibrationAge->SetLabel(value.AsString());
+    else if(name == "imu.heading_offset")
+        if(!m_lastOffsetTime.IsValid() || (wxDateTime::Now() - m_lastOffsetTime).GetSeconds() > 3)
+            m_sHeadingOffset->SetValue(jsondouble(value));
 }
 
 const char **CalibrationDialog::GetWatchlist()
 {
     static const char *watchlist[] =
-        {"imu.pitch", "imu.roll", "imu.alignmentCounter", "imu.compass_calibration_age", 0};
+        {"imu.pitch", "imu.roll", "imu.alignmentCounter", "imu.compass_calibration_age", "imu.heading_offset", 0};
 
     return watchlist;
 }
@@ -70,4 +73,28 @@ void CalibrationDialog::OnClose( wxCommandEvent& event )
 void CalibrationDialog::OnLevel( wxCommandEvent& event )
 {
     m_pypilot_pi.m_client.set("imu.alignmentCounter", 100);
+}
+
+void CalibrationDialog::OnAboutLevel( wxCommandEvent& event )
+{
+    wxMessageDialog mdlg(GetOCPNCanvasWindow(),
+                         _("Press the level button when the boat is sitting level in the water \
+to align the inertial sensors used by the autopilot.\n\n\
+This alignment is critical for the autopilot to work correctly, and also for the compass to calibrate automatically."),
+                         "pypilot", wxOK | wxICON_INFORMATION);
+    mdlg.ShowModal();
+}
+
+void CalibrationDialog::OnHeadingOffset( wxSpinEvent& event )
+{
+    m_pypilot_pi.m_client.set("imu.heading_offset", m_sHeadingOffset->GetValue());
+    m_lastOffsetTime = wxDateTime::Now();
+}
+
+void CalibrationDialog::OnAboutHeadingOffset( wxCommandEvent& event )
+{
+    wxMessageDialog mdlg(GetOCPNCanvasWindow(),
+                         _("You may manually adjust the alignment of the compass. The autopilot may work without the correct alignment, but the reported headings will not be correct.\n\nThe autopilot may also work better depending on control algorithm if the heading is correctly aligned."),
+                         "pypilot", wxOK | wxICON_INFORMATION);
+    mdlg.ShowModal();
 }

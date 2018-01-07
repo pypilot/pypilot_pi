@@ -110,6 +110,12 @@ void SignalKClient::set(wxString name, double value)
     set(name, v);
 }
 
+void SignalKClient::set(wxString name, wxString value)
+{
+    wxJSONValue v(value);
+    set(name, v);
+}
+
 void SignalKClient::watch(wxString name, bool on)
 {
     if(on)
@@ -130,7 +136,7 @@ bool SignalKClient::info(wxString name, wxJSONValue &info)
 void SignalKClient::request_list_values()
 {
     wxJSONValue request;
-    request["method"] = "list";
+    request["method"] = wxString("list");
     send(request);
 }
 
@@ -155,8 +161,8 @@ void SignalKClient::OnSocketEvent(wxSocketEvent& event)
                 m_list = wxJSONValue();
                 request_list_values();
                 m_bRequestingList = true;
-            }
-            OnConnected();
+            } else
+                OnConnected();
             break;
 
         case wxSOCKET_LOST:
@@ -196,6 +202,7 @@ void SignalKClient::OnSocketEvent(wxSocketEvent& event)
                     if(m_bRequestingList) {
                         m_list = value;
                         m_bRequestingList = false;
+                        OnConnected();
                     } else {
                         wxArrayString names = value.GetMemberNames();
                         for(unsigned int i=0; i<names.Count(); i++) {

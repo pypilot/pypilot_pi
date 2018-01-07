@@ -30,6 +30,7 @@ SET(SRC_PYPILOT
             src/signalk_client.cpp
             src/pypilot_signalk_client.cpp
             src/pypilotDialog.cpp
+            src/GainsDialog.cpp
             src/ConfigurationDialog.cpp
             src/StatisticsDialog.cpp
             src/CalibrationDialog.cpp

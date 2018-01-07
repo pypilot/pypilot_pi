@@ -24,8 +24,9 @@
  ***************************************************************************
  */
 
-#include "signalk_client.h"
+#include <list>
 
+#include "signalk_client.h"
 
 class pypilot_pi;
 class pypilot_SignalKClient : public SignalKClient
@@ -35,6 +36,8 @@ public:
     
     virtual void OnConnected();
     virtual void OnDisconnected();
+
+    void GetGains(std::list<wxString> &gains);
 
 private:
     pypilot_pi &m_pypilot_pi;

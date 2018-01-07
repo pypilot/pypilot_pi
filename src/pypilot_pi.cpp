@@ -40,45 +40,13 @@
 #include "pypilot_pi.h"
 
 #include "pypilotDialog.h"
+#include "GainsDialog.h"
 #include "ConfigurationDialog.h"
 #include "StatisticsDialog.h"
 #include "CalibrationDialog.h"
 
 #include "icons.h"
 
-
-double heading_resolve(double degrees)
-{
-    while(degrees < -180)
-        degrees += 360;
-    while(degrees >= 180)
-        degrees -= 360;
-    return degrees;
-}
-
-wxString jsonformat(const char *format, wxJSONValue &value)
-{
-    double d;
-    if(value.IsDouble())
-        d = value.AsDouble();
-    else {
-        wxString str = value.AsString();
-        if(!str.ToDouble(&d))
-            return str;
-    }
-    return wxString::Format(format, d);
-}
-
-double jsondouble(wxJSONValue &value)
-{
-    if(value.IsDouble())
-        return value.AsDouble();
-    double d;
-    wxString str = value.AsString();
-    if(str.ToDouble(&d))
-        return d;
-    return NAN;
-}
 
 static double deg2rad(double deg)
 {
@@ -132,6 +100,7 @@ int pypilot_pi::Init(void)
     m_Timer.Start(500);
             
     m_pypilotDialog = NULL;
+    m_GainsDialog = NULL;
     m_ConfigurationDialog = NULL;
     m_StatisticsDialog = NULL;
     m_CalibrationDialog = NULL;
@@ -151,6 +120,7 @@ int pypilot_pi::Init(void)
 bool pypilot_pi::DeInit(void)
 {
     delete m_pypilotDialog;
+    delete m_GainsDialog;
     delete m_ConfigurationDialog;
     delete m_StatisticsDialog;
     delete m_CalibrationDialog;
@@ -223,9 +193,9 @@ void pypilot_pi::RearrangeWindow()
 void pypilot_pi::Receive(wxString &name, wxJSONValue &value)
 {
     if(name == "ap.heading")
-        m_ap_heading = value.AsDouble();
+        m_ap_heading = value.AsDouble() + m_declination;
     else if(name == "ap.heading_command")
-        m_ap_heading_command = value.AsDouble();
+        m_ap_heading_command = value.AsDouble() + m_declination;
 }
 
 void pypilot_pi::UpdateStatus()
@@ -240,6 +210,12 @@ static void MergeWatchlist(std::map<wxString, bool> &watchlist, const char **lis
         watchlist[*w] = true;
 }
 
+static void MergeWatchlist(std::map<wxString, bool> &watchlist, std::list<wxString> list)
+{
+    for(std::list<wxString>::iterator i = list.begin(); i != list.end(); i++)
+        watchlist[*i] = true;
+}
+
 void pypilot_pi::UpdateWatchlist()
 {
     if(!m_client.connected())
@@ -250,6 +226,9 @@ void pypilot_pi::UpdateWatchlist()
         // map allows watchlists to overlap if needed
         if(m_pypilotDialog->IsShown())
             MergeWatchlist(watchlist, m_pypilotDialog->GetWatchlist());
+        
+        if(m_GainsDialog->IsShown())
+            MergeWatchlist(watchlist, m_GainsDialog->GetWatchlist());
         
         if(m_ConfigurationDialog->IsShown())
             MergeWatchlist(watchlist, m_ConfigurationDialog->GetWatchlist());
@@ -291,6 +270,7 @@ void pypilot_pi::OnToolbarToolCallback(int id)
         m_pypilotDialog = new pypilotDialog(*this, GetOCPNCanvasWindow());
         UpdateStatus();
                 
+        m_GainsDialog = new GainsDialog(*this, GetOCPNCanvasWindow());
         m_ConfigurationDialog = new ConfigurationDialog(*this, GetOCPNCanvasWindow());
         m_StatisticsDialog = new StatisticsDialog(*this, GetOCPNCanvasWindow());
         m_CalibrationDialog = new CalibrationDialog(*this, GetOCPNCanvasWindow());
@@ -298,6 +278,7 @@ void pypilot_pi::OnToolbarToolCallback(int id)
         wxIcon icon;
         icon.CopyFromBitmap(*_img_pypilot);
         m_pypilotDialog->SetIcon(icon);
+        m_GainsDialog->SetIcon(icon);
         m_ConfigurationDialog->SetIcon(icon);
         m_StatisticsDialog->SetIcon(icon);
         m_CalibrationDialog->SetIcon(icon);
@@ -373,6 +354,8 @@ void pypilot_pi::ReadConfig()
 
 void pypilot_pi::OnTimer( wxTimerEvent & )
 {
+    Declination();
+
     if(!m_client.connected()) {
         m_client.connect(m_host);
         return;
@@ -387,6 +370,7 @@ void pypilot_pi::OnTimer( wxTimerEvent & )
         wxJSONValue val = data["value"];
         if(m_pypilotDialog) {
             m_pypilotDialog->Receive(name, val);
+            m_GainsDialog->Receive(name, val);
             m_ConfigurationDialog->Receive(name, val);
             m_StatisticsDialog->Receive(name, val);
             m_CalibrationDialog->Receive(name, val);
@@ -475,6 +459,11 @@ wxString pypilot_pi::StandardPath()
 
 double pypilot_pi::Declination()
 {
+    if(m_declinationRequestTime.IsValid() &&
+       (wxDateTime::Now() - m_declinationRequestTime).GetSeconds() < 6)
+        return m_declination;
+    m_declinationRequestTime = wxDateTime::Now();
+
     if(!m_declinationTime.IsValid() || (wxDateTime::Now() - m_declinationTime).GetSeconds() > 1200) {
         wxJSONWriter w;
         wxString out;
@@ -483,4 +472,46 @@ double pypilot_pi::Declination()
         SendPluginMessage(wxString(_T("WMM_VARIATION_BOAT_REQUEST")), out);
     }
     return m_declination;
+}
+
+double heading_resolve(double degrees)
+{
+    while(degrees < -180)
+        degrees += 360;
+    while(degrees >= 180)
+        degrees -= 360;
+    return degrees;
+}
+
+double heading_resolve_pos(double degrees)
+{
+    while(degrees < 0)
+        degrees += 360;
+    while(degrees >= 360)
+        degrees -= 360;
+    return degrees;
+}
+
+wxString jsonformat(const char *format, wxJSONValue &value)
+{
+    double d;
+    if(value.IsDouble())
+        d = value.AsDouble();
+    else {
+        wxString str = value.AsString();
+        if(!str.ToDouble(&d))
+            return str;
+    }
+    return wxString::Format(format, d);
+}
+
+double jsondouble(wxJSONValue &value)
+{
+    if(value.IsDouble())
+        return value.AsDouble();
+    double d;
+    wxString str = value.AsString();
+    if(str.ToDouble(&d))
+        return d;
+    return NAN;
 }

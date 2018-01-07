@@ -49,6 +49,7 @@ bool ConfigurationDialog::Show( bool show )
         m_tHost->SetValue(pConf->Read ( _T ( "Host" ), "192.168.14.1" ));
         m_cbForwardnmea->SetValue(pConf->Read ( _T ( "Forwardnema" ), 0L ));
         m_cbEnableGraphicOverlay->SetValue(pConf->Read ( _T ( "EnableGraphicOverlay" ), 0L ));
+        m_cbTrueNorthMode->SetValue(pConf->Read ( _T ( "TrueNorthMode" ), 0L ));
 
         m_lControlAngles->Clear();
         wxString ControlAngles = pConf->Read ( _T ( "ControlAngles" ), "1;10;110;" );
@@ -59,6 +60,7 @@ bool ConfigurationDialog::Show( bool show )
                 m_lControlAngles->Append(wxString::Format("%ld", a));
             ControlAngles = ControlAngles.AfterFirst(';');
         }
+        m_sControlColumns->SetValue(pConf->Read ( _T ( "ControlColumns" ), 2 ));
     }
     return ConfigurationDialogBase::Show(show);
 }
@@ -92,7 +94,7 @@ void ConfigurationDialog::OnAboutForwardnema( wxCommandEvent& event )
 {
     wxMessageDialog mdlg(GetOCPNCanvasWindow(), _("\
 Eliminates the need to make the tcp connection to the autopilot from the OpenCPN connections list"),
-                         _("Watchdog"), wxOK | wxICON_WARNING);
+                         "pypilot", wxOK | wxICON_INFORMATION);
     mdlg.ShowModal();
 }
 
@@ -100,7 +102,16 @@ void ConfigurationDialog::OnAboutEnableOverlay( wxCommandEvent& event )
 {
     wxMessageDialog mdlg(GetOCPNCanvasWindow(),
                          _("Displays lines on the chart showing the autopilot's configured headings"),
-                         _("Watchdog"), wxOK | wxICON_WARNING);
+                         "pypilot", wxOK | wxICON_INFORMATION);
+    mdlg.ShowModal();
+}
+
+void ConfigurationDialog::OnAboutTrueNorth( wxCommandEvent& event )
+{
+    wxMessageDialog mdlg(GetOCPNCanvasWindow(),
+                         _("Converts displayed headings to true north rather than magnetic north.\n\
+This affects compass mode only, and requires the wmm plugin to be active.  The conversion is applied only within the plugin, the autopilot is commanded in the correct magnetic heading."),
+                         "pypilot", wxOK | wxICON_INFORMATION);
     mdlg.ShowModal();
 }
 
@@ -173,11 +184,13 @@ void ConfigurationDialog::OnOk( wxCommandEvent& event )
     pConf->Write ( _T ( "Host" ), m_tHost->GetValue());
     pConf->Write ( _T ( "Forwardnema" ), m_cbForwardnmea->GetValue( ));
     pConf->Write ( _T ( "EnableGraphicOverlay" ), m_cbEnableGraphicOverlay->GetValue() );
+    pConf->Write ( _T ( "TrueNorthMode" ), m_cbTrueNorthMode->GetValue() );
 
     wxString ControlAngles;
     for(unsigned int i=0; i<m_lControlAngles->GetCount(); i++)
         ControlAngles += m_lControlAngles->GetString(i) + ";";
     pConf->Write ( _T ( "ControlAngles" ), ControlAngles );
+    pConf->Write ( _T ( "ControlColumns" ), m_sControlColumns->GetValue() );
     
     m_pypilot_pi.ReadConfig();
     

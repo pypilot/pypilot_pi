@@ -46,6 +46,7 @@ public:
     void get(wxString name);
     void set(wxString name, wxJSONValue &value);
     void set(wxString name, double value);
+    void set(wxString name, wxString value);
     void watch(wxString name, bool on=true);
 
     bool info(wxString name, wxJSONValue &info);
@@ -53,9 +54,10 @@ public:
 protected:
     virtual void OnConnected() = 0;
     virtual void OnDisconnected() = 0;
-    void request_list_values();
+    wxJSONValue m_list;
 
 private:
+    void request_list_values();
     void send(wxJSONValue &request);
     void OnSocketEvent(wxSocketEvent& event);
 
@@ -66,7 +68,6 @@ private:
 
     bool m_bQueueMode;
     
-    wxJSONValue m_list;
     bool m_bRequestList, m_bRequestingList;
 
 DECLARE_EVENT_TABLE()

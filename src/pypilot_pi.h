@@ -70,6 +70,7 @@
 
 class pyDC;
 class pypilotDialog;
+class GainsDialog;
 class ConfigurationDialog;
 class StatisticsDialog;
 class CalibrationDialog;
@@ -107,7 +108,6 @@ public:
       void SetColorScheme(PI_ColorScheme cs);
 
 //    Other public methods
-      void ShowConfigurationDialog( wxWindow* );
       static wxString StandardPath();
 
       void UpdateConfiguration();
@@ -120,9 +120,13 @@ public:
       pypilot_SignalKClient m_client;
 
       pypilotDialog  *m_pypilotDialog;
+      GainsDialog    *m_GainsDialog;
       ConfigurationDialog *m_ConfigurationDialog;
       StatisticsDialog   *m_StatisticsDialog;
       CalibrationDialog  *m_CalibrationDialog;
+
+      double m_declination;
+      wxDateTime m_declinationTime;
       
 private:
       void SetNMEASentence(wxString &sentence);
@@ -132,12 +136,10 @@ private:
       void Receive(wxString &name, wxJSONValue &value);
       void UpdateStatus();
 
+      wxDateTime m_declinationRequestTime;
       int               m_leftclick_tool_id;
 
       wxTimer m_Timer;
-
-      double m_declination;
-      wxDateTime m_declinationTime;
 
       std::map<wxString, bool> m_watchlist;
 
@@ -150,6 +152,9 @@ private:
       PlugIn_Position_Fix_Ex m_lastfix;
       double m_ap_heading, m_ap_heading_command;
 };
+
+double heading_resolve(double degrees);
+double heading_resolve_pos(double degrees);
 
 wxString jsonformat(const char *format, wxJSONValue &value);
 double jsondouble(wxJSONValue &value);
