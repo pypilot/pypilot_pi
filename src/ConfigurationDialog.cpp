@@ -27,7 +27,6 @@
 #include "pypilotUI.h"
 #include "pypilot_pi.h"
 #include "ConfigurationDialog.h"
-#include "CalibrationDialog.h"
 
 ConfigurationDialog::ConfigurationDialog( pypilot_pi &_pypilot_pi, wxWindow* parent)
     : ConfigurationDialogBase(parent),
@@ -60,7 +59,7 @@ bool ConfigurationDialog::Show( bool show )
                 m_lControlAngles->Append(wxString::Format("%ld", a));
             ControlAngles = ControlAngles.AfterFirst(';');
         }
-        m_sControlColumns->SetValue(pConf->Read ( _T ( "ControlColumns" ), 2 ));
+        m_sControlColumns->SetValue(pConf->Read ( _T ( "ControlColumns" ), 3 ));
     }
     return ConfigurationDialogBase::Show(show);
 }
@@ -118,11 +117,11 @@ This affects compass mode only, and requires the wmm plugin to be active.  The c
 void ConfigurationDialog::OnAddControlAngle( wxCommandEvent& event )
 {
     int angle = m_sControlAngle->GetValue();
-    unsigned int i = 0;
-    while(i<m_lControlAngles->GetCount()) {
+    unsigned int i;
+    for(i=0; i<m_lControlAngles->GetCount(); i++) {
         long a;
         m_lControlAngles->GetString(i).ToLong(&a);
-        if(angle > a)
+        if(angle < a)
             break;
         if(angle == a)
             return;
@@ -133,7 +132,7 @@ void ConfigurationDialog::OnAddControlAngle( wxCommandEvent& event )
 void ConfigurationDialog::OnRemoveControlAngle( wxCommandEvent& event )
 {
     int selection = m_lControlAngles->GetSelection();
-    if(selection > 0)
+    if(selection >= 0)
         m_lControlAngles->Delete(selection);
 }
 
@@ -154,12 +153,6 @@ void ConfigurationDialog::OnPeriod( wxSpinEvent& event )
 void ConfigurationDialog::OnMaxCurrent( wxSpinEvent& event )
 {
     HandleSpin(m_sMaxCurrent, m_stMaxCurrent);
-}
-
-void ConfigurationDialog::OnCalibration( wxCommandEvent& event )
-{
-    m_pypilot_pi.m_CalibrationDialog->Show();
-    m_pypilot_pi.UpdateWatchlist();
 }
 
 void ConfigurationDialog::OnInformation( wxCommandEvent& event )

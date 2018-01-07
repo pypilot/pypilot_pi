@@ -52,12 +52,13 @@ class pypilotDialogBase : public wxDialog
 		wxFlexGridSizer* m_fgControlAnglesNeg;
 		wxFlexGridSizer* m_fgControlAnglesPos;
 		wxFlexGridSizer* m_fgControlManual;
-		wxButton* m_button12;
-		wxButton* m_button13;
-		wxButton* m_button14;
-		wxButton* m_button15;
+		wxButton* m_bManualPortLong;
+		wxButton* m_bManualPortShort;
+		wxButton* m_bManualStarboardShort;
+		wxButton* m_bManualStarboardLong;
 		wxButton* m_bGains;
 		wxButton* m_bConfiguration;
+		wxButton* m_bCalibration;
 		wxButton* m_bStatistics;
 		wxButton* m_bClose;
 		
@@ -71,6 +72,7 @@ class pypilotDialogBase : public wxDialog
 		virtual void OnManualStarboardLong( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnGains( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnConfiguration( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnCalibration( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnStatistics( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnClose( wxCommandEvent& event ) { event.Skip(); }
 		
@@ -150,7 +152,6 @@ class ConfigurationDialogBase : public wxDialog
 		wxStaticText* m_staticText32;
 		wxSpinCtrl* m_sMaxMotorTemp;
 		wxStaticText* m_staticText311;
-		wxButton* m_bCalibration;
 		wxButton* m_bInformation;
 		wxStdDialogButtonSizer* m_sdbSizer2;
 		wxButton* m_sdbSizer2OK;
@@ -165,7 +166,6 @@ class ConfigurationDialogBase : public wxDialog
 		virtual void OnRemoveControlAngle( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnPeriod( wxSpinEvent& event ) { event.Skip(); }
 		virtual void OnMaxCurrent( wxSpinEvent& event ) { event.Skip(); }
-		virtual void OnCalibration( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnInformation( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnClose( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnOk( wxCommandEvent& event ) { event.Skip(); }

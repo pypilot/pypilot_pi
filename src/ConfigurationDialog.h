@@ -46,7 +46,6 @@ private:
     void OnRemoveControlAngle( wxCommandEvent& event );
     void OnPeriod( wxSpinEvent& event );
     void OnMaxCurrent( wxSpinEvent& event );
-    void OnCalibration( wxCommandEvent& event );
     void OnInformation( wxCommandEvent& event );
     void OnOk( wxCommandEvent& event );
     void OnClose( wxCommandEvent& event );

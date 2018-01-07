@@ -49,6 +49,7 @@ private:
     void OnManualStarboardLong( wxCommandEvent& event ) { Manual(3); }
     void OnGains( wxCommandEvent& event );
     void OnConfiguration( wxCommandEvent& event );
+    void OnCalibration( wxCommandEvent& event );
     void OnStatistics( wxCommandEvent& event );
     void OnClose( wxCommandEvent& event );
     void OnControlAngle( wxCommandEvent& event );

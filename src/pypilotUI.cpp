@@ -11,7 +11,7 @@
 
 pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
 {
-	this->SetSizeHints( wxSize( -1,-1 ), wxSize( -1,-1 ) );
+	this->SetSizeHints( wxSize( 100,100 ), wxSize( -1,-1 ) );
 	
 	wxFlexGridSizer* fgSizer8;
 	fgSizer8 = new wxFlexGridSizer( 0, 1, 0, 0 );
@@ -59,11 +59,16 @@ pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxS
 	fgSizer39->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
 	m_stStatus = new wxStaticText( this, wxID_ANY, _("Status"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_stStatus->Wrap( -1 );
-	fgSizer39->Add( m_stStatus, 0, wxALL|wxEXPAND, 5 );
+	m_stStatus->Wrap( 200 );
+	m_stStatus->SetMaxSize( wxSize( 200,-1 ) );
+	
+	fgSizer39->Add( m_stStatus, 0, wxALL, 5 );
 	
 	m_stServoFlags = new wxStaticText( this, wxID_ANY, _("-----"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_stServoFlags->Wrap( -1 );
+	m_stServoFlags->Wrap( 200 );
+	m_stServoFlags->SetFont( wxFont( 10, 70, 90, 90, false, wxEmptyString ) );
+	m_stServoFlags->SetMaxSize( wxSize( 200,-1 ) );
+	
 	fgSizer39->Add( m_stServoFlags, 0, wxALL, 5 );
 	
 	
@@ -114,28 +119,32 @@ pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxS
 	fgSizer38->Add( fgSizer29, 1, wxEXPAND, 5 );
 	
 	m_fgControlManual = new wxFlexGridSizer( 1, 0, 0, 0 );
+	m_fgControlManual->AddGrowableCol( 0 );
+	m_fgControlManual->AddGrowableCol( 1 );
+	m_fgControlManual->AddGrowableCol( 2 );
+	m_fgControlManual->AddGrowableCol( 3 );
 	m_fgControlManual->SetFlexibleDirection( wxBOTH );
 	m_fgControlManual->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
-	m_button12 = new wxButton( this, wxID_ANY, _("<<"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_button12->SetMaxSize( wxSize( 40,-1 ) );
+	m_bManualPortLong = new wxButton( this, wxID_ANY, _("<<"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_bManualPortLong->SetMaxSize( wxSize( 40,-1 ) );
 	
-	m_fgControlManual->Add( m_button12, 0, wxALL, 5 );
+	m_fgControlManual->Add( m_bManualPortLong, 0, wxALL|wxEXPAND, 5 );
 	
-	m_button13 = new wxButton( this, wxID_ANY, _("<"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_button13->SetMaxSize( wxSize( 40,-1 ) );
+	m_bManualPortShort = new wxButton( this, wxID_ANY, _("<"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_bManualPortShort->SetMaxSize( wxSize( 40,-1 ) );
 	
-	m_fgControlManual->Add( m_button13, 0, wxALL, 5 );
+	m_fgControlManual->Add( m_bManualPortShort, 0, wxALL|wxEXPAND, 5 );
 	
-	m_button14 = new wxButton( this, wxID_ANY, _(">"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_button14->SetMaxSize( wxSize( 40,-1 ) );
+	m_bManualStarboardShort = new wxButton( this, wxID_ANY, _(">"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_bManualStarboardShort->SetMaxSize( wxSize( 40,-1 ) );
 	
-	m_fgControlManual->Add( m_button14, 0, wxALL, 5 );
+	m_fgControlManual->Add( m_bManualStarboardShort, 0, wxALL|wxEXPAND, 5 );
 	
-	m_button15 = new wxButton( this, wxID_ANY, _(">>"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_button15->SetMaxSize( wxSize( 40,-1 ) );
+	m_bManualStarboardLong = new wxButton( this, wxID_ANY, _(">>"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_bManualStarboardLong->SetMaxSize( wxSize( 40,-1 ) );
 	
-	m_fgControlManual->Add( m_button15, 0, wxALL, 5 );
+	m_fgControlManual->Add( m_bManualStarboardLong, 0, wxALL|wxEXPAND, 5 );
 	
 	
 	fgSizer38->Add( m_fgControlManual, 1, wxEXPAND, 5 );
@@ -147,7 +156,7 @@ pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxS
 	fgSizer8->Add( fgSizer37, 1, wxEXPAND, 5 );
 	
 	wxFlexGridSizer* fgSizer71;
-	fgSizer71 = new wxFlexGridSizer( 0, 4, 0, 0 );
+	fgSizer71 = new wxFlexGridSizer( 0, 5, 0, 0 );
 	fgSizer71->SetFlexibleDirection( wxHORIZONTAL );
 	fgSizer71->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
@@ -156,8 +165,11 @@ pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxS
 	
 	fgSizer71->Add( m_bGains, 0, wxALL, 5 );
 	
-	m_bConfiguration = new wxButton( this, wxID_ANY, _("Configuration"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_bConfiguration = new wxButton( this, wxID_ANY, _("Config"), wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer71->Add( m_bConfiguration, 0, wxALL, 5 );
+	
+	m_bCalibration = new wxButton( this, wxID_ANY, _("Calibration"), wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer71->Add( m_bCalibration, 0, wxALL, 5 );
 	
 	m_bStatistics = new wxButton( this, wxID_ANY, _("Statistics"), wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer71->Add( m_bStatistics, 0, wxALL, 5 );
@@ -179,12 +191,13 @@ pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxS
 	this->Connect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( pypilotDialogBase::OnClose ) );
 	m_bAP->Connect( wxEVT_COMMAND_TOGGLEBUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnAP ), NULL, this );
 	m_cMode->Connect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( pypilotDialogBase::OnMode ), NULL, this );
-	m_button12->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnManualPortLong ), NULL, this );
-	m_button13->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnManualPortShort ), NULL, this );
-	m_button14->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnManualStarboardShort ), NULL, this );
-	m_button15->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnManualStarboardLong ), NULL, this );
+	m_bManualPortLong->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnManualPortLong ), NULL, this );
+	m_bManualPortShort->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnManualPortShort ), NULL, this );
+	m_bManualStarboardShort->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnManualStarboardShort ), NULL, this );
+	m_bManualStarboardLong->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnManualStarboardLong ), NULL, this );
 	m_bGains->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnGains ), NULL, this );
 	m_bConfiguration->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnConfiguration ), NULL, this );
+	m_bCalibration->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnCalibration ), NULL, this );
 	m_bStatistics->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnStatistics ), NULL, this );
 	m_bClose->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnClose ), NULL, this );
 }
@@ -195,12 +208,13 @@ pypilotDialogBase::~pypilotDialogBase()
 	this->Disconnect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( pypilotDialogBase::OnClose ) );
 	m_bAP->Disconnect( wxEVT_COMMAND_TOGGLEBUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnAP ), NULL, this );
 	m_cMode->Disconnect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( pypilotDialogBase::OnMode ), NULL, this );
-	m_button12->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnManualPortLong ), NULL, this );
-	m_button13->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnManualPortShort ), NULL, this );
-	m_button14->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnManualStarboardShort ), NULL, this );
-	m_button15->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnManualStarboardLong ), NULL, this );
+	m_bManualPortLong->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnManualPortLong ), NULL, this );
+	m_bManualPortShort->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnManualPortShort ), NULL, this );
+	m_bManualStarboardShort->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnManualStarboardShort ), NULL, this );
+	m_bManualStarboardLong->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnManualStarboardLong ), NULL, this );
 	m_bGains->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnGains ), NULL, this );
 	m_bConfiguration->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnConfiguration ), NULL, this );
+	m_bCalibration->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnCalibration ), NULL, this );
 	m_bStatistics->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnStatistics ), NULL, this );
 	m_bClose->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnClose ), NULL, this );
 	
@@ -513,12 +527,9 @@ ConfigurationDialogBase::ConfigurationDialogBase( wxWindow* parent, wxWindowID i
 	
 	wxFlexGridSizer* fgSizer18;
 	fgSizer18 = new wxFlexGridSizer( 1, 0, 0, 0 );
-	fgSizer18->AddGrowableCol( 2 );
+	fgSizer18->AddGrowableCol( 1 );
 	fgSizer18->SetFlexibleDirection( wxBOTH );
 	fgSizer18->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
-	
-	m_bCalibration = new wxButton( this, wxID_ANY, _("Calibration"), wxDefaultPosition, wxDefaultSize, 0 );
-	fgSizer18->Add( m_bCalibration, 0, wxALL, 5 );
 	
 	m_bInformation = new wxButton( this, wxID_ANY, _("Information"), wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer18->Add( m_bInformation, 0, wxALL, 5 );
@@ -551,7 +562,6 @@ ConfigurationDialogBase::ConfigurationDialogBase( wxWindow* parent, wxWindowID i
 	m_button11->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnRemoveControlAngle ), NULL, this );
 	m_sPeriod->Connect( wxEVT_SCROLL_THUMBTRACK, wxSpinEventHandler( ConfigurationDialogBase::OnPeriod ), NULL, this );
 	m_sMaxCurrent->Connect( wxEVT_SCROLL_THUMBTRACK, wxSpinEventHandler( ConfigurationDialogBase::OnMaxCurrent ), NULL, this );
-	m_bCalibration->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnCalibration ), NULL, this );
 	m_bInformation->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnInformation ), NULL, this );
 	m_sdbSizer2Cancel->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnClose ), NULL, this );
 	m_sdbSizer2OK->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnOk ), NULL, this );
@@ -568,7 +578,6 @@ ConfigurationDialogBase::~ConfigurationDialogBase()
 	m_button11->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnRemoveControlAngle ), NULL, this );
 	m_sPeriod->Disconnect( wxEVT_SCROLL_THUMBTRACK, wxSpinEventHandler( ConfigurationDialogBase::OnPeriod ), NULL, this );
 	m_sMaxCurrent->Disconnect( wxEVT_SCROLL_THUMBTRACK, wxSpinEventHandler( ConfigurationDialogBase::OnMaxCurrent ), NULL, this );
-	m_bCalibration->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnCalibration ), NULL, this );
 	m_bInformation->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnInformation ), NULL, this );
 	m_sdbSizer2Cancel->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnClose ), NULL, this );
 	m_sdbSizer2OK->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnOk ), NULL, this );
