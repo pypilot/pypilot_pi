@@ -41,6 +41,8 @@ void pypilot_SignalKClient::OnDisconnected()
 
 void pypilot_SignalKClient::GetGains(std::list<wxString> &gains)
 {
+    if(m_list.IsNull())
+        return;
     wxArrayString names = m_list.GetMemberNames();
     for(unsigned int i=0; i<names.Count(); i++) {
         wxString name = names[i];

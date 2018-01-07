@@ -39,7 +39,7 @@ public:
     SignalKClient(bool queue_mode = true, bool request_list = true);
 
     void connect(wxString host, int port=0);
-    void disconnect() { m_sock.Close(); }
+    void disconnect();
     bool connected() { return m_sock.IsConnected(); }
     virtual bool receive(wxString &name, wxJSONValue &value);
 

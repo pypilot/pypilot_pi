@@ -284,7 +284,14 @@ void pypilot_pi::OnToolbarToolCallback(int id)
         m_CalibrationDialog->SetIcon(icon);
     }
 
-    m_pypilotDialog->Show(!m_pypilotDialog->IsShown());
+    bool show = !m_pypilotDialog->IsShown();
+    m_pypilotDialog->Show(show);
+    if(!show) {
+        m_GainsDialog->Show(false);
+        m_ConfigurationDialog->Show(false);
+        m_StatisticsDialog->Show(false);
+        m_CalibrationDialog->Show(false);
+    }
     UpdateWatchlist();
 
     wxPoint p = m_pypilotDialog->GetPosition();
@@ -358,11 +365,13 @@ void pypilot_pi::OnTimer( wxTimerEvent & )
 
     if(!m_client.connected()) {
         m_client.connect(m_host);
+        m_lastMessage = wxDateTime(); // invalidate
         return;
     }
 
     wxString name;
     wxJSONValue data;
+    wxDateTime now = wxDateTime::Now();
     while(m_client.receive(name, data)) {
         //wxString value = data["value"].AsString();
         //printf("msg %s %s\n", name.mb_str().data(), value.mb_str().data());
@@ -376,7 +385,11 @@ void pypilot_pi::OnTimer( wxTimerEvent & )
             m_CalibrationDialog->Receive(name, val);
         }
         Receive(name, val);
+        m_lastMessage = now;
     }
+
+    if(m_lastMessage.IsValid() && (now-m_lastMessage).GetSeconds() > 5)
+        m_client.disconnect();
 }
 
 void pypilot_pi::OnConnected()
@@ -384,12 +397,15 @@ void pypilot_pi::OnConnected()
     m_status = _("Connected") + " " + _("to") + " " + m_host;
     UpdateStatus();
     UpdateWatchlist();
+    m_lastMessage = wxDateTime::Now();
 }
 
 void pypilot_pi::OnDisconnected()
 {
     m_status = _("Disconnected");
     m_watchlist.clear();
+    if(m_pypilotDialog)
+        m_pypilotDialog->Disconnected();
     UpdateStatus();
 }
 

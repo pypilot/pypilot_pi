@@ -34,6 +34,7 @@ public:
     pypilotDialog( pypilot_pi &_pypilot_pi, wxWindow* parent);
     ~pypilotDialog();
 
+    void Disconnected();
     void Receive(wxString &name, wxJSONValue &value);
     const char **GetWatchlist();
 

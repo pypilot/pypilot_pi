@@ -63,6 +63,13 @@ void SignalKClient::connect(wxString host, int port)
     m_sock.Connect(addr, false);
 }
 
+void SignalKClient::disconnect()
+{
+    m_sock.Close();
+    m_list = wxJSONValue();
+    OnDisconnected();
+}
+
 bool SignalKClient::receive(wxString &name, wxJSONValue &value)
 {
     if(m_bQueueMode) {
@@ -166,7 +173,7 @@ void SignalKClient::OnSocketEvent(wxSocketEvent& event)
             break;
 
         case wxSOCKET_LOST:
-            OnDisconnected();
+            disconnect();
             break;
 
         case wxSOCKET_INPUT:

@@ -31,6 +31,7 @@
 struct Gain
 {
     Gain(wxWindow *parent, wxString name, double min_val, double max_val);
+    ~Gain();
 
     wxFlexGridSizer *sizer;
     wxStaticText *value;
@@ -40,6 +41,8 @@ struct Gain
     bool need_update;
     wxDateTime last_change;
     double slider_val;
+
+    wxStaticText *stname;
 };
 
 Gain::Gain(wxWindow *parent, wxString name, double min_val, double max_val)
@@ -49,7 +52,7 @@ Gain::Gain(wxWindow *parent, wxString name, double min_val, double max_val)
     sizer->AddGrowableRow( 2 );
     sizer->SetFlexibleDirection( wxVERTICAL );
 
-    wxStaticText *stname = new wxStaticText( parent, wxID_ANY, name);
+    stname = new wxStaticText( parent, wxID_ANY, name);
     sizer->Add( stname, 0, wxALL, 5 );
     value = new wxStaticText( parent, wxID_ANY, "   N/A   ");
     sizer->Add( value, 0, wxALL, 5 );
@@ -64,6 +67,14 @@ Gain::Gain(wxWindow *parent, wxString name, double min_val, double max_val)
     hsizer->Add( slider, 0, wxALL|wxEXPAND, 5 );
 
     sizer->Add( hsizer, 1, wxEXPAND, 5 );
+}
+
+Gain::~Gain()
+{
+    delete stname;
+    delete value;
+    delete gauge;
+    delete slider;
 }
 
 GainsDialog::GainsDialog(pypilot_pi &_pypilot_pi, wxWindow* parent) :
@@ -102,9 +113,15 @@ GainsDialog::~GainsDialog()
 
 bool GainsDialog::Show( bool show )
 {
-    if(show) {
+    if(show && !IsShown()) {
+        for(std::map<wxString, Gain*>::iterator i = m_gains.begin(); i != m_gains.end(); i++) {
+            Gain *g = i->second;
+            delete g;
+        }
         while(!m_fgGains->IsEmpty())
             m_fgGains->Remove(0);
+
+        m_gains.clear();
         m_watchlist.clear();
         std::list<wxString> gains;
         m_pypilot_pi.m_client.GetGains(gains);
@@ -123,6 +140,9 @@ bool GainsDialog::Show( bool show )
             m_fgGains->Add( g->sizer, 1, wxEXPAND, 5 );
             m_gains[name] = g;
         }
+        wxSize s = GetSize();
+        SetSize(s);
+//        Fit();
     }
     return GainsDialogBase::Show(show);
 }

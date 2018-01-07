@@ -151,6 +151,7 @@ private:
 
       PlugIn_Position_Fix_Ex m_lastfix;
       double m_ap_heading, m_ap_heading_command;
+      wxDateTime m_lastMessage;
 };
 
 double heading_resolve(double degrees);

@@ -47,10 +47,12 @@ pypilotDialog::pypilotDialog( pypilot_pi &_pypilot_pi, wxWindow* parent)
 #endif
     Move(pConf->Read ( _T ( "DialogPosX" ), 20L ), pConf->Read ( _T ( "DialogPosY" ), 20L ));
 
-    RebuildControlAngles();
+    //RebuildControlAngles();
     this->GetSizer()->Fit( this );
     this->Layout();
     this->SetSizeHints( GetSize().x, GetSize().y );
+
+    Disconnected();
 }
 
 pypilotDialog::~pypilotDialog()
@@ -62,6 +64,17 @@ pypilotDialog::~pypilotDialog()
 
     pConf->Write ( _T ( "DialogPosX" ), p.x );
     pConf->Write ( _T ( "DialogPosY" ), p.y );
+}
+
+void pypilotDialog::Disconnected()
+{
+    m_fgControlAnglesPos->Show(false);
+    m_fgControlAnglesNeg->Show(false);
+    m_fgControlManual->Show(false);
+
+    wxSize s(100,100);
+    SetMinSize(s);
+    Fit();
 }
 
 void pypilotDialog::Receive(wxString &name, wxJSONValue &value)
@@ -118,8 +131,7 @@ void pypilotDialog::RebuildControlAngles()
         else
             m_fgControlAnglesNeg->Remove(0);
     }
-//    m_fgControlAnglesPos->DeleteWindows();
-//    m_fgControlAnglesNeg->DeleteWindows();
+
     std::vector<int> angles;
     while(ControlAngles.size()) {
         wxString angle = ControlAngles.BeforeFirst(';');
@@ -169,9 +181,11 @@ void pypilotDialog::Fit()
 void pypilotDialog::OnAP( wxCommandEvent& event )
 {
     m_pypilot_pi.m_client.set("ap.enabled", m_bAP->GetValue());
-    double heading;
-    if(m_stHeading->GetLabel().ToDouble(&heading))
-        m_pypilot_pi.m_client.set("ap.heading_command", heading); 
+    if(m_bAP->GetValue()) {
+        double heading;
+        if(m_stHeading->GetLabel().ToDouble(&heading))
+            m_pypilot_pi.m_client.set("ap.heading_command", heading);
+    }
 }
 
 void pypilotDialog::OnMode( wxCommandEvent& event )
@@ -181,25 +195,25 @@ void pypilotDialog::OnMode( wxCommandEvent& event )
 
 void pypilotDialog::OnGains( wxCommandEvent& event )
 {
-    m_pypilot_pi.m_GainsDialog->Show();
+    m_pypilot_pi.m_GainsDialog->Show(!m_pypilot_pi.m_GainsDialog->IsShown());
     m_pypilot_pi.UpdateWatchlist();
 }
 
 void pypilotDialog::OnConfiguration( wxCommandEvent& event )
 {
-    m_pypilot_pi.m_ConfigurationDialog->Show();
+    m_pypilot_pi.m_ConfigurationDialog->Show(!m_pypilot_pi.m_ConfigurationDialog->IsShown());
     m_pypilot_pi.UpdateWatchlist();
 }
 
 void pypilotDialog::OnCalibration( wxCommandEvent& event )
 {
-    m_pypilot_pi.m_CalibrationDialog->Show();
+    m_pypilot_pi.m_CalibrationDialog->Show(!m_pypilot_pi.m_CalibrationDialog->IsShown());
     m_pypilot_pi.UpdateWatchlist();
 }
 
 void pypilotDialog::OnStatistics( wxCommandEvent& event )
 {
-    m_pypilot_pi.m_StatisticsDialog->Show();
+    m_pypilot_pi.m_StatisticsDialog->Show(!m_pypilot_pi.m_StatisticsDialog->IsShown());
     m_pypilot_pi.UpdateWatchlist();
 }
 
