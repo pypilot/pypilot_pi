@@ -79,6 +79,9 @@ pypilot_pi::pypilot_pi(void *ppimgr)
     initialize_images();
     m_declination = NAN;
     m_lastfix.nSats = 0;
+
+    m_enabled = false;
+    m_mode = "";
 }
 
 //---------------------------------------------------------------------------------------------------------
@@ -92,12 +95,12 @@ int pypilot_pi::Init(void)
     AddLocaleCatalog( PLUGIN_CATALOG_NAME );
 
     m_leftclick_tool_id  = InsertPlugInTool
-        (_T(""), _img_pypilot, _img_pypilot, wxITEM_NORMAL,
+        (_T(""), _img_pypilot_grey, _img_pypilot_grey, wxITEM_NORMAL,
          _("pypilot"), _T(""), NULL, PYPILOT_TOOL_POSITION, 0, this);
     
     m_Timer.Connect(wxEVT_TIMER, wxTimerEventHandler
                     ( pypilot_pi::OnTimer ), NULL, this);
-    m_Timer.Start(500);
+    m_Timer.Start(1000);
             
     m_pypilotDialog = NULL;
     m_GainsDialog = NULL;
@@ -155,7 +158,7 @@ int pypilot_pi::GetPlugInVersionMinor()
 
 wxBitmap *pypilot_pi::GetPlugInBitmap()
 {
-    return new wxBitmap(_img_pypilot->ConvertToImage().Copy());
+    return new wxBitmap(_img_pypilot_grey->ConvertToImage().Copy());
 }
 
 wxString pypilot_pi::GetCommonName()
@@ -192,7 +195,13 @@ void pypilot_pi::RearrangeWindow()
 
 void pypilot_pi::Receive(wxString &name, wxJSONValue &value)
 {
-    if(name == "ap.heading")
+    if(name == "ap.enabled") {
+        m_enabled = value.AsBool();
+        SetToolbarIcon();
+    } else if(name == "ap.mode") {
+        m_mode = value.AsString();
+        SetToolbarIcon();
+    } else if(name == "ap.heading")
         m_ap_heading = value.AsDouble() + m_declination;
     else if(name == "ap.heading_command")
         m_ap_heading_command = value.AsDouble() + m_declination;
@@ -202,6 +211,22 @@ void pypilot_pi::UpdateStatus()
 {
     if(m_pypilotDialog)
         m_pypilotDialog->m_stStatus->SetLabel(m_status);
+}
+
+void pypilot_pi::SetToolbarIcon()
+{
+    wxBitmap *bitmap = _img_pypilot_red;
+    if(m_enabled) {
+        if(m_mode == "compass")
+            bitmap = _img_pypilot_green;
+        else if(m_mode == "gps")
+            bitmap = _img_pypilot_yellow;
+        else if(m_mode == "wind")
+            bitmap = _img_pypilot_blue;
+        else if(m_mode == "true wind")
+            bitmap = _img_pypilot_cyan;
+    }
+    SetToolbarToolBitmaps(m_leftclick_tool_id, bitmap, bitmap);
 }
 
 static void MergeWatchlist(std::map<wxString, bool> &watchlist, const char **list)
@@ -243,12 +268,16 @@ void pypilot_pi::UpdateWatchlist()
     if(m_bEnableGraphicOverlay) {
         static const char *wl[] = {"ap.heading", "ap.heading_command", 0};
         MergeWatchlist(watchlist, wl);
-    }
+    } else
+        watchlist["imu.uptime"] = true; // use as heartbeat to time out connection
+
+    static const char *wl[] = {"ap.mode", "ap.enabled", 0};
+    MergeWatchlist(watchlist, wl);
 
     // watch new keys we weren't watching
     for(std::map<wxString, bool>::iterator it = watchlist.begin(); it != watchlist.end(); it++)
         if(m_watchlist.find(it->first) == m_watchlist.end()) {
-//            printf("add watch %s\n", it->first.mb_str().data());
+            //printf("add watch %s\n", it->first.mb_str().data());
             m_client.watch(it->first);
         } else
             m_client.get(it->first); // make sure we get the value again to update dialog here
@@ -256,7 +285,7 @@ void pypilot_pi::UpdateWatchlist()
     // unwatch old keys we don't need
     for(std::map<wxString, bool>::iterator it = m_watchlist.begin(); it != m_watchlist.end(); it++)
         if(watchlist.find(it->first) == watchlist.end()) {
-//            printf("remove watch %s\n", it->first.mb_str().data());
+            //printf("remove watch %s\n", it->first.mb_str().data());
             m_client.watch(it->first, false);
         }
 
@@ -276,7 +305,7 @@ void pypilot_pi::OnToolbarToolCallback(int id)
         m_CalibrationDialog = new CalibrationDialog(*this, GetOCPNCanvasWindow());
 
         wxIcon icon;
-        icon.CopyFromBitmap(*_img_pypilot);
+        icon.CopyFromBitmap(*_img_pypilot_grey);
         m_pypilotDialog->SetIcon(icon);
         m_GainsDialog->SetIcon(icon);
         m_ConfigurationDialog->SetIcon(icon);
@@ -366,6 +395,7 @@ void pypilot_pi::OnTimer( wxTimerEvent & )
     if(!m_client.connected()) {
         m_client.connect(m_host);
         m_lastMessage = wxDateTime(); // invalidate
+        m_Timer.Start(2000);
         return;
     }
 
@@ -397,7 +427,9 @@ void pypilot_pi::OnConnected()
     m_status = _("Connected") + " " + _("to") + " " + m_host;
     UpdateStatus();
     UpdateWatchlist();
+    SetToolbarIcon();
     m_lastMessage = wxDateTime::Now();
+    m_Timer.Start(500);
 }
 
 void pypilot_pi::OnDisconnected()
@@ -406,6 +438,7 @@ void pypilot_pi::OnDisconnected()
     m_watchlist.clear();
     if(m_pypilotDialog)
         m_pypilotDialog->Disconnected();
+    SetToolbarToolBitmaps(m_leftclick_tool_id, _img_pypilot_grey, _img_pypilot_grey);
     UpdateStatus();
 }
 

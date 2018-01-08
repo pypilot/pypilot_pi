@@ -135,6 +135,7 @@ private:
       void              RearrangeWindow();
       void Receive(wxString &name, wxJSONValue &value);
       void UpdateStatus();
+      void SetToolbarIcon();
 
       wxDateTime m_declinationRequestTime;
       int               m_leftclick_tool_id;
@@ -152,6 +153,9 @@ private:
       PlugIn_Position_Fix_Ex m_lastfix;
       double m_ap_heading, m_ap_heading_command;
       wxDateTime m_lastMessage;
+
+      bool m_enabled;
+      wxString m_mode;
 };
 
 double heading_resolve(double degrees);

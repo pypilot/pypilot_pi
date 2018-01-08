@@ -87,11 +87,12 @@ void pypilotDialog::Receive(wxString &name, wxJSONValue &value)
         m_sAPMode = value.AsString();
         m_cMode->SetStringSelection(m_sAPMode);
     } else if(name == "ap.enabled") {
-        m_bAP->SetValue(value.AsBool());
+        bool enabled = value.AsBool();
+        m_bAP->SetValue(enabled);
 
-        m_fgControlAnglesPos->Show(value.AsBool());
-        m_fgControlAnglesNeg->Show(value.AsBool());
-        m_fgControlManual->Show(!value.AsBool());
+        m_fgControlAnglesPos->Show(enabled);
+        m_fgControlAnglesNeg->Show(enabled);
+        m_fgControlManual->Show(!enabled);
 
         wxSize s(100,100);
         SetMinSize(s);
