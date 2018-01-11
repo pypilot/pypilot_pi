@@ -47,7 +47,7 @@ pypilotDialog::pypilotDialog( pypilot_pi &_pypilot_pi, wxWindow* parent)
 #endif
     Move(pConf->Read ( _T ( "DialogPosX" ), 20L ), pConf->Read ( _T ( "DialogPosY" ), 20L ));
 
-    //RebuildControlAngles();
+    RebuildControlAngles();
     this->GetSizer()->Fit( this );
     this->Layout();
     this->SetSizeHints( GetSize().x, GetSize().y );

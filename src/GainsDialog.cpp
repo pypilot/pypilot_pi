@@ -40,13 +40,14 @@ struct Gain
     double min, max;
     bool need_update;
     wxDateTime last_change;
-    double slider_val;
+    double gain_val;
+    int slider_val() { return (gain_val-min)*1000/(max - min); }
 
     wxStaticText *stname;
 };
 
 Gain::Gain(wxWindow *parent, wxString name, double min_val, double max_val)
-    : min(min_val), max(max_val), need_update(false), last_change(wxDateTime::Now()), slider_val(0)
+    : min(min_val), max(max_val), need_update(false), gain_val(0)
 {
     sizer = new wxFlexGridSizer( 0, 1, 0, 0 );
     sizer->AddGrowableRow( 2 );
@@ -87,7 +88,7 @@ GainsDialog::GainsDialog(pypilot_pi &_pypilot_pi, wxWindow* parent) :
 
     m_Timer.Connect(wxEVT_TIMER, wxTimerEventHandler
                     ( GainsDialog::OnTimer ), NULL, this);
-    m_Timer.Start(500);
+    m_Timer.Start(100);
 
 #ifdef __WXGTK__
     Move(0, 0);        // workaround for gtk autocentre dialog behavior
@@ -135,8 +136,13 @@ bool GainsDialog::Show( bool show )
             double min_val = jsondouble(info["min"]), max_val = jsondouble(info["max"]);
 
             Gain *g = new Gain(m_swGains, name, min_val, max_val);
-            g->slider->Connect( wxEVT_SCROLL_CHANGED,
-                     wxScrollEventHandler( GainsDialog::OnGainSlider ), NULL, this );
+            int events[] = {wxEVT_SCROLL_TOP, wxEVT_SCROLL_BOTTOM,
+                            wxEVT_SCROLL_LINEUP, wxEVT_SCROLL_LINEDOWN,
+                            wxEVT_SCROLL_PAGEUP, wxEVT_SCROLL_PAGEDOWN,
+                            wxEVT_SCROLL_THUMBTRACK, wxEVT_SCROLL_THUMBRELEASE,
+                            wxEVT_SCROLL_CHANGED};
+            for(unsigned int i=0; i<(sizeof events) / (sizeof *events); i++)
+                g->slider->Connect( events[i], wxScrollEventHandler( GainsDialog::OnGainSlider ), NULL, this );
             m_fgGains->Add( g->sizer, 1, wxEXPAND, 5 );
             m_gains[name] = g;
         }
@@ -163,11 +169,8 @@ void GainsDialog::Receive(wxString &name, wxJSONValue &value)
                 g->gauge->SetBackgroundColour(*wxBLUE);
             }
         }
-    } else if(m_gains.find(name) != m_gains.end()) {
-        Gain *g = m_gains[name];
-        g->value->SetLabel(jsonformat("%.5f", value));
-        g->slider_val = (jsondouble(value)-g->min)*1000/(g->max - g->min);
-    }
+    } else if(m_gains.find(name) != m_gains.end())
+        m_gains[name]->gain_val = jsondouble(value);
 }
 
 void GainsDialog::OnClose( wxCommandEvent& event )
@@ -188,10 +191,14 @@ void GainsDialog::OnTimer( wxTimerEvent & )
             double value = g->slider->GetValue() / 1000.0 * (g->max - g->min) + g->min;
             m_pypilot_pi.m_client.set(i->first, value);
         }
-                
-        if(g->slider->GetValue() != g->slider_val &&
-           (wxDateTime::Now() - g->last_change).GetMilliseconds() > 1000)
-            g->slider->SetValue(g->slider_val);
+
+        int slider_val = g->slider_val();
+        if(g->slider->GetValue() != slider_val &&
+           (!g->last_change.IsValid() || (wxDateTime::Now() - g->last_change).GetMilliseconds() > 1000)) {
+            g->slider->SetValue(slider_val);
+            g->value->SetLabel(wxString::Format("%.5f", g->gain_val));
+        }
+        
     }
 }
 
@@ -201,8 +208,11 @@ void GainsDialog::OnGainSlider( wxScrollEvent& event )
     for(std::map<wxString, Gain*>::iterator i = m_gains.begin(); i != m_gains.end(); i++) {
         Gain *g = i->second;
         if(g->slider == slider) {
-            g->need_update = true;
+            int slider_val = g->slider->GetValue();
+            double gain_value = slider_val * (g->max - g->min) / 1000.0 + g->min;
+            g->value->SetLabel(wxString::Format("%.5f", gain_value));
             g->last_change = wxDateTime::Now();
+            g->need_update = true;
             break;
         }
     }

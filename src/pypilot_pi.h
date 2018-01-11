@@ -133,6 +133,7 @@ private:
       void SetPositionFixEx(PlugIn_Position_Fix_Ex &pfix);
       void SetPluginMessage(wxString &message_id, wxString &message_body);
       void              RearrangeWindow();
+      double AdjustHeading(double heading);
       void Receive(wxString &name, wxJSONValue &value);
       void UpdateStatus();
       void SetToolbarIcon();
@@ -151,7 +152,7 @@ private:
       bool m_bEnableGraphicOverlay;
 
       PlugIn_Position_Fix_Ex m_lastfix;
-      double m_ap_heading, m_ap_heading_command;
+      double m_ap_heading, m_ap_heading_command, m_imu_heading;
       wxDateTime m_lastMessage;
 
       bool m_enabled;

@@ -78,6 +78,7 @@ pypilot_pi::pypilot_pi(void *ppimgr)
     // Create the PlugIn icons
     initialize_images();
     m_declination = NAN;
+    m_imu_heading = NAN;
     m_lastfix.nSats = 0;
 
     m_enabled = false;
@@ -130,6 +131,8 @@ bool pypilot_pi::DeInit(void)
 
     m_Timer.Stop();
     m_Timer.Disconnect(wxEVT_TIMER, wxTimerEventHandler( pypilot_pi::OnTimer ), NULL, this);
+
+    m_client.disconnect();
 
     RemovePlugInTool(m_leftclick_tool_id);
 
@@ -193,6 +196,16 @@ void pypilot_pi::RearrangeWindow()
     m_pypilotDialog->Fit();
 }
 
+double pypilot_pi::AdjustHeading(double heading)
+{
+    if(m_mode == "compass")
+        return heading + m_declination;
+    if(m_mode == "gps")
+        return heading;
+    // otherwise wind or true wind
+    return m_imu_heading + m_declination + heading;
+}
+
 void pypilot_pi::Receive(wxString &name, wxJSONValue &value)
 {
     if(name == "ap.enabled") {
@@ -201,10 +214,15 @@ void pypilot_pi::Receive(wxString &name, wxJSONValue &value)
     } else if(name == "ap.mode") {
         m_mode = value.AsString();
         SetToolbarIcon();
+
+        if(m_bEnableGraphicOverlay)
+            UpdateWatchlist();
     } else if(name == "ap.heading")
-        m_ap_heading = value.AsDouble() + m_declination;
+        m_ap_heading = AdjustHeading(value.AsDouble());
     else if(name == "ap.heading_command")
-        m_ap_heading_command = value.AsDouble() + m_declination;
+        m_ap_heading_command = AdjustHeading(value.AsDouble());
+    else if(name == "imu.heading")
+        m_imu_heading = value.AsDouble();
 }
 
 void pypilot_pi::UpdateStatus()
@@ -268,6 +286,8 @@ void pypilot_pi::UpdateWatchlist()
     if(m_bEnableGraphicOverlay) {
         static const char *wl[] = {"ap.heading", "ap.heading_command", 0};
         MergeWatchlist(watchlist, wl);
+        if(m_mode == "wind" || m_mode == "true wind")
+            watchlist["imu.heading"] = true;
     } else
         watchlist["imu.uptime"] = true; // use as heartbeat to time out connection
 
@@ -356,19 +376,24 @@ void pypilot_pi::Render(pyDC &dc, PlugIn_ViewPort &vp)
 {
     if(m_lastfix.nSats == 0)
         return;
+    if(!m_enabled)
+        return;
+
     wxPoint boat;
     GetCanvasPixLL(&vp, &boat, m_lastfix.Lat, m_lastfix.Lon);
 
     double r = wxMin(vp.pix_width, vp.pix_height)/4;
     wxPoint p1(boat.x + r*sin(deg2rad(m_ap_heading)),
                boat.y - r*cos(deg2rad(m_ap_heading)));
-    dc.SetPen(wxPen(*wxRED, 4));
+    dc.SetPen(wxPen(*wxRED, 3));
     dc.DrawLine(boat.x, boat.y, p1.x, p1.y);
+    dc.DrawCircle(p1.x, p1.y, 5);
 
     wxPoint p2(boat.x + r*sin(deg2rad(m_ap_heading_command)),
                boat.y - r*cos(deg2rad(m_ap_heading_command)));
-    dc.SetPen(wxPen(*wxGREEN, 4));
+    dc.SetPen(wxPen(*wxGREEN, 3));
     dc.DrawLine(boat.x, boat.y, p2.x, p2.y);
+    dc.DrawCircle(p2.x, p2.y, 5);
 }
 
 void pypilot_pi::ReadConfig()
@@ -429,7 +454,7 @@ void pypilot_pi::OnConnected()
     UpdateWatchlist();
     SetToolbarIcon();
     m_lastMessage = wxDateTime::Now();
-    m_Timer.Start(500);
+    m_Timer.Start(400);
 }
 
 void pypilot_pi::OnDisconnected()
