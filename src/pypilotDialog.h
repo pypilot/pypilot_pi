@@ -44,10 +44,10 @@ public:
 private:
     void OnAP( wxCommandEvent& event );
     void OnMode( wxCommandEvent& event );
-    void OnManualPortLong( wxCommandEvent& event ) { Manual(-3); }
-    void OnManualPortShort( wxCommandEvent& event ) { Manual(-1); }
-    void OnManualStarboardShort( wxCommandEvent& event ) { Manual(1); }
-    void OnManualStarboardLong( wxCommandEvent& event ) { Manual(3); }
+    void OnManualPortLong( wxCommandEvent& event ) { Manual(-2.4); }
+    void OnManualPortShort( wxCommandEvent& event ) { Manual(-.6); }
+    void OnManualStarboardShort( wxCommandEvent& event ) { Manual(.6); }
+    void OnManualStarboardLong( wxCommandEvent& event ) { Manual(2.4); }
     void OnGains( wxCommandEvent& event );
     void OnConfiguration( wxCommandEvent& event );
     void OnCalibration( wxCommandEvent& event );
@@ -56,7 +56,8 @@ private:
     void OnControlAngle( wxCommandEvent& event );
 
     void UpdateModes();
-    void Manual(int amount);
+    void Manual(double amount);
+    void OnManualTimer( wxTimerEvent & );
     void AddButton(int angle, wxSizer *sizer);
 
     bool m_bAPHaveGPS, m_bAPHaveWind;
@@ -64,6 +65,13 @@ private:
     
     double ApplyTrueNorth(double value);
 
+    double m_HeadingCommand;
+    wxDateTime m_HeadingCommandUpdate;
+
+    double m_ManualCommand;
+    wxDateTime m_ManualTimeout;
+    wxTimer m_ManualTimer;
+    
     bool m_bTrueNorthMode;
     pypilot_pi &m_pypilot_pi;
 };

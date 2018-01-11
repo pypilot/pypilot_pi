@@ -47,10 +47,16 @@ pypilotDialog::pypilotDialog( pypilot_pi &_pypilot_pi, wxWindow* parent)
 #endif
     Move(pConf->Read ( _T ( "DialogPosX" ), 20L ), pConf->Read ( _T ( "DialogPosY" ), 20L ));
 
+    m_HeadingCommandUpdate = wxDateTime::Now() - wxTimeSpan::Seconds(5);
+    m_HeadingCommand = NAN;
+    
     RebuildControlAngles();
     this->GetSizer()->Fit( this );
     this->Layout();
     this->SetSizeHints( GetSize().x, GetSize().y );
+
+    m_ManualTimer.Connect(wxEVT_TIMER, wxTimerEventHandler
+                          ( pypilotDialog::OnManualTimer ), NULL, this);
 
     Disconnected();
 }
@@ -80,7 +86,7 @@ void pypilotDialog::Disconnected()
 void pypilotDialog::Receive(wxString &name, wxJSONValue &value)
 {
     if(name == "ap.heading_command")
-        m_stCommand->SetLabel(wxString::Format("%.1f", ApplyTrueNorth(value.AsDouble())));
+        m_HeadingCommand = ApplyTrueNorth(value.AsDouble());
     else if(name == "ap.heading")
         m_stHeading->SetLabel(wxString::Format("%.1f", ApplyTrueNorth(value.AsDouble())));
     else if(name == "ap.mode") {
@@ -107,6 +113,12 @@ void pypilotDialog::Receive(wxString &name, wxJSONValue &value)
         m_stServoFlags->SetLabel(value.AsString());
     } else if(name == "servo.mode") {
         // do something with this?
+    }
+
+    if(!wxIsNaN(m_HeadingCommand) &&
+       (wxDateTime::Now() - m_HeadingCommandUpdate).GetMilliseconds() > 1000) {
+        m_stCommand->SetLabel(wxString::Format("%.1f", m_HeadingCommand));
+        m_HeadingCommand = NAN;
     }
 }
 
@@ -229,8 +241,14 @@ void pypilotDialog::OnControlAngle( wxCommandEvent& event )
     wxButton *button = static_cast<wxButton*>(event.GetEventObject());
     wxString angle = button->GetLabel(), heading_command = m_stCommand->GetLabel();
     double a, b;
-    if(heading_command.ToDouble(&a) && angle.ToDouble(&b))
-        m_pypilot_pi.m_client.set("ap.heading_command", a + b);
+    if(heading_command.ToDouble(&a) && angle.ToDouble(&b)) {
+        double cmd = a + b;
+        m_stCommand->SetLabel(wxString::Format("%.1f", cmd));
+        m_HeadingCommandUpdate = wxDateTime::Now();
+        if(m_bTrueNorthMode && m_cMode->GetSelection() == 0 /*compass*/)
+            cmd = heading_resolve_pos(cmd - m_pypilot_pi.m_declination);
+        m_pypilot_pi.m_client.set("ap.heading_command", cmd);
+    }        
 }
 
 void pypilotDialog::UpdateModes()
@@ -246,10 +264,19 @@ void pypilotDialog::UpdateModes()
     m_cMode->SetStringSelection(m_sAPMode);
 }
 
-void pypilotDialog::Manual(int amount)
+void pypilotDialog::Manual(double amount)
 {
-    double cmd = amount > 1 ? 1 : -1;
-    m_pypilot_pi.m_client.set("servo.command", cmd);
+    m_ManualCommand = amount > 1 ? 1 : -1;
+    m_ManualTimeout = wxDateTime::Now() + wxTimeSpan::Seconds(abs(amount));
+    m_ManualTimer.Start(100);
+}
+
+void pypilotDialog::OnManualTimer( wxTimerEvent & )
+{
+    if(wxDateTime::Now() < m_ManualTimeout)
+        m_pypilot_pi.m_client.set("servo.command", m_ManualCommand);
+    else
+        m_ManualTimer.Stop();
 }
 
 void pypilotDialog::AddButton(int angle, wxSizer *sizer)
