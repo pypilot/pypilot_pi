@@ -162,6 +162,9 @@ void ConfigurationDialog::OnInformation( wxCommandEvent& event )
 
 void ConfigurationDialog::OnOk( wxCommandEvent& event )
 {
+    Hide();
+    m_pypilot_pi.UpdateWatchlist();
+
     double x;
     if(m_stPeriod->GetLabel().ToDouble(&x))
         m_pypilot_pi.m_client.set("servo.period", x);
@@ -185,10 +188,7 @@ void ConfigurationDialog::OnOk( wxCommandEvent& event )
     pConf->Write ( _T ( "ControlAngles" ), ControlAngles );
     pConf->Write ( _T ( "ControlColumns" ), m_sControlColumns->GetValue() );
     
-    m_pypilot_pi.ReadConfig();
-    
-    Hide();
-    m_pypilot_pi.UpdateWatchlist();
+    m_pypilot_pi.ReadConfig();    
 }
 
 void ConfigurationDialog::OnClose( wxCommandEvent& event )

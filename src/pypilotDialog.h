@@ -44,10 +44,10 @@ public:
 private:
     void OnAP( wxCommandEvent& event );
     void OnMode( wxCommandEvent& event );
-    void OnManualPortLong( wxCommandEvent& event ) { Manual(-2.4); }
+    void OnManualPortLong( wxCommandEvent& event ) { Manual(-1.8); }
     void OnManualPortShort( wxCommandEvent& event ) { Manual(-.6); }
     void OnManualStarboardShort( wxCommandEvent& event ) { Manual(.6); }
-    void OnManualStarboardLong( wxCommandEvent& event ) { Manual(2.4); }
+    void OnManualStarboardLong( wxCommandEvent& event ) { Manual(1.8); }
     void OnGains( wxCommandEvent& event );
     void OnConfiguration( wxCommandEvent& event );
     void OnCalibration( wxCommandEvent& event );

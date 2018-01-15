@@ -177,13 +177,13 @@ void SignalKClient::OnSocketEvent(wxSocketEvent& event)
             break;
 
         case wxSOCKET_INPUT:
-    #define RD_BUF_SIZE    4096
+    #define RD_BUF_SIZE    8192
             std::vector<char> data(RD_BUF_SIZE+1);
             event.GetSocket()->Read(&data.front(),RD_BUF_SIZE);
             if(!event.GetSocket()->Error())
             {
                 size_t count = event.GetSocket()->LastCount();
-                if(count)
+                if(count && count < RD_BUF_SIZE)
                 {
                     data[count]=0;
                     m_sock_buffer += (&data.front());

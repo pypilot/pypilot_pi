@@ -194,7 +194,7 @@ void GainsDialog::OnTimer( wxTimerEvent & )
 
         int slider_val = g->slider_val();
         if(g->slider->GetValue() != slider_val &&
-           (!g->last_change.IsValid() || (wxDateTime::Now() - g->last_change).GetMilliseconds() > 1000)) {
+           (!g->last_change.IsValid() || (wxDateTime::UNow() - g->last_change).GetMilliseconds() > 1000)) {
             g->slider->SetValue(slider_val);
             g->value->SetLabel(wxString::Format("%.5f", g->gain_val));
         }
@@ -211,7 +211,7 @@ void GainsDialog::OnGainSlider( wxScrollEvent& event )
             int slider_val = g->slider->GetValue();
             double gain_value = slider_val * (g->max - g->min) / 1000.0 + g->min;
             g->value->SetLabel(wxString::Format("%.5f", gain_value));
-            g->last_change = wxDateTime::Now();
+            g->last_change = wxDateTime::UNow();
             g->need_update = true;
             break;
         }

@@ -123,16 +123,16 @@ int pypilot_pi::Init(void)
 
 bool pypilot_pi::DeInit(void)
 {
+    m_client.disconnect();
+
+    m_Timer.Stop();
+    m_Timer.Disconnect(wxEVT_TIMER, wxTimerEventHandler( pypilot_pi::OnTimer ), NULL, this);
+
     delete m_pypilotDialog;
     delete m_GainsDialog;
     delete m_ConfigurationDialog;
     delete m_StatisticsDialog;
     delete m_CalibrationDialog;
-
-    m_Timer.Stop();
-    m_Timer.Disconnect(wxEVT_TIMER, wxTimerEventHandler( pypilot_pi::OnTimer ), NULL, this);
-
-    m_client.disconnect();
 
     RemovePlugInTool(m_leftclick_tool_id);
 
@@ -212,11 +212,11 @@ void pypilot_pi::Receive(wxString &name, wxJSONValue &value)
         m_enabled = value.AsBool();
         SetToolbarIcon();
     } else if(name == "ap.mode") {
+        wxString oldmode = m_mode;
         m_mode = value.AsString();
-        SetToolbarIcon();
-
-        if(m_bEnableGraphicOverlay)
+        if(m_bEnableGraphicOverlay && m_mode != oldmode)
             UpdateWatchlist();
+        SetToolbarIcon();
     } else if(name == "ap.heading")
         m_ap_heading = AdjustHeading(value.AsDouble());
     else if(name == "ap.heading_command")

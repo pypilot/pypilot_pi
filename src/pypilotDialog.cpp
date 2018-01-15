@@ -47,7 +47,7 @@ pypilotDialog::pypilotDialog( pypilot_pi &_pypilot_pi, wxWindow* parent)
 #endif
     Move(pConf->Read ( _T ( "DialogPosX" ), 20L ), pConf->Read ( _T ( "DialogPosY" ), 20L ));
 
-    m_HeadingCommandUpdate = wxDateTime::Now() - wxTimeSpan::Seconds(5);
+    m_HeadingCommandUpdate = wxDateTime::UNow() - wxTimeSpan::Seconds(5);
     m_HeadingCommand = NAN;
     
     RebuildControlAngles();
@@ -116,7 +116,7 @@ void pypilotDialog::Receive(wxString &name, wxJSONValue &value)
     }
 
     if(!wxIsNaN(m_HeadingCommand) &&
-       (wxDateTime::Now() - m_HeadingCommandUpdate).GetMilliseconds() > 1000) {
+       (wxDateTime::UNow() - m_HeadingCommandUpdate).GetMilliseconds() > 1000) {
         m_stCommand->SetLabel(wxString::Format("%.1f", m_HeadingCommand));
         m_HeadingCommand = NAN;
     }
@@ -168,7 +168,7 @@ void pypilotDialog::RebuildControlAngles()
     }
 
     m_bTrueNorthMode = pConf->Read ( _T ( "TrueNorthMode" ), 0L );
-    if(m_bTrueNorthMode && (wxDateTime::Now() - m_pypilot_pi.m_declinationTime).GetSeconds() > 2000) {
+    if(m_bTrueNorthMode && (wxDateTime::UNow() - m_pypilot_pi.m_declinationTime).GetSeconds() > 2000) {
         wxMessageDialog mdlg(GetOCPNCanvasWindow(), _("\
 True North mode not possible without declination.\n\nIs the wmm plugin enabled and a gps fix available?"),
                          "pypilot", wxOK | wxICON_WARNING);
@@ -197,7 +197,7 @@ void pypilotDialog::OnAP( wxCommandEvent& event )
     if(m_bAP->GetValue()) {
         double heading;
         if(m_stHeading->GetLabel().ToDouble(&heading))
-            m_pypilot_pi.m_client.set("ap.heading_command", heading);
+            m_pypilot_pi.m_client.set("ap.heading_command", wxRound(heading));
     }
 }
 
@@ -244,7 +244,7 @@ void pypilotDialog::OnControlAngle( wxCommandEvent& event )
     if(heading_command.ToDouble(&a) && angle.ToDouble(&b)) {
         double cmd = a + b;
         m_stCommand->SetLabel(wxString::Format("%.1f", cmd));
-        m_HeadingCommandUpdate = wxDateTime::Now();
+        m_HeadingCommandUpdate = wxDateTime::UNow();
         if(m_bTrueNorthMode && m_cMode->GetSelection() == 0 /*compass*/)
             cmd = heading_resolve_pos(cmd - m_pypilot_pi.m_declination);
         m_pypilot_pi.m_client.set("ap.heading_command", cmd);
@@ -266,17 +266,19 @@ void pypilotDialog::UpdateModes()
 
 void pypilotDialog::Manual(double amount)
 {
-    m_ManualCommand = amount > 1 ? 1 : -1;
-    m_ManualTimeout = wxDateTime::Now() + wxTimeSpan::Seconds(abs(amount));
+    m_ManualCommand = amount > 0 ? 1 : -1;
+    m_ManualTimeout = wxDateTime::UNow() + wxTimeSpan::Milliseconds(abs(1000.0*amount));
     m_ManualTimer.Start(100);
 }
 
 void pypilotDialog::OnManualTimer( wxTimerEvent & )
 {
-    if(wxDateTime::Now() < m_ManualTimeout)
-        m_pypilot_pi.m_client.set("servo.command", m_ManualCommand);
-    else
+    if(wxDateTime::UNow() >= m_ManualTimeout) {
+        m_ManualCommand = 0;
         m_ManualTimer.Stop();
+    }
+    //printf("manual %f %d\n", m_ManualCommand, (wxDateTime::UNow() - m_ManualTimeout).GetMilliseconds());
+    m_pypilot_pi.m_client.set("servo.command", m_ManualCommand);
 }
 
 void pypilotDialog::AddButton(int angle, wxSizer *sizer)
