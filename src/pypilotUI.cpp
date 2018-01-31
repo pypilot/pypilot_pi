@@ -305,6 +305,7 @@ ConfigurationDialogBase::ConfigurationDialogBase( wxWindow* parent, wxWindowID i
 	
 	wxFlexGridSizer* fgSizer24;
 	fgSizer24 = new wxFlexGridSizer( 0, 1, 0, 0 );
+	fgSizer24->AddGrowableRow( 1 );
 	fgSizer24->SetFlexibleDirection( wxBOTH );
 	fgSizer24->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
@@ -345,11 +346,13 @@ ConfigurationDialogBase::ConfigurationDialogBase( wxWindow* parent, wxWindowID i
 	
 	wxFlexGridSizer* fgSizer25;
 	fgSizer25 = new wxFlexGridSizer( 0, 2, 0, 0 );
+	fgSizer25->AddGrowableRow( 0 );
 	fgSizer25->SetFlexibleDirection( wxBOTH );
 	fgSizer25->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
 	wxFlexGridSizer* fgSizer26;
 	fgSizer26 = new wxFlexGridSizer( 0, 1, 0, 0 );
+	fgSizer26->AddGrowableRow( 1 );
 	fgSizer26->SetFlexibleDirection( wxBOTH );
 	fgSizer26->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
@@ -417,18 +420,18 @@ ConfigurationDialogBase::ConfigurationDialogBase( wxWindow* parent, wxWindowID i
 	
 	m_staticText5 = new wxStaticText( this, wxID_ANY, _("Servo Period"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText5->Wrap( -1 );
-	fgSizer15->Add( m_staticText5, 0, wxALL, 5 );
+	fgSizer15->Add( m_staticText5, 0, wxALL, 3 );
 	
 	m_stPeriod = new wxStaticText( this, wxID_ANY, _("-------"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_stPeriod->Wrap( -1 );
-	fgSizer15->Add( m_stPeriod, 0, wxALL, 5 );
+	fgSizer15->Add( m_stPeriod, 0, wxALL, 3 );
 	
 	m_sPeriod = new wxSpinButton( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS|wxSP_VERTICAL );
-	fgSizer15->Add( m_sPeriod, 0, wxALL, 5 );
+	fgSizer15->Add( m_sPeriod, 0, wxALL, 3 );
 	
 	m_staticText7 = new wxStaticText( this, wxID_ANY, _("Seconds"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText7->Wrap( -1 );
-	fgSizer15->Add( m_staticText7, 0, wxALL, 5 );
+	fgSizer15->Add( m_staticText7, 0, wxALL, 3 );
 	
 	
 	fgSizer14->Add( fgSizer15, 1, wxEXPAND, 5 );
@@ -440,18 +443,18 @@ ConfigurationDialogBase::ConfigurationDialogBase( wxWindow* parent, wxWindowID i
 	
 	m_staticText8 = new wxStaticText( this, wxID_ANY, _("Max Current"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText8->Wrap( -1 );
-	fgSizer161->Add( m_staticText8, 0, wxALL, 5 );
+	fgSizer161->Add( m_staticText8, 0, wxALL, 3 );
 	
 	m_stMaxCurrent = new wxStaticText( this, wxID_ANY, _("-------"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_stMaxCurrent->Wrap( -1 );
-	fgSizer161->Add( m_stMaxCurrent, 0, wxALL, 5 );
+	fgSizer161->Add( m_stMaxCurrent, 0, wxALL, 3 );
 	
 	m_sMaxCurrent = new wxSpinButton( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
-	fgSizer161->Add( m_sMaxCurrent, 0, wxALL, 5 );
+	fgSizer161->Add( m_sMaxCurrent, 0, wxALL, 3 );
 	
 	m_staticText9 = new wxStaticText( this, wxID_ANY, _("Amps"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText9->Wrap( -1 );
-	fgSizer161->Add( m_staticText9, 0, wxALL, 5 );
+	fgSizer161->Add( m_staticText9, 0, wxALL, 3 );
 	
 	
 	fgSizer14->Add( fgSizer161, 1, wxEXPAND, 5 );
@@ -463,55 +466,77 @@ ConfigurationDialogBase::ConfigurationDialogBase( wxWindow* parent, wxWindowID i
 	
 	m_staticText10 = new wxStaticText( this, wxID_ANY, _("Min Speed"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText10->Wrap( -1 );
-	fgSizer21->Add( m_staticText10, 0, wxALL, 5 );
+	fgSizer21->Add( m_staticText10, 0, wxALL, 3 );
 	
 	m_sMinSpeed = new wxSpinCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 100 );
 	m_sMinSpeed->SetMaxSize( wxSize( 100,-1 ) );
 	
-	fgSizer21->Add( m_sMinSpeed, 0, wxALL, 5 );
+	fgSizer21->Add( m_sMinSpeed, 0, wxALL, 3 );
 	
 	m_staticText11 = new wxStaticText( this, wxID_ANY, _("%"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText11->Wrap( -1 );
-	fgSizer21->Add( m_staticText11, 0, wxALL, 5 );
+	fgSizer21->Add( m_staticText11, 0, wxALL, 3 );
 	
 	m_staticText101 = new wxStaticText( this, wxID_ANY, _("Max Speed"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText101->Wrap( -1 );
-	fgSizer21->Add( m_staticText101, 0, wxALL, 5 );
+	fgSizer21->Add( m_staticText101, 0, wxALL, 3 );
 	
 	m_sMaxSpeed = new wxSpinCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 100 );
 	m_sMaxSpeed->SetMaxSize( wxSize( 100,-1 ) );
 	
-	fgSizer21->Add( m_sMaxSpeed, 0, wxALL, 5 );
+	fgSizer21->Add( m_sMaxSpeed, 0, wxALL, 3 );
 	
 	m_staticText111 = new wxStaticText( this, wxID_ANY, _("%"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText111->Wrap( -1 );
-	fgSizer21->Add( m_staticText111, 0, wxALL, 5 );
+	fgSizer21->Add( m_staticText111, 0, wxALL, 3 );
 	
 	m_staticText30 = new wxStaticText( this, wxID_ANY, _("Max Controller Temp"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText30->Wrap( -1 );
-	fgSizer21->Add( m_staticText30, 0, wxALL, 5 );
+	fgSizer21->Add( m_staticText30, 0, wxALL, 3 );
 	
 	m_sMaxControllerTemp = new wxSpinCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 30, 80, 30 );
 	m_sMaxControllerTemp->SetMaxSize( wxSize( 100,-1 ) );
 	
-	fgSizer21->Add( m_sMaxControllerTemp, 0, wxALL, 5 );
+	fgSizer21->Add( m_sMaxControllerTemp, 0, wxALL, 3 );
 	
 	m_staticText31 = new wxStaticText( this, wxID_ANY, _("C"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText31->Wrap( -1 );
-	fgSizer21->Add( m_staticText31, 0, wxALL, 5 );
+	fgSizer21->Add( m_staticText31, 0, wxALL, 3 );
 	
 	m_staticText32 = new wxStaticText( this, wxID_ANY, _("Max Motor Temp"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText32->Wrap( -1 );
-	fgSizer21->Add( m_staticText32, 0, wxALL, 5 );
+	fgSizer21->Add( m_staticText32, 0, wxALL, 3 );
 	
 	m_sMaxMotorTemp = new wxSpinCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 30, 80, 30 );
 	m_sMaxMotorTemp->SetMaxSize( wxSize( 100,-1 ) );
 	
-	fgSizer21->Add( m_sMaxMotorTemp, 0, wxALL, 5 );
+	fgSizer21->Add( m_sMaxMotorTemp, 0, wxALL, 3 );
 	
 	m_staticText311 = new wxStaticText( this, wxID_ANY, _("C"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText311->Wrap( -1 );
-	fgSizer21->Add( m_staticText311, 0, wxALL, 5 );
+	fgSizer21->Add( m_staticText311, 0, wxALL, 3 );
+	
+	m_staticText41 = new wxStaticText( this, wxID_ANY, _("Min Rudder Pos"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText41->Wrap( -1 );
+	fgSizer21->Add( m_staticText41, 0, wxALL, 3 );
+	
+	m_sMinRudderPos = new wxSpinCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 100,-1 ), wxSP_ARROW_KEYS, -100, 100, 0 );
+	fgSizer21->Add( m_sMinRudderPos, 0, wxALL, 3 );
+	
+	m_staticText42 = new wxStaticText( this, wxID_ANY, _(" "), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText42->Wrap( -1 );
+	fgSizer21->Add( m_staticText42, 0, wxALL, 5 );
+	
+	m_staticText43 = new wxStaticText( this, wxID_ANY, _("Max Rudder Pos"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText43->Wrap( -1 );
+	fgSizer21->Add( m_staticText43, 0, wxALL, 3 );
+	
+	m_sMaxRudderPos = new wxSpinCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 100,-1 ), wxSP_ARROW_KEYS, -100, 100, 0 );
+	fgSizer21->Add( m_sMaxRudderPos, 0, wxALL, 3 );
+	
+	m_staticText44 = new wxStaticText( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText44->Wrap( -1 );
+	fgSizer21->Add( m_staticText44, 0, wxALL, 5 );
 	
 	
 	fgSizer14->Add( fgSizer21, 1, wxEXPAND, 5 );

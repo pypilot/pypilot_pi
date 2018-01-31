@@ -152,6 +152,12 @@ class ConfigurationDialogBase : public wxDialog
 		wxStaticText* m_staticText32;
 		wxSpinCtrl* m_sMaxMotorTemp;
 		wxStaticText* m_staticText311;
+		wxStaticText* m_staticText41;
+		wxSpinCtrl* m_sMinRudderPos;
+		wxStaticText* m_staticText42;
+		wxStaticText* m_staticText43;
+		wxSpinCtrl* m_sMaxRudderPos;
+		wxStaticText* m_staticText44;
 		wxButton* m_bInformation;
 		wxStdDialogButtonSizer* m_sdbSizer2;
 		wxButton* m_sdbSizer2OK;
