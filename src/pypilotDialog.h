@@ -36,6 +36,7 @@ public:
 
     void Disconnected();
     void Receive(wxString &name, wxJSONValue &value);
+    void SetAPColor();
     const char **GetWatchlist();
 
     void RebuildControlAngles();

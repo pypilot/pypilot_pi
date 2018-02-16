@@ -92,6 +92,8 @@ void pypilotDialog::Receive(wxString &name, wxJSONValue &value)
     else if(name == "ap.mode") {
         m_sAPMode = value.AsString();
         m_cMode->SetStringSelection(m_sAPMode);
+
+        SetAPColour();
     } else if(name == "ap.enabled") {
         bool enabled = value.AsBool();
         m_bAP->SetValue(enabled);
@@ -99,6 +101,7 @@ void pypilotDialog::Receive(wxString &name, wxJSONValue &value)
         m_fgControlAnglesPos->Show(enabled);
         m_fgControlAnglesNeg->Show(enabled);
         m_fgControlManual->Show(!enabled);
+        SetAPColour();
 
         wxSize s(100,100);
         SetMinSize(s);
@@ -120,6 +123,22 @@ void pypilotDialog::Receive(wxString &name, wxJSONValue &value)
         m_stCommand->SetLabel(wxString::Format("%.1f", m_HeadingCommand));
         m_HeadingCommand = NAN;
     }
+}
+
+void pypilotDialog::SetAPColor()
+{
+    wxColour c = *wxBLACK;
+    if(m_bAP->GetValue()) {
+        if(m_cMode->GetStringSelection() == "compass")
+            c = *wxGREEN;
+        else if(m_cMode->GetStringSelection() == "gps")
+            c = *wxYELLOW;
+        else if(m_cMode->GetStringSelection() == "wind")
+            c = *wxBLUE;
+        else if(m_cMode->GetStringSelection() == "true wind")
+            c = *wxCYAN;
+    }
+    self.tbAP.SetForegroundColour(c);
 }
 
 const char **pypilotDialog::GetWatchlist()
