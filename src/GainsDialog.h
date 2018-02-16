@@ -29,7 +29,7 @@
 #include "pypilotUI.h"
 class pypilot_pi;
 
-class Gain;
+struct Gain;
 
 class GainsDialog : public GainsDialogBase
 {

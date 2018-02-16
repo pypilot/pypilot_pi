@@ -382,8 +382,8 @@ void pyDC::DrawLine( wxCoord x1, wxCoord y1, wxCoord x2, wxCoord y2, bool b_hiqu
         else {
             // TODO: is it worthwhile to use our stipple textures here for non-user defined
             // cases rather than render many line segments?
-            if(b_hiqual)
-                ;// SetGLStipple(m_pen.GetStyle());
+            //            if(b_hiqual)
+            // SetGLStipple(m_pen.GetStyle());
 
             wxDash *dashes;
             int n_dashes = m_pen.GetDashes( &dashes );
