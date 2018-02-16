@@ -93,7 +93,7 @@ void pypilotDialog::Receive(wxString &name, wxJSONValue &value)
         m_sAPMode = value.AsString();
         m_cMode->SetStringSelection(m_sAPMode);
 
-        SetAPColour();
+        SetAPColor();
     } else if(name == "ap.enabled") {
         bool enabled = value.AsBool();
         m_bAP->SetValue(enabled);
@@ -101,7 +101,7 @@ void pypilotDialog::Receive(wxString &name, wxJSONValue &value)
         m_fgControlAnglesPos->Show(enabled);
         m_fgControlAnglesNeg->Show(enabled);
         m_fgControlManual->Show(!enabled);
-        SetAPColour();
+        SetAPColor();
 
         wxSize s(100,100);
         SetMinSize(s);
@@ -138,7 +138,7 @@ void pypilotDialog::SetAPColor()
         else if(m_cMode->GetStringSelection() == "true wind")
             c = *wxCYAN;
     }
-    self.tbAP.SetForegroundColour(c);
+    m_bAP->SetForegroundColour(c);
 }
 
 const char **pypilotDialog::GetWatchlist()
