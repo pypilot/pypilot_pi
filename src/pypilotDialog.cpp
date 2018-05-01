@@ -265,7 +265,8 @@ void pypilotDialog::OnControlAngle( wxCommandEvent& event )
         m_stCommand->SetLabel(wxString::Format("%.1f", cmd));
         m_HeadingCommandUpdate = wxDateTime::UNow();
         if(m_bTrueNorthMode && m_cMode->GetSelection() == 0 /*compass*/)
-            cmd = heading_resolve_pos(cmd - m_pypilot_pi.m_declination);
+            cmd -= m_pypilot_pi.m_declination;
+        cmd = heading_resolve_pos(cmd);
         m_pypilot_pi.m_client.set("ap.heading_command", cmd);
     }        
 }
