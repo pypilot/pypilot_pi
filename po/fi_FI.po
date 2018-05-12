@@ -1,0 +1,287 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: opencpn\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-05-11 17:23-0300\n"
+"PO-Revision-Date: 2018-05-11 16:51-0400\n"
+"Last-Translator: nohal <pavel@kalian.cz>\n"
+"Language-Team: Finnish\n"
+"Language: fi_FI\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: crowdin.com\n"
+"X-Crowdin-Project: opencpn\n"
+"X-Crowdin-Language: fi\n"
+"X-Crowdin-File: /plugins/pypilot_pi/pypilot_pi.pot\n"
+
+#: src/CalibrationDialog.cpp:81
+msgid "Press the level button when the boat is sitting level in the water to align the inertial sensors used by the autopilot.\n\n"
+"This alignment is critical for the autopilot to work correctly, and also for the compass to calibrate automatically."
+msgstr ""
+
+#: src/CalibrationDialog.cpp:97
+msgid "You may manually adjust the alignment of the compass. The autopilot may work without the correct alignment, but the reported headings will not be correct.\n\n"
+"The autopilot may also work better depending on control algorithm if the heading is correctly aligned."
+msgstr ""
+
+#: src/pypilot_pi.cpp:100 src/pypilot_pi.cpp:169
+msgid "pypilot"
+msgstr ""
+
+#: src/pypilot_pi.cpp:112 src/pypilot_pi.cpp:462
+msgid "Disconnected"
+msgstr ""
+
+#: src/pypilot_pi.cpp:174
+msgid "pypilot PlugIn for OpenCPN"
+msgstr ""
+
+#: src/pypilot_pi.cpp:179
+msgid "pypilot PlugIn for OpenCPN\n"
+"Alarm user of changing conditions."
+msgstr ""
+
+#: src/pypilot_pi.cpp:452
+msgid "Connected"
+msgstr ""
+
+#: src/pypilot_pi.cpp:452
+msgid "to"
+msgstr ""
+
+#: src/ConfigurationDialog.cpp:98
+msgid "Eliminates the need to make the tcp connection to the autopilot from the OpenCPN connections list"
+msgstr ""
+
+#: src/ConfigurationDialog.cpp:107
+msgid "Displays lines on the chart showing the autopilot's configured headings"
+msgstr ""
+
+#: src/ConfigurationDialog.cpp:115
+msgid "Converts displayed headings to true north rather than magnetic north.\n"
+"This affects compass mode only, and requires the wmm plugin to be active.  The conversion is applied only within the plugin, the autopilot is commanded in the correct magnetic heading."
+msgstr ""
+
+#: src/pypilotDialog.cpp:191
+msgid "True North mode not possible without declination.\n\n"
+"Is the wmm plugin enabled and a gps fix available?"
+msgstr ""
+
+#: src/pypilotUI.cpp:33
+msgid "AP"
+msgstr ""
+
+#: src/pypilotUI.cpp:61
+msgid "Status"
+msgstr ""
+
+#: src/pypilotUI.cpp:67 src/pypilotUI.cpp:752
+msgid "-----"
+msgstr ""
+
+#: src/pypilotUI.cpp:129
+msgid "<<"
+msgstr ""
+
+#: src/pypilotUI.cpp:134
+msgid "<"
+msgstr ""
+
+#: src/pypilotUI.cpp:139
+msgid ">"
+msgstr ""
+
+#: src/pypilotUI.cpp:144
+msgid ">>"
+msgstr ""
+
+#: src/pypilotUI.cpp:163
+msgid "Gains"
+msgstr ""
+
+#: src/pypilotUI.cpp:168
+msgid "Config"
+msgstr ""
+
+#: src/pypilotUI.cpp:171
+msgid "Calibration"
+msgstr ""
+
+#: src/pypilotUI.cpp:174
+msgid "Statistics"
+msgstr ""
+
+#: src/pypilotUI.cpp:177
+msgid "Close"
+msgstr ""
+
+#: src/pypilotUI.cpp:291
+msgid "pypilot host"
+msgstr ""
+
+#: src/pypilotUI.cpp:313
+msgid "OpenCPN Settings"
+msgstr ""
+
+#: src/pypilotUI.cpp:320
+msgid "Forward nmea"
+msgstr ""
+
+#: src/pypilotUI.cpp:323 src/pypilotUI.cpp:329 src/pypilotUI.cpp:335
+#: src/pypilotUI.cpp:793 src/pypilotUI.cpp:807
+msgid "?"
+msgstr ""
+
+#: src/pypilotUI.cpp:326
+msgid "Enable Graphical Overlay"
+msgstr ""
+
+#: src/pypilotUI.cpp:332
+msgid "True North Mode"
+msgstr ""
+
+#: src/pypilotUI.cpp:345
+msgid "Control Angles"
+msgstr ""
+
+#: src/pypilotUI.cpp:373
+msgid "Add"
+msgstr ""
+
+#: src/pypilotUI.cpp:376
+msgid "Remove"
+msgstr ""
+
+#: src/pypilotUI.cpp:384
+msgid "Columns"
+msgstr ""
+
+#: src/pypilotUI.cpp:409
+msgid "pypilot Servo Settings"
+msgstr ""
+
+#: src/pypilotUI.cpp:421
+msgid "Servo Period"
+msgstr ""
+
+#: src/pypilotUI.cpp:425 src/pypilotUI.cpp:448 src/pypilotUI.cpp:631
+#: src/pypilotUI.cpp:639 src/pypilotUI.cpp:655 src/pypilotUI.cpp:667
+#: src/pypilotUI.cpp:678 src/pypilotUI.cpp:690
+msgid "-------"
+msgstr ""
+
+#: src/pypilotUI.cpp:432
+msgid "Seconds"
+msgstr ""
+
+#: src/pypilotUI.cpp:444
+msgid "Max Current"
+msgstr ""
+
+#: src/pypilotUI.cpp:455
+msgid "Amps"
+msgstr ""
+
+#: src/pypilotUI.cpp:467
+msgid "Min Speed"
+msgstr ""
+
+#: src/pypilotUI.cpp:476 src/pypilotUI.cpp:489
+msgid "%"
+msgstr ""
+
+#: src/pypilotUI.cpp:480
+msgid "Max Speed"
+msgstr ""
+
+#: src/pypilotUI.cpp:493
+msgid "Max Controller Temp"
+msgstr ""
+
+#: src/pypilotUI.cpp:502 src/pypilotUI.cpp:515 src/pypilotUI.cpp:682
+#: src/pypilotUI.cpp:694
+msgid "C"
+msgstr ""
+
+#: src/pypilotUI.cpp:506
+msgid "Max Motor Temp"
+msgstr ""
+
+#: src/pypilotUI.cpp:519
+msgid "Min Rudder Pos"
+msgstr ""
+
+#: src/pypilotUI.cpp:526
+msgid " "
+msgstr ""
+
+#: src/pypilotUI.cpp:530
+msgid "Max Rudder Pos"
+msgstr ""
+
+#: src/pypilotUI.cpp:559
+msgid "Information"
+msgstr ""
+
+#: src/pypilotUI.cpp:627
+msgid "Uptime"
+msgstr ""
+
+#: src/pypilotUI.cpp:635
+msgid "Runtime"
+msgstr ""
+
+#: src/pypilotUI.cpp:651
+msgid "Average Power Consumption"
+msgstr ""
+
+#: src/pypilotUI.cpp:659
+msgid "Watts"
+msgstr ""
+
+#: src/pypilotUI.cpp:663
+msgid "Total amp hours"
+msgstr ""
+
+#: src/pypilotUI.cpp:671
+msgid "Reset"
+msgstr ""
+
+#: src/pypilotUI.cpp:674
+msgid "Controller Temperature"
+msgstr ""
+
+#: src/pypilotUI.cpp:686
+msgid "Motor Temperature"
+msgstr ""
+
+#: src/pypilotUI.cpp:740
+msgid "Compass"
+msgstr ""
+
+#: src/pypilotUI.cpp:748
+msgid "Age"
+msgstr ""
+
+#: src/pypilotUI.cpp:763
+msgid "Alignment"
+msgstr ""
+
+#: src/pypilotUI.cpp:770
+msgid "Pitch / Roll"
+msgstr ""
+
+#: src/pypilotUI.cpp:774
+msgid "N/A"
+msgstr ""
+
+#: src/pypilotUI.cpp:790
+msgid "Level"
+msgstr ""
+
+#: src/pypilotUI.cpp:798
+msgid "Heading Offset"
+msgstr ""
+
