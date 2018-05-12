@@ -1,8 +1,8 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Dec  3 2017)
+// C++ code generated with wxFormBuilder (version Feb 20 2018)
 // http://www.wxformbuilder.org/
 //
-// PLEASE DO "NOT" EDIT THIS FILE!
+// PLEASE DO *NOT* EDIT THIS FILE!
 ///////////////////////////////////////////////////////////////////////////
 
 #ifndef __PYPILOTUI_H__
@@ -23,7 +23,7 @@
 #include <wx/button.h>
 #include <wx/dialog.h>
 #include <wx/scrolwin.h>
-#include <wx/textctrl.h>
+#include <wx/combobox.h>
 #include <wx/checkbox.h>
 #include <wx/statbox.h>
 #include <wx/spinctrl.h>
@@ -119,7 +119,7 @@ class ConfigurationDialogBase : public wxDialog
 	
 	protected:
 		wxStaticText* m_staticText6;
-		wxTextCtrl* m_tHost;
+		wxComboBox* m_cHost;
 		wxCheckBox* m_cbForwardnmea;
 		wxButton* m_bAboutForwardnema;
 		wxCheckBox* m_cbEnableGraphicOverlay;
@@ -165,6 +165,7 @@ class ConfigurationDialogBase : public wxDialog
 		
 		// Virtual event handlers, overide them in your derived class
 		virtual void OnClose( wxCloseEvent& event ) { event.Skip(); }
+		virtual void OnHost( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnAboutForwardnema( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnAboutEnableOverlay( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnAboutTrueNorth( wxCommandEvent& event ) { event.Skip(); }

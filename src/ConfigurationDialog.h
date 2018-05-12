@@ -49,6 +49,7 @@ private:
     void OnInformation( wxCommandEvent& event );
     void OnOk( wxCommandEvent& event );
     void OnClose( wxCommandEvent& event );
+    void OnHost( wxCommandEvent& event );
 
     double ApplyTrueNorth(double value);
     

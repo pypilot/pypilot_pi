@@ -45,7 +45,7 @@ bool ConfigurationDialog::Show( bool show )
     if(show) {
         wxFileConfig *pConf = GetOCPNConfigObject();
         pConf->SetPath ( _T( "/Settings/pypilot" ) );
-        m_tHost->SetValue(pConf->Read ( _T ( "Host" ), "192.168.14.1" ));
+        m_cHost->SetValue(pConf->Read ( _T ( "Host" ), "127.0.0.1" ));
         m_cbForwardnmea->SetValue((bool)pConf->Read ( _T ( "Forwardnema" ), 0L ));
         m_cbEnableGraphicOverlay->SetValue((bool)pConf->Read ( _T ( "EnableGraphicOverlay" ), 0L ));
         m_cbTrueNorthMode->SetValue((bool)pConf->Read ( _T ( "TrueNorthMode" ), 0L ));
@@ -183,7 +183,7 @@ void ConfigurationDialog::OnOk( wxCommandEvent& event )
 
     wxFileConfig *pConf = GetOCPNConfigObject();
     pConf->SetPath ( _T( "/Settings/pypilot" ) );
-    pConf->Write ( _T ( "Host" ), m_tHost->GetValue());
+    pConf->Write ( _T ( "Host" ), m_cHost->GetValue());
     pConf->Write ( _T ( "Forwardnema" ), m_cbForwardnmea->GetValue( ));
     pConf->Write ( _T ( "EnableGraphicOverlay" ), m_cbEnableGraphicOverlay->GetValue() );
     pConf->Write ( _T ( "TrueNorthMode" ), m_cbTrueNorthMode->GetValue() );
@@ -201,4 +201,9 @@ void ConfigurationDialog::OnClose( wxCommandEvent& event )
 {
     Hide();
     m_pypilot_pi.UpdateWatchlist();
+}
+
+void ConfigurationDialog::OnHost( wxCommandEvent& event )
+{
+    m_cHost->SetValue(m_cHost->GetValue().BeforeFirst(' '));
 }
