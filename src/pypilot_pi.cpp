@@ -176,8 +176,12 @@ wxString pypilot_pi::GetShortDescription()
 
 wxString pypilot_pi::GetLongDescription()
 {
-    return _("pypilot PlugIn for OpenCPN\n\
-Alarm user of changing conditions.");
+    return _("Control the free software autopilot pypilot.\n\
+See http://pypilot.org for more details.\n\n\
+The plugin connects to the autopilot server via signalk implementing\n\
+a control interface to configure, calibrate and command the autopilot.\n\n\
+For more control and tuning route-following logic,\n\
+consider the autopilot route plugin.");
 }
 
 int pypilot_pi::GetToolbarToolCount(void)
