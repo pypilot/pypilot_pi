@@ -57,6 +57,10 @@ ENDIF(MSVC)
 SET(wxWidgets_USE_LIBS base core net xml html adv)
 SET(BUILD_SHARED_LIBS TRUE)
 
+set (WXWIDGETS_FORCE_VERSION CACHE VERSION "Force usage of a specific wxWidgets version.")
+if(WXWIDGETS_FORCE_VERSION)
+  set (wxWidgets_CONFIG_OPTIONS --version=${WXWIDGETS_FORCE_VERSION})
+endif()
 FIND_PACKAGE(wxWidgets REQUIRED)
 
 IF(MSYS)
