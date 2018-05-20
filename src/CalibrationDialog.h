@@ -34,7 +34,7 @@ public:
     CalibrationDialog( pypilot_pi &_pypilot_pi, wxWindow* parent);
     ~CalibrationDialog();
 
-    void Receive(wxString &name, wxJSONValue &value);
+    void Receive(std::string name, Json::Value &value);
     const char **GetWatchlist();
 
 private:

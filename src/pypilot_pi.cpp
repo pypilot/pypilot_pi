@@ -32,9 +32,6 @@
 #include "msvcdefs.h"
 #endif
 
-#include "wxJSON/jsonreader.h"
-#include "wxJSON/jsonwriter.h"
-
 #include "pydc.h"
 
 #include "pypilot_pi.h"
@@ -210,23 +207,23 @@ double pypilot_pi::AdjustHeading(double heading)
     return m_imu_heading + m_declination + heading;
 }
 
-void pypilot_pi::Receive(wxString &name, wxJSONValue &value)
+void pypilot_pi::Receive(std::string name, Json::Value &value)
 {
     if(name == "ap.enabled") {
-        m_enabled = value.AsBool();
+        m_enabled = value.asBool();
         SetToolbarIcon();
     } else if(name == "ap.mode") {
         wxString oldmode = m_mode;
-        m_mode = value.AsString();
+        m_mode = value.asString();
         if(m_bEnableGraphicOverlay && m_mode != oldmode)
             UpdateWatchlist();
         SetToolbarIcon();
     } else if(name == "ap.heading")
-        m_ap_heading = AdjustHeading(value.AsDouble());
+        m_ap_heading = AdjustHeading(value.asDouble());
     else if(name == "ap.heading_command")
-        m_ap_heading_command = AdjustHeading(value.AsDouble());
+        m_ap_heading_command = AdjustHeading(value.asDouble());
     else if(name == "imu.heading")
-        m_imu_heading = value.AsDouble();
+        m_imu_heading = value.asDouble();
 }
 
 void pypilot_pi::UpdateStatus()
@@ -251,15 +248,15 @@ void pypilot_pi::SetToolbarIcon()
     SetToolbarToolBitmaps(m_leftclick_tool_id, bitmap, bitmap);
 }
 
-static void MergeWatchlist(std::map<wxString, bool> &watchlist, const char **list)
+static void MergeWatchlist(std::map<std::string, bool> &watchlist, const char **list)
 {
     for(const char **w = list; *w; w++)
         watchlist[*w] = true;
 }
 
-static void MergeWatchlist(std::map<wxString, bool> &watchlist, std::list<wxString> list)
+static void MergeWatchlist(std::map<std::string, bool> &watchlist, std::list<std::string> list)
 {
-    for(std::list<wxString>::iterator i = list.begin(); i != list.end(); i++)
+    for(std::list<std::string>::iterator i = list.begin(); i != list.end(); i++)
         watchlist[*i] = true;
 }
 
@@ -268,7 +265,7 @@ void pypilot_pi::UpdateWatchlist()
     if(!m_client.connected())
         return;
 
-    std::map<wxString, bool> watchlist;
+    std::map<std::string, bool> watchlist;
     if(m_pypilotDialog) {
         // map allows watchlists to overlap if needed
         if(m_pypilotDialog->IsShown())
@@ -299,7 +296,7 @@ void pypilot_pi::UpdateWatchlist()
     MergeWatchlist(watchlist, wl);
 
     // watch new keys we weren't watching
-    for(std::map<wxString, bool>::iterator it = watchlist.begin(); it != watchlist.end(); it++)
+    for(std::map<std::string, bool>::iterator it = watchlist.begin(); it != watchlist.end(); it++)
         if(m_watchlist.find(it->first) == m_watchlist.end()) {
             //printf("add watch %s\n", it->first.mb_str().data());
             m_client.watch(it->first);
@@ -307,7 +304,7 @@ void pypilot_pi::UpdateWatchlist()
             m_client.get(it->first); // make sure we get the value again to update dialog here
 
     // unwatch old keys we don't need
-    for(std::map<wxString, bool>::iterator it = m_watchlist.begin(); it != m_watchlist.end(); it++)
+    for(std::map<std::string, bool>::iterator it = m_watchlist.begin(); it != m_watchlist.end(); it++)
         if(watchlist.find(it->first) == watchlist.end()) {
             //printf("remove watch %s\n", it->first.mb_str().data());
             m_client.watch(it->first, false);
@@ -428,14 +425,14 @@ void pypilot_pi::OnTimer( wxTimerEvent & )
         return;
     }
 
-    wxString name;
-    wxJSONValue data;
+    std::string name;
+    Json::Value data;
     wxDateTime now = wxDateTime::Now();
     while(m_client.receive(name, data)) {
         //wxString value = data["value"].AsString();
         //printf("msg %s %s\n", name.mb_str().data(), value.mb_str().data());
 
-        wxJSONValue val = data["value"];
+        Json::Value &val = data["value"];
         if(m_pypilotDialog) {
             m_pypilotDialog->Receive(name, val);
             m_GainsDialog->Receive(name, val);
@@ -482,18 +479,18 @@ void pypilot_pi::SetPositionFixEx(PlugIn_Position_Fix_Ex &pfix)
 
 void pypilot_pi::SetPluginMessage(wxString &message_id, wxString &message_body)
 {
-    // construct the JSON root object
-    wxJSONValue  root;
-    // construct a JSON parser
-    wxJSONReader reader;
+    // construct the Json::Value root object
+    // construct a Json::Value parser
     wxString    sLogMessage;
 //    bool        bFail = false;
     
     if(message_id == wxS("PYPILOT_PI")) {
         // this message does nothing yet
     } else if(message_id == _T("WMM_VARIATION_BOAT")) {
-        if(reader.Parse( message_body, &root ) == 0) {
-            root[_T("Decl")].AsString().ToDouble(&m_declination);
+        Json::Value root;
+        Json::Reader reader;
+        if(reader.parse(std::string(message_body), root)) {
+            m_declination = jsondouble(root["Decl"]);
             m_declinationTime = wxDateTime::Now();
         }
     }
@@ -543,11 +540,7 @@ double pypilot_pi::Declination()
     m_declinationRequestTime = wxDateTime::Now();
 
     if(!m_declinationTime.IsValid() || (wxDateTime::Now() - m_declinationTime).GetSeconds() > 1200) {
-        wxJSONWriter w;
-        wxString out;
-        wxJSONValue v;
-        w.Write(v, out);
-        SendPluginMessage(wxString(_T("WMM_VARIATION_BOAT_REQUEST")), out);
+        SendPluginMessage(wxString(_T("WMM_VARIATION_BOAT_REQUEST")), "");
     }
     return m_declination;
 }
@@ -570,26 +563,18 @@ double heading_resolve_pos(double degrees)
     return degrees;
 }
 
-wxString jsonformat(const char *format, wxJSONValue &value)
+double jsondouble(Json::Value &value)
 {
+    if(value.isDouble())
+        return value.asDouble();
     double d;
-    if(value.IsDouble())
-        d = value.AsDouble();
-    else {
-        wxString str = value.AsString();
-        if(!str.ToDouble(&d))
-            return str;
-    }
-    return wxString::Format(format, d);
-}
-
-double jsondouble(wxJSONValue &value)
-{
-    if(value.IsDouble())
-        return value.AsDouble();
-    double d;
-    wxString str = value.AsString();
+    wxString str = value.asString();
     if(str.ToDouble(&d))
         return d;
     return NAN;
+}
+
+wxString jsonformat(const char *format, Json::Value &value)
+{
+    return wxString::Format(format, jsondouble(value));
 }

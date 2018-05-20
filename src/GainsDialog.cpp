@@ -115,7 +115,7 @@ GainsDialog::~GainsDialog()
 bool GainsDialog::Show( bool show )
 {
     if(show && !IsShown()) {
-        for(std::map<wxString, Gain*>::iterator i = m_gains.begin(); i != m_gains.end(); i++) {
+        for(std::map<std::string, Gain*>::iterator i = m_gains.begin(); i != m_gains.end(); i++) {
             Gain *g = i->second;
             delete g;
         }
@@ -124,14 +124,14 @@ bool GainsDialog::Show( bool show )
 
         m_gains.clear();
         m_watchlist.clear();
-        std::list<wxString> gains;
+        std::list<std::string> gains;
         m_pypilot_pi.m_client.GetGains(gains);
-        for(std::list<wxString>::iterator i = gains.begin(); i != gains.end(); i++) {
-            wxString name = *i;
+        for(std::list<std::string>::iterator i = gains.begin(); i != gains.end(); i++) {
+            std::string name = *i;
             m_watchlist.push_back(name);
             m_watchlist.push_back(name+"gain");
 
-            wxJSONValue info;
+            Json::Value info;
             m_pypilot_pi.m_client.info(name, info);
             double min_val = jsondouble(info["min"]), max_val = jsondouble(info["max"]);
 
@@ -153,10 +153,17 @@ bool GainsDialog::Show( bool show )
     return GainsDialogBase::Show(show);
 }
 
-void GainsDialog::Receive(wxString &name, wxJSONValue &value)
+static bool hasEnding (std::string const &str, std::string const &ending)
 {
-    if(name.EndsWith("gain")) {
-        name = name.Left(name.Length()-4);
+    if (str.length() < ending.length())
+        return false;
+    return (0 == str.compare (str.length() - ending.length(), ending.length(), ending));
+}
+
+void GainsDialog::Receive(std::string name, Json::Value &value)
+{
+    if(hasEnding(name, "gain")) {
+        name = name.substr(0, name.size()-4);
         if(m_gains.find(name) != m_gains.end()) {
             Gain *g = m_gains[name];
             double val = jsondouble(value);
@@ -184,7 +191,7 @@ void GainsDialog::OnTimer( wxTimerEvent & )
     if(!IsShown())
         return;
 
-    for(std::map<wxString, Gain*>::iterator i = m_gains.begin(); i != m_gains.end(); i++) {
+    for(std::map<std::string, Gain*>::iterator i = m_gains.begin(); i != m_gains.end(); i++) {
         Gain *g = i->second;
         if(g->need_update) {
             g->need_update = false;
@@ -205,7 +212,7 @@ void GainsDialog::OnTimer( wxTimerEvent & )
 void GainsDialog::OnGainSlider( wxScrollEvent& event )
 {
     wxSlider *slider = static_cast<wxSlider*>(event.GetEventObject());
-    for(std::map<wxString, Gain*>::iterator i = m_gains.begin(); i != m_gains.end(); i++) {
+    for(std::map<std::string, Gain*>::iterator i = m_gains.begin(); i != m_gains.end(); i++) {
         Gain *g = i->second;
         if(g->slider == slider) {
             int slider_val = g->slider->GetValue();
@@ -218,7 +225,7 @@ void GainsDialog::OnGainSlider( wxScrollEvent& event )
     }
 }
 
-std::list<wxString> GainsDialog::GetWatchlist()
+std::list<std::string> GainsDialog::GetWatchlist()
 {
     return m_watchlist;
 }

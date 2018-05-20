@@ -35,7 +35,7 @@ public:
     ~ConfigurationDialog();
     bool Show( bool show=true );
 
-    void Receive(wxString &name, wxJSONValue &value);
+    void Receive(std::string name, Json::Value &value);
     const char **GetWatchlist();
 
 private:

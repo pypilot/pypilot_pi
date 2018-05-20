@@ -31,6 +31,7 @@
 
 #include "signalk_client.h"
 
+
 BEGIN_EVENT_TABLE(SignalKClient, wxEvtHandler)
     EVT_SOCKET(-1, SignalKClient::OnSocketEvent)
 END_EVENT_TABLE()
@@ -66,17 +67,17 @@ void SignalKClient::connect(wxString host, int port)
 void SignalKClient::disconnect()
 {
     m_sock.Close();
-    m_list = wxJSONValue();
+    m_list = Json::Value();
     OnDisconnected();
 }
 
-bool SignalKClient::receive(wxString &name, wxJSONValue &value)
+bool SignalKClient::receive(std::string &name, Json::Value &value)
 {
     if(m_bQueueMode) {
         if(m_queue.empty())
             return false;
 
-        std::pair<wxString, wxJSONValue> val = m_queue.front();
+        std::pair<std::string, Json::Value> &val = m_queue.front();
         m_queue.pop_front();
     
         name = val.first;
@@ -87,73 +88,77 @@ bool SignalKClient::receive(wxString &name, wxJSONValue &value)
     if(m_map.empty())
         return false;
 
-    std::map<wxString, wxJSONValue>::iterator it = m_map.begin();
+    std::map<std::string, Json::Value>::iterator it = m_map.begin();
     name = it->first;
     value = it->second;
     m_map.erase(it);
     return true;
 }
 
-void SignalKClient::get(wxString name)
+void SignalKClient::get(std::string name)
 {
-    wxJSONValue request;
-    request["method"] = wxString("get");
+    Json::Value request;
+    request["method"] = "get";
     request["name"] = name;
     send(request);
 }
 
-void SignalKClient::set(wxString name, wxJSONValue &value)
+void SignalKClient::set(std::string name, Json::Value &value)
 {
-    wxJSONValue request;
-    request["method"] = wxString("set");
+    Json::Value request;
+    request["method"] = "set";
     request["name"] = name;
     request["value"] = value;
     send(request);
 }
 
-void SignalKClient::set(wxString name, double value)
+void SignalKClient::set(std::string name, double value)
 {
-    wxJSONValue v(value);
+    Json::Value v(value);
     set(name, v);
 }
 
-void SignalKClient::set(wxString name, wxString value)
+void SignalKClient::set(std::string name, std::string &value)
 {
-    wxJSONValue v(value);
+    Json::Value v(value);
     set(name, v);
 }
 
-void SignalKClient::watch(wxString name, bool on)
+void SignalKClient::set(std::string name, const char *value)
+{
+    Json::Value v(value);
+    set(name, v);
+}
+
+void SignalKClient::watch(std::string name, bool on)
 {
     if(on)
         get(name);
-    wxJSONValue request;
-    request["method"] = wxString("watch");
+    Json::Value request;
+    request["method"] = "watch";
     request["name"] = name;
     request["value"] = on;
     send(request);
 }
 
-bool SignalKClient::info(wxString name, wxJSONValue &info)
+bool SignalKClient::info(std::string name, Json::Value &info)
 {
-    info = m_list[name];
-    return !info.IsNull();
+    info = m_list[name.c_str()];
+    return !info.isNull();
 }
 
 void SignalKClient::request_list_values()
 {
-    wxJSONValue request;
-    request["method"] = wxString("list");
+    Json::Value request;
+    request["method"] = "list";
     send(request);
 }
 
-void SignalKClient::send(wxJSONValue &request)
+void SignalKClient::send(Json::Value &request)
 {
-    wxJSONWriter writer(wxJSONWRITER_NONE);
-    wxString str;
-    writer.Write(request, str);
-    str += "\n";
-    m_sock.Write(str.mb_str(), str.Length());
+    Json::FastWriter writer;
+    std::string str = writer.write(request);
+    m_sock.Write(str.c_str(), str.size());
 }
 
 void SignalKClient::OnSocketEvent(wxSocketEvent& event)
@@ -165,7 +170,7 @@ void SignalKClient::OnSocketEvent(wxSocketEvent& event)
             m_map.clear();
             m_sock_buffer.clear();
             if(m_bRequestList) {
-                m_list = wxJSONValue();
+                m_list = Json::Value();
                 request_list_values();
                 m_bRequestingList = true;
             } else
@@ -177,6 +182,7 @@ void SignalKClient::OnSocketEvent(wxSocketEvent& event)
             break;
 
         case wxSOCKET_INPUT:
+        {
     #define RD_BUF_SIZE    8192
             std::vector<char> data(RD_BUF_SIZE+1);
             event.GetSocket()->Read(&data.front(),RD_BUF_SIZE);
@@ -195,15 +201,12 @@ void SignalKClient::OnSocketEvent(wxSocketEvent& event)
                 if(line_end <= 0)
                     break;
                 std::string json_line = m_sock_buffer.substr(0, line_end);
-                wxJSONValue value;
-                wxJSONReader reader;
-                if(reader.Parse(json_line, &value)) {
-                    const wxArrayString& errors = reader.GetErrors();
+                Json::Value value;
+                Json::Reader reader;
+                if(!reader.parse(json_line, value)) {
                     wxString sLogMessage;
-                    sLogMessage.Append(wxT("pypilot_pi: Error parsing JSON message - "));
+                    sLogMessage.Append(wxT("pypilot_pi: Error parsing Json::Value message - "));
                     sLogMessage.Append( json_line );
-                    for(size_t i = 0; i < errors.GetCount(); i++)
-                        sLogMessage.append( errors.Item( i ) );
                     wxLogMessage( sLogMessage );
                 } else {
                     if(m_bRequestingList) {
@@ -211,18 +214,16 @@ void SignalKClient::OnSocketEvent(wxSocketEvent& event)
                         m_bRequestingList = false;
                         OnConnected();
                     } else {
-                        wxArrayString names = value.GetMemberNames();
-                        for(unsigned int i=0; i<names.Count(); i++) {
+                        for(Json::ValueIterator val = value.begin(); val != value.end(); val++)
                             if(m_bQueueMode) {
                                 if(m_queue.size() >= 4096) {
                                     wxLogMessage( "SignalK client message overflow" );
                                     m_queue.clear();
                                 }
-                                std::pair<wxString, wxJSONValue> val(names[i], value[names[i]]);
-                                m_queue.push_back(val);
+                                std::pair<std::string, Json::Value > p(val.key().asString(), *val);
+                                m_queue.push_back(p);
                             } else
-                                m_map[names[i]] = value[names[i]];
-                        }
+                                m_map[val.key().asString()] = *val;
                     }
                 }
 
@@ -231,6 +232,7 @@ void SignalKClient::OnSocketEvent(wxSocketEvent& event)
                 else
                     m_sock_buffer = m_sock_buffer.substr(line_end+1);
             }
-            break;
+        } break;
+    default:;
     }
 }

@@ -134,7 +134,7 @@ private:
       void SetPluginMessage(wxString &message_id, wxString &message_body);
       void              RearrangeWindow();
       double AdjustHeading(double heading);
-      void Receive(wxString &name, wxJSONValue &value);
+      void Receive(std::string name, Json::Value &value);
       void UpdateStatus();
       void SetToolbarIcon();
 
@@ -143,7 +143,7 @@ private:
 
       wxTimer m_Timer;
 
-      std::map<wxString, bool> m_watchlist;
+      std::map<std::string, bool> m_watchlist;
 
       wxString m_status;
 
@@ -162,7 +162,7 @@ private:
 double heading_resolve(double degrees);
 double heading_resolve_pos(double degrees);
 
-wxString jsonformat(const char *format, wxJSONValue &value);
-double jsondouble(wxJSONValue &value);
+wxString jsonformat(const char *format, Json::Value &value);
+double jsondouble(Json::Value &value);
 
 #endif

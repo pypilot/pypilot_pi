@@ -35,7 +35,7 @@ public:
     ~pypilotDialog();
 
     void Disconnected();
-    void Receive(wxString &name, wxJSONValue &value);
+    void Receive(std::string name, Json::Value &value);
     void SetAPColor();
     const char **GetWatchlist();
 

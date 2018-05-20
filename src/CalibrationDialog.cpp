@@ -38,7 +38,7 @@ CalibrationDialog::~CalibrationDialog()
 {
 }
 
-void CalibrationDialog::Receive(wxString &name, wxJSONValue &value)
+void CalibrationDialog::Receive(std::string name, Json::Value &value)
 {
     if(name == "imu.pitch" || name == "imu.roll") {
         if(name == "imu.pitch")
@@ -50,7 +50,7 @@ void CalibrationDialog::Receive(wxString &name, wxJSONValue &value)
     } else if(name == "imu.alignmentCounter")
         m_gLevel->SetValue(100-jsondouble(value));
     else if(name == "imu.compass_calibration_age")
-        m_stCompassCalibrationAge->SetLabel(value.AsString());
+        m_stCompassCalibrationAge->SetLabel(value.asString());
     else if(name == "imu.heading_offset")
         if(!m_lastOffsetTime.IsValid() || (wxDateTime::Now() - m_lastOffsetTime).GetSeconds() > 3)
             m_sHeadingOffset->SetValue(jsondouble(value));

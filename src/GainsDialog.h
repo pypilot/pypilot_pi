@@ -39,8 +39,8 @@ public:
 
     bool Show( bool show=true );
 
-    void Receive(wxString &name, wxJSONValue &value);
-    std::list<wxString> GetWatchlist();
+    void Receive(std::string name, Json::Value &value);
+    std::list<std::string> GetWatchlist();
 
 private:
     void OnClose( wxCommandEvent& event );
@@ -48,7 +48,7 @@ private:
     void OnGainSlider( wxScrollEvent& event );
 
     wxTimer m_Timer;
-    std::list<wxString> m_watchlist;
-    std::map<wxString, Gain*> m_gains;
+    std::list<std::string> m_watchlist;
+    std::map<std::string, Gain*> m_gains;
     pypilot_pi &m_pypilot_pi;
 };

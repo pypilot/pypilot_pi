@@ -64,7 +64,7 @@ bool ConfigurationDialog::Show( bool show )
     return ConfigurationDialogBase::Show(show);
 }
 
-void ConfigurationDialog::Receive(wxString &name, wxJSONValue &value)
+void ConfigurationDialog::Receive(std::string name, Json::Value &value)
 {
     if(name == "servo.period") {
         m_sPeriod->SetValue(jsondouble(value) * 10);

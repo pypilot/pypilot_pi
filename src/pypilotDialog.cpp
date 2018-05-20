@@ -83,19 +83,19 @@ void pypilotDialog::Disconnected()
     Fit();
 }
 
-void pypilotDialog::Receive(wxString &name, wxJSONValue &value)
+void pypilotDialog::Receive(std::string name, Json::Value &value)
 {
     if(name == "ap.heading_command")
-        m_HeadingCommand = ApplyTrueNorth(value.AsDouble());
+        m_HeadingCommand = ApplyTrueNorth(value.asDouble());
     else if(name == "ap.heading")
-        m_stHeading->SetLabel(wxString::Format("%.1f", ApplyTrueNorth(value.AsDouble())));
+        m_stHeading->SetLabel(wxString::Format("%.1f", ApplyTrueNorth(value.asDouble())));
     else if(name == "ap.mode") {
-        m_sAPMode = value.AsString();
+        m_sAPMode = value.asString();
         m_cMode->SetStringSelection(m_sAPMode);
 
         SetAPColor();
     } else if(name == "ap.enabled") {
-        bool enabled = value.AsBool();
+        bool enabled = value.asBool();
         m_bAP->SetValue(enabled);
 
         m_fgControlAnglesPos->Show(enabled);
@@ -107,13 +107,13 @@ void pypilotDialog::Receive(wxString &name, wxJSONValue &value)
         SetMinSize(s);
         Fit();
     } else if(name == "gps.source") {
-        m_bAPHaveGPS = value.AsString() != "none";
+        m_bAPHaveGPS = value.asString() != "none";
         UpdateModes();
     } else if(name == "wind.source") {
-        m_bAPHaveWind = value.AsString() != "none";
+        m_bAPHaveWind = value.asString() != "none";
         UpdateModes();
     } else if(name == "servo.flags") {
-        m_stServoFlags->SetLabel(value.AsString());
+        m_stServoFlags->SetLabel(value.asString());
     } else if(name == "servo.mode") {
         // do something with this?
     }
@@ -222,7 +222,7 @@ void pypilotDialog::OnAP( wxCommandEvent& event )
 
 void pypilotDialog::OnMode( wxCommandEvent& event )
 {
-    m_pypilot_pi.m_client.set("ap.mode", m_cMode->GetStringSelection());
+    m_pypilot_pi.m_client.set("ap.mode", m_cMode->GetStringSelection().mb_str());
 }
 
 void pypilotDialog::OnGains( wxCommandEvent& event )

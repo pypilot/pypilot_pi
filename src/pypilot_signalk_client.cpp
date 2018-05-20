@@ -39,15 +39,12 @@ void pypilot_SignalKClient::OnDisconnected()
     m_pypilot_pi.OnDisconnected();
 }
 
-void pypilot_SignalKClient::GetGains(std::list<wxString> &gains)
+void pypilot_SignalKClient::GetGains(std::list<std::string> &gains)
 {
-    if(m_list.IsNull())
+    if(m_list.isNull())
         return;
-    wxArrayString names = m_list.GetMemberNames();
-    for(unsigned int i=0; i<names.Count(); i++) {
-        wxString name = names[i];
-        wxJSONValue value = m_list[name];
-        if(value.HasMember("AutopilotGain"))
-            gains.push_back(name);
-    }
+
+    for(Json::ValueIterator val = m_list.begin(); val != m_list.end(); val++)
+        if(val->isMember("AutopilotGain"))
+            gains.push_back(val.key().asString());
 }

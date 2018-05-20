@@ -38,12 +38,12 @@ StatisticsDialog::~StatisticsDialog()
 {
 }
 
-void StatisticsDialog::Receive(wxString &name, wxJSONValue &value)
+void StatisticsDialog::Receive(std::string name, Json::Value &value)
 {
     if(name == "imu.uptime")
-        m_stUptime->SetLabel(value.AsString());
+        m_stUptime->SetLabel(value.asString());
     else if(name == "ap.runtime")
-        m_stAPRuntime->SetLabel(value.AsString());
+        m_stAPRuntime->SetLabel(value.asString());
     else if(name == "servo.watts")
         m_stWatts->SetLabel(jsonformat("%.1f", value));
     else if(name == "servo.amp_hours")
@@ -69,5 +69,5 @@ void StatisticsDialog::OnClose( wxCommandEvent& event )
 
 void StatisticsDialog::OnResetAmpHours( wxCommandEvent& event )
 {
-    m_pypilot_pi.m_client.set("servo.amp_hours", 0);
+    m_pypilot_pi.m_client.set("servo.amp_hours", 0.0);
 }

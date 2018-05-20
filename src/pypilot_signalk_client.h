@@ -37,7 +37,7 @@ public:
     virtual void OnConnected();
     virtual void OnDisconnected();
 
-    void GetGains(std::list<wxString> &gains);
+    void GetGains(std::list<std::string> &gains);
 
 private:
     pypilot_pi &m_pypilot_pi;

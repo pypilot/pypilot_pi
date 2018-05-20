@@ -30,8 +30,7 @@
 #include <wx/wx.h>
 #include <wx/socket.h>
 
-#include "wxJSON/jsonreader.h"
-#include "wxJSON/jsonwriter.h"
+#include <json/json.h>
 
 class SignalKClient : public wxEvtHandler
 {
@@ -41,30 +40,31 @@ public:
     void connect(wxString host, int port=0);
     void disconnect();
     bool connected() { return m_sock.IsConnected(); }
-    virtual bool receive(wxString &name, wxJSONValue &value);
+    virtual bool receive(std::string &name, Json::Value &value);
 
-    void get(wxString name);
-    void set(wxString name, wxJSONValue &value);
-    void set(wxString name, double value);
-    void set(wxString name, wxString value);
-    void watch(wxString name, bool on=true);
+    void get(std::string name);
+    void set(std::string name, Json::Value &value);
+    void set(std::string name, double value);
+    void set(std::string name, std::string &value);
+    void set(std::string name, const char *value);
+    void watch(std::string name, bool on=true);
 
-    bool info(wxString name, wxJSONValue &info);
+    bool info(std::string name, Json::Value &info);
 
 protected:
     virtual void OnConnected() = 0;
     virtual void OnDisconnected() = 0;
-    wxJSONValue m_list;
+    Json::Value m_list;
 
 private:
     void request_list_values();
-    void send(wxJSONValue &request);
+    void send(Json::Value &request);
     void OnSocketEvent(wxSocketEvent& event);
 
     wxSocketClient      m_sock;
     std::string         m_sock_buffer;
-    std::deque<std::pair<wxString, wxJSONValue> > m_queue;
-    std::map<wxString, wxJSONValue> m_map;
+    std::deque<std::pair<std::string, Json::Value> > m_queue;
+    std::map<std::string, Json::Value> m_map;
 
     bool m_bQueueMode;
     
