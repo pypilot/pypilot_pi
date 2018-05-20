@@ -25,7 +25,7 @@ SET(PLUGIN_VERSION "${PLUGIN_VERSION_MAJOR}.${PLUGIN_VERSION_MINOR}.${PLUGIN_VER
 
 INCLUDE("cmake/PluginConfigure.cmake")
 
-ADD_DEFINITIONS( "--std=gnu++11" )
+#ADD_DEFINITIONS( "--std=gnu++11" )
 
 SET(SRC_PYPILOT
             src/pypilot_pi.cpp

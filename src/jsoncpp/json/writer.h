@@ -343,8 +343,10 @@ JSONCPP_STRING JSON_API valueToString(UInt value);
 #endif // if defined(JSON_HAS_INT64)
 JSONCPP_STRING JSON_API valueToString(LargestInt value);
 JSONCPP_STRING JSON_API valueToString(LargestUInt value);
+#if __cplusplus >= 201103L
 JSONCPP_STRING JSON_API valueToString(double value, unsigned int precision = Value::defaultRealPrecision,
                                       PrecisionType precisionType = PrecisionType::significantDigits);
+#endif
 JSONCPP_STRING JSON_API valueToString(bool value);
 JSONCPP_STRING JSON_API valueToQuotedString(const char* value);
 
