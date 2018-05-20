@@ -13,16 +13,6 @@ SET(VERBOSE_NAME Pypilot)
 SET(TITLE_NAME PYPILOT)
 SET(CPACK_PACKAGE_CONTACT "Sean D'Epagnier ")
 
-SET(BUNDLE_DATA FALSE)
-
-INCLUDE( VERSION.cmake )
-SET(VERSION_MAJOR ${PLUGIN_VERSION_MAJOR})
-SET(VERSION_MINOR ${PLUGIN_VERSION_MINOR})
-SET(VERSION_PATCH ${PLUGIN_VERSION_PATCH})
-SET(VERSION_DATE ${PLUGIN_VERSION_DATE})
-
-SET(PLUGIN_VERSION "${PLUGIN_VERSION_MAJOR}.${PLUGIN_VERSION_MINOR}.${PLUGIN_VERSION_PATCH}" )
-
 INCLUDE("cmake/PluginConfigure.cmake")
 
 #ADD_DEFINITIONS( "--std=gnu++11" )
@@ -36,8 +26,8 @@ SET(SRC_PYPILOT
             src/ConfigurationDialog.cpp
             src/StatisticsDialog.cpp
             src/CalibrationDialog.cpp
-            src/pydc.cpp
-            src/TexFont.cpp
+#            src/pydc.cpp
+#            src/TexFont.cpp
             src/pypilotUI.cpp
             src/icons.cpp
 	)

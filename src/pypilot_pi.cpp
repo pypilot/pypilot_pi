@@ -32,7 +32,7 @@
 #include "msvcdefs.h"
 #endif
 
-#include "pydc.h"
+//#include "pydc.h"
 
 #include "pypilot_pi.h"
 
@@ -357,8 +357,8 @@ bool pypilot_pi::RenderOverlay(wxDC &dc, PlugIn_ViewPort *vp)
 {
     if(!m_bEnableGraphicOverlay)
         return false;
-    pyDC odc(dc);
-    Render(odc, *vp);
+//    pyDC odc(dc);
+//    Render(odc, *vp);
     return true;
 }
 
@@ -366,9 +366,9 @@ bool pypilot_pi::RenderGLOverlay(wxGLContext *pcontext, PlugIn_ViewPort *vp)
 {
     if(!m_bEnableGraphicOverlay)
         return false;
-    pyDC odc;
+//    pyDC odc;
 //    glEnable( GL_BLEND );
-    Render(odc, *vp);
+//    Render(odc, *vp);
 //    glDisable( GL_BLEND );
     return true;
 }
@@ -379,7 +379,7 @@ void pypilot_pi::Render(pyDC &dc, PlugIn_ViewPort &vp)
         return;
     if(!m_enabled)
         return;
-
+#if 0
     wxPoint boat;
     GetCanvasPixLL(&vp, &boat, m_lastfix.Lat, m_lastfix.Lon);
 
@@ -395,6 +395,7 @@ void pypilot_pi::Render(pyDC &dc, PlugIn_ViewPort &vp)
     dc.SetPen(wxPen(*wxGREEN, 3));
     dc.DrawLine(boat.x, boat.y, p2.x, p2.y);
     dc.DrawCircle(p2.x, p2.y, 5);
+#endif
 }
 
 void pypilot_pi::ReadConfig()

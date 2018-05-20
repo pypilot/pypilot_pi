@@ -10,6 +10,10 @@ SET(SRC_JSON
 	    src/jsoncpp/json_writer.cpp
             )
 
+IF(QT_ANDROID)
+  ADD_DEFINITIONS(-DJSONCPP_NO_LOCALE_SUPPORT)
+ENDIF(QT_ANDROID)
+
 set_source_files_properties(src/jsoncpp/json_reader.cpp PROPERTIES COMPILE_FLAGS "-std=c++11")
 set_source_files_properties(src/jsoncpp/json_value.cpp PROPERTIES COMPILE_FLAGS "-std=c++11")
 set_source_files_properties(src/jsoncpp/json_writer.cpp PROPERTIES COMPILE_FLAGS "-std=c++11")

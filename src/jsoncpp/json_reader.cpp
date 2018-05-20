@@ -19,7 +19,7 @@
 #include <set>
 #include <limits>
 
-#if __cplusplus >= 201103L
+#if __cplusplus >= 201103L && !defined(__ANDROID__)
   #include <cstdio>
 
   #if !defined(snprintf)
