@@ -203,6 +203,9 @@ class StatisticsDialogBase : public wxDialog
 		wxStaticText* m_staticText21;
 		wxStaticText* m_stAmpHours;
 		wxButton* m_bResetAmpHours;
+		wxStaticText* m_staticText45;
+		wxStaticText* m_stVoltage;
+		wxStaticText* m_staticText47;
 		wxStaticText* m_staticText24;
 		wxStaticText* m_stControllerTemp;
 		wxStaticText* m_staticText26;
@@ -243,6 +246,8 @@ class CalibrationDialogBase : public wxDialog
 		wxStaticText* m_staticText34;
 		wxSpinCtrl* m_sHeadingOffset;
 		wxButton* m_button17;
+		wxCheckBox* m_cbCalibrationLocked;
+		wxButton* m_button171;
 		wxStdDialogButtonSizer* m_sdbSizer3;
 		wxButton* m_sdbSizer3OK;
 		
@@ -252,6 +257,8 @@ class CalibrationDialogBase : public wxDialog
 		virtual void OnAboutLevel( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnHeadingOffset( wxSpinEvent& event ) { event.Skip(); }
 		virtual void OnAboutHeadingOffset( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnCalibrationLocked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnAboutCalibrationLocked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnClose( wxCommandEvent& event ) { event.Skip(); }
 		
 	

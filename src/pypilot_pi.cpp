@@ -200,7 +200,7 @@ void pypilot_pi::RearrangeWindow()
 double pypilot_pi::AdjustHeading(double heading)
 {
     if(m_mode == "compass")
-        return heading + m_declination;
+        return heading - m_declination;
     if(m_mode == "gps")
         return heading;
     // otherwise wind or true wind

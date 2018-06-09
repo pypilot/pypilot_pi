@@ -676,6 +676,18 @@ StatisticsDialogBase::StatisticsDialogBase( wxWindow* parent, wxWindowID id, con
 	m_bResetAmpHours = new wxButton( this, wxID_ANY, _("Reset"), wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer19->Add( m_bResetAmpHours, 0, wxALL, 5 );
 	
+	m_staticText45 = new wxStaticText( this, wxID_ANY, _("Voltage"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText45->Wrap( -1 );
+	fgSizer19->Add( m_staticText45, 0, wxALL, 5 );
+	
+	m_stVoltage = new wxStaticText( this, wxID_ANY, _("-------"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_stVoltage->Wrap( -1 );
+	fgSizer19->Add( m_stVoltage, 0, wxALL, 5 );
+	
+	m_staticText47 = new wxStaticText( this, wxID_ANY, _("V"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText47->Wrap( -1 );
+	fgSizer19->Add( m_staticText47, 0, wxALL, 5 );
+	
 	m_staticText24 = new wxStaticText( this, wxID_ANY, _("Controller Temperature"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText24->Wrap( -1 );
 	fgSizer19->Add( m_staticText24, 0, wxALL, 5 );
@@ -784,7 +796,7 @@ CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, c
 	sbSizer3->Add( fgSizer20, 1, wxEXPAND, 5 );
 	
 	wxFlexGridSizer* fgSizer31;
-	fgSizer31 = new wxFlexGridSizer( 2, 3, 0, 0 );
+	fgSizer31 = new wxFlexGridSizer( 0, 3, 0, 0 );
 	fgSizer31->SetFlexibleDirection( wxBOTH );
 	fgSizer31->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
@@ -814,6 +826,14 @@ CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, c
 	
 	fgSizer31->Add( m_button17, 0, wxALL, 5 );
 	
+	m_cbCalibrationLocked = new wxCheckBox( sbSizer3->GetStaticBox(), wxID_ANY, _("Calibration Locked"), wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer31->Add( m_cbCalibrationLocked, 0, wxALL, 5 );
+	
+	m_button171 = new wxButton( sbSizer3->GetStaticBox(), wxID_ANY, _("?"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_button171->SetMaxSize( wxSize( 40,-1 ) );
+	
+	fgSizer31->Add( m_button171, 0, wxALL, 5 );
+	
 	
 	sbSizer3->Add( fgSizer31, 1, wxEXPAND, 5 );
 	
@@ -840,6 +860,8 @@ CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, c
 	m_button16->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnAboutLevel ), NULL, this );
 	m_sHeadingOffset->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( CalibrationDialogBase::OnHeadingOffset ), NULL, this );
 	m_button17->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnAboutHeadingOffset ), NULL, this );
+	m_cbCalibrationLocked->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnCalibrationLocked ), NULL, this );
+	m_button171->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnAboutCalibrationLocked ), NULL, this );
 	m_sdbSizer3OK->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnClose ), NULL, this );
 }
 
@@ -851,6 +873,8 @@ CalibrationDialogBase::~CalibrationDialogBase()
 	m_button16->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnAboutLevel ), NULL, this );
 	m_sHeadingOffset->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( CalibrationDialogBase::OnHeadingOffset ), NULL, this );
 	m_button17->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnAboutHeadingOffset ), NULL, this );
+	m_cbCalibrationLocked->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnCalibrationLocked ), NULL, this );
+	m_button171->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnAboutCalibrationLocked ), NULL, this );
 	m_sdbSizer3OK->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnClose ), NULL, this );
 	
 }

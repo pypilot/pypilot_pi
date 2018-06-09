@@ -36,7 +36,7 @@ public:
 
     void Disconnected();
     void Receive(std::string name, Json::Value &value);
-    void SetAPColor();
+    void SetAPColor(wxString mode);
     const char **GetWatchlist();
 
     void RebuildControlAngles();

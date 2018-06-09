@@ -51,15 +51,17 @@ void CalibrationDialog::Receive(std::string name, Json::Value &value)
         m_gLevel->SetValue(100-jsondouble(value));
     else if(name == "imu.compass_calibration_age")
         m_stCompassCalibrationAge->SetLabel(value.asString());
-    else if(name == "imu.heading_offset")
+    else if(name == "imu.heading_offset") {
         if(!m_lastOffsetTime.IsValid() || (wxDateTime::Now() - m_lastOffsetTime).GetSeconds() > 3)
             m_sHeadingOffset->SetValue(jsondouble(value));
+    } else if(name == "imu.compass_calibration_locked")
+        m_cbCalibrationLocked->SetValue(value.asBool());
 }
 
 const char **CalibrationDialog::GetWatchlist()
 {
     static const char *watchlist[] =
-        {"imu.pitch", "imu.roll", "imu.alignmentCounter", "imu.compass_calibration_age", "imu.heading_offset", 0};
+        {"imu.pitch", "imu.roll", "imu.alignmentCounter", "imu.compass_calibration_age", "imu.heading_offset", "imu.compass_calibration_locked", 0};
 
     return watchlist;
 }
@@ -96,5 +98,18 @@ void CalibrationDialog::OnAboutHeadingOffset( wxCommandEvent& event )
     wxMessageDialog mdlg(GetOCPNCanvasWindow(),
                          _("You may manually adjust the alignment of the compass. The autopilot may work without the correct alignment, but the reported headings will not be correct.\n\nThe autopilot may also work better depending on control algorithm if the heading is correctly aligned."),
                          "pypilot", wxOK | wxICON_INFORMATION);
+    mdlg.ShowModal();
+}
+
+void CalibrationDialog::OnCalibrationLocked( wxCommandEvent& event )
+{
+    m_pypilot_pi.m_client.set("imu.compass_calibration_locked", m_cbCalibrationLocked->GetValue());
+}
+
+
+void CalibrationDialog::OnAboutCalibrationLocked( wxCommandEvent& event )
+{
+    wxMessageDialog mdlg(GetOCPNCanvasWindow(),
+                         _("You may wish to lock the compass calibration against automatically updating"), "pypilot", wxOK | wxICON_INFORMATION);
     mdlg.ShowModal();
 }

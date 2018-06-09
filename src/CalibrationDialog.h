@@ -43,6 +43,8 @@ private:
     void OnAboutLevel( wxCommandEvent& event );
     void OnHeadingOffset( wxSpinEvent& event );
     void OnAboutHeadingOffset( wxCommandEvent& event );
+    void OnCalibrationLocked( wxCommandEvent& event );
+    void OnAboutCalibrationLocked( wxCommandEvent& event );
 
     double m_pitch;
     pypilot_pi &m_pypilot_pi;
