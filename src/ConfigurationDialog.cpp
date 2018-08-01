@@ -80,16 +80,12 @@ void ConfigurationDialog::Receive(std::string name, Json::Value &value)
         m_sMaxControllerTemp->SetValue(jsondouble(value));
     else if(name == "servo.max_motor_temp")
         m_sMaxMotorTemp->SetValue(jsondouble(value));
-    else if(name == "servo.min_rudder_pos")
-        m_sMinRudderPos->SetValue(jsondouble(value));
-    else if(name == "servo.max_rudder_pos")
-        m_sMaxRudderPos->SetValue(jsondouble(value));
 }
 
 const char **ConfigurationDialog::GetWatchlist()
 {
     static const char *watchlist[] =
-        {"servo.period", "servo.max_current", "servo.min_speed", "servo.max_speed", "servo.max_controller_temp", "servo.max_motor_temp", "servo.min_rudder_pos", "servo.max_rudder_pos", 0};
+        {"servo.period", "servo.max_current", "servo.min_speed", "servo.max_speed", "servo.max_controller_temp", "servo.max_motor_temp", 0};
     return watchlist;
 }
 
@@ -178,8 +174,6 @@ void ConfigurationDialog::OnOk( wxCommandEvent& event )
     m_pypilot_pi.m_client.set("servo.max_speed", m_sMaxSpeed->GetValue()/100.0);
     m_pypilot_pi.m_client.set("servo.max_controller_temp", m_sMaxControllerTemp->GetValue());
     m_pypilot_pi.m_client.set("servo.max_motor_temp", m_sMaxMotorTemp->GetValue());
-    m_pypilot_pi.m_client.set("servo.min_rudder_pos", m_sMinRudderPos->GetValue());
-    m_pypilot_pi.m_client.set("servo.max_rudder_pos", m_sMaxRudderPos->GetValue());
 
     wxFileConfig *pConf = GetOCPNConfigObject();
     pConf->SetPath ( _T( "/Settings/pypilot" ) );
