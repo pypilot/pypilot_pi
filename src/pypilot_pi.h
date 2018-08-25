@@ -143,8 +143,6 @@ private:
 
       wxTimer m_Timer;
 
-      std::map<std::string, bool> m_watchlist;
-
       wxString m_status;
 
       wxString m_host;
