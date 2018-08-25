@@ -32,8 +32,6 @@
 #include "msvcdefs.h"
 #endif
 
-//#include "pydc.h"
-
 #include "pypilot_pi.h"
 
 #include "pypilotDialog.h"
@@ -43,12 +41,6 @@
 #include "CalibrationDialog.h"
 
 #include "icons.h"
-
-
-static double deg2rad(double deg)
-{
-    return (deg * M_PI / 180.0);
-}
 
 // the class factories, used to create and destroy instances of the PlugIn
 

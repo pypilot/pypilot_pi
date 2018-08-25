@@ -52,9 +52,10 @@ pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxS
 	fgSizer38->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
 	wxFlexGridSizer* fgSizer39;
-	fgSizer39 = new wxFlexGridSizer( 0, 2, 0, 0 );
+	fgSizer39 = new wxFlexGridSizer( 1, 0, 0, 0 );
 	fgSizer39->AddGrowableCol( 0 );
 	fgSizer39->AddGrowableCol( 1 );
+	fgSizer39->AddGrowableCol( 2 );
 	fgSizer39->SetFlexibleDirection( wxBOTH );
 	fgSizer39->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
@@ -63,6 +64,12 @@ pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxS
 	m_stStatus->SetMaxSize( wxSize( 200,-1 ) );
 	
 	fgSizer39->Add( m_stStatus, 0, wxALL, 5 );
+	
+	m_stServoMode = new wxStaticText( this, wxID_ANY, _("-----"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_stServoMode->Wrap( -1 );
+	m_stServoMode->SetFont( wxFont( 10, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxT("Sans") ) );
+	
+	fgSizer39->Add( m_stServoMode, 0, wxALL, 5 );
 	
 	m_stServoFlags = new wxStaticText( this, wxID_ANY, _("-----"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_stServoFlags->Wrap( 200 );

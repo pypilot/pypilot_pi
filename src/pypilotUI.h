@@ -46,6 +46,7 @@ class pypilotDialogBase : public wxDialog
 	protected:
 		wxToggleButton* m_bAP;
 		wxChoice* m_cMode;
+		wxStaticText* m_stServoMode;
 		wxStaticText* m_stServoFlags;
 		wxStaticText* m_stCommand;
 		wxStaticText* m_stHeading;

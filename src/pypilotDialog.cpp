@@ -112,6 +112,8 @@ void pypilotDialog::Receive(std::string name, Json::Value &value)
     } else if(name == "wind.source") {
         m_bAPHaveWind = value.asString() != "none";
         UpdateModes();
+    } else if(name == "servo.mode") {
+        m_stServoMode->SetLabel(value.asString());
     } else if(name == "servo.flags") {
         m_stServoFlags->SetLabel(value.asString());
     } else if(name == "servo.mode") {
@@ -146,7 +148,8 @@ const char **pypilotDialog::GetWatchlist()
 {
     static const char *watchlist[] =
         {"ap.enabled", "ap.mode", "ap.heading", "ap.heading_command",
-         "gps.source", "wind.source", "servo.flags", "servo.mode", 0};
+         "gps.source", "wind.source",
+         "servo.mode", "servo.flags", "servo.mode", 0};
     return watchlist;
 }
 
