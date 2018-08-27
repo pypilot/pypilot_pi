@@ -38,7 +38,7 @@ CalibrationDialog::~CalibrationDialog()
 {
 }
 
-static JSONCPP_STRING StringValue(Json::Value &value)
+static wxString StringValue(Json::Value &value)
 {
     if(value.type() == Json::realValue) {
         char buf[16];
@@ -47,7 +47,7 @@ static JSONCPP_STRING StringValue(Json::Value &value)
     }
 
     if(value.type() == Json::arrayValue) {    
-        JSONCPP_STRING ret = "[";
+        wxString ret = "[";
         for(unsigned int i = 0; i < value.size(); i++) {
             if(i)
                 ret += ", ";

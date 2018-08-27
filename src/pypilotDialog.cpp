@@ -92,6 +92,7 @@ void pypilotDialog::Receive(std::string name, Json::Value &value)
     else if(name == "ap.mode") {
         m_sAPMode = value.asString();
         m_cMode->SetStringSelection(m_sAPMode);
+        RebuildControlAngles();
 
         SetAPColor(m_sAPMode);
     } else if(name == "ap.enabled") {
@@ -155,6 +156,8 @@ const char **pypilotDialog::GetWatchlist()
 
 void pypilotDialog::RebuildControlAngles()
 {
+    bool shown = m_fgControlAnglesPos->AreAnyItemsShown();
+
     wxFileConfig *pConf = GetOCPNConfigObject();
     pConf->SetPath ( _T( "/Settings/pypilot" ) );
     wxString ControlAngles = pConf->Read ( _T ( "ControlAngles" ), "1;10;110;" );
@@ -180,6 +183,7 @@ void pypilotDialog::RebuildControlAngles()
     int cols = pConf->Read ( _T ( "ControlColumns" ), 3 );
     m_fgControlAnglesPos->SetCols(cols);
     m_fgControlAnglesNeg->SetCols(cols);
+
     for(unsigned int i=0; i<angles.size()+cols-1; i++) {
         if(i < angles.size())
             AddButton(angles[i], m_fgControlAnglesPos);
@@ -190,12 +194,16 @@ void pypilotDialog::RebuildControlAngles()
             m_fgControlAnglesNeg->AddSpacer(0);
     }
 
+    m_fgControlAnglesPos->Show(shown);
+    m_fgControlAnglesNeg->Show(shown);
+    
     m_bTrueNorthMode = pConf->Read ( _T ( "TrueNorthMode" ), 0L );
     if(m_bTrueNorthMode && (wxDateTime::UNow() - m_pypilot_pi.m_declinationTime).GetSeconds() > 2000) {
         wxMessageDialog mdlg(GetOCPNCanvasWindow(), _("\
 True North mode not possible without declination.\n\nIs the wmm plugin enabled and a gps fix available?"),
                          "pypilot", wxOK | wxICON_WARNING);
         mdlg.ShowModal();
+        m_bTrueNorthMode = false;
     }
 
     Fit();
@@ -307,6 +315,9 @@ void pypilotDialog::OnManualTimer( wxTimerEvent & )
 
 void pypilotDialog::AddButton(int angle, wxSizer *sizer)
 {
+    if(m_sAPMode.Contains("wind"))
+        angle = -angle;
+
     wxButton *button = new wxButton( this, wxID_ANY, wxString::Format("%ld", angle));
     button->Connect( wxEVT_COMMAND_BUTTON_CLICKED,
                      wxCommandEventHandler( pypilotDialog::OnControlAngle ), NULL, this );
