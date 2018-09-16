@@ -36,7 +36,7 @@
 #include "wxWTranslateCatalog.h"
 
 #define     MY_API_VERSION_MAJOR    1
-#define     MY_API_VERSION_MINOR    10
+#define     MY_API_VERSION_MINOR    11
 
 #define ABOUT_AUTHOR_URL "http://seandepagnier.users.sourceforge.net"
 
@@ -53,8 +53,8 @@
 #define _(s) wxGetTranslation((s))
 #endif // WXINTL_NO_GETTEXT_MACRO
 
-
 #include "ocpn_plugin.h"
+#include "plugingl/qtstylesheet.h"
 
 #ifdef __MSVC__
 #include "msvcdefs.h"
@@ -68,14 +68,14 @@
 
 #define PYPILOT_TOOL_POSITION    -1          // Request default positioning of toolbar tool
 
-class pyDC;
+class piDC;
 class pypilotDialog;
 class GainsDialog;
 class ConfigurationDialog;
 class StatisticsDialog;
 class CalibrationDialog;
 
-class pypilot_pi : public wxEvtHandler, public opencpn_plugin_110
+class pypilot_pi : public wxEvtHandler, public opencpn_plugin_111
 {
 public:
 
@@ -99,7 +99,7 @@ public:
 
       bool RenderOverlay(wxDC &dc, PlugIn_ViewPort *vp);
       bool RenderGLOverlay(wxGLContext *pcontext, PlugIn_ViewPort *vp);
-      void Render(pyDC &dc, PlugIn_ViewPort &vp);
+      void Render(piDC &dc, PlugIn_ViewPort &vp);
       void ReadConfig();
 
       void OnTimer( wxTimerEvent & );

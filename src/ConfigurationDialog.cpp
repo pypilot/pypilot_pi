@@ -32,6 +32,9 @@ ConfigurationDialog::ConfigurationDialog( pypilot_pi &_pypilot_pi, wxWindow* par
     : ConfigurationDialogBase(parent),
       m_pypilot_pi(_pypilot_pi)
 {
+#ifdef __OCPN__ANDROID__
+        GetHandle()->setStyleSheet( qtStyleSheet);
+#endif
     m_sPeriod->SetRange(1, 30);
     m_sMaxCurrent->SetRange(0, 600);
 }

@@ -38,6 +38,9 @@ pypilotDialog::pypilotDialog( pypilot_pi &_pypilot_pi, wxWindow* parent)
       m_bAPHaveGPS(false), m_bAPHaveWind(false),
       m_pypilot_pi(_pypilot_pi)
 {
+#ifdef __OCPN__ANDROID__
+    GetHandle()->setStyleSheet( qtStyleSheet);
+#endif
     wxFileConfig *pConf = GetOCPNConfigObject();
 
     pConf->SetPath ( _T( "/Settings/pypilot" ) );
@@ -245,8 +248,12 @@ void pypilotDialog::OnCalibration( wxCommandEvent& event )
 
 void pypilotDialog::OnStatistics( wxCommandEvent& event )
 {
+    (!m_pypilot_pi.m_StatisticsDialog->IsShown());
     m_pypilot_pi.m_StatisticsDialog->Show(!m_pypilot_pi.m_StatisticsDialog->IsShown());
     m_pypilot_pi.UpdateWatchlist();
+#ifdef __OCPN__ANDROID__
+    m_pypilot_pi.m_StatisticsDialog->ShowModal();
+#endif
 }
 
 void pypilotDialog::OnClose( wxCommandEvent& event )

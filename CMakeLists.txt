@@ -26,16 +26,15 @@ SET(SRC_PYPILOT
             src/ConfigurationDialog.cpp
             src/StatisticsDialog.cpp
             src/CalibrationDialog.cpp
-#            src/pydc.cpp
-#            src/TexFont.cpp
             src/pypilotUI.cpp
             src/icons.cpp
 	)
 
 #INCLUDE("cmake/PluginNMEA.cmake")
 INCLUDE("cmake/PluginJSON.cmake")
+INCLUDE("cmake/PluginGL.cmake")
 
-ADD_LIBRARY(${PACKAGE_NAME} SHARED ${SRC_PYPILOT} ${SRC_JSON})
+ADD_LIBRARY(${PACKAGE_NAME} SHARED ${SRC_PYPILOT} ${SRC_JSON} ${SRC_PLUGINGL})
 ADD_DEFINITIONS(-DTIXML_USE_STL)
 
 INCLUDE("cmake/PluginInstall.cmake")

@@ -32,6 +32,9 @@ StatisticsDialog::StatisticsDialog(pypilot_pi &_pypilot_pi, wxWindow* parent) :
     StatisticsDialogBase(parent),
     m_pypilot_pi(_pypilot_pi)
 {
+#ifdef __OCPN__ANDROID__
+        GetHandle()->setStyleSheet( qtStyleSheet);
+#endif
 }
 
 StatisticsDialog::~StatisticsDialog()
@@ -65,6 +68,9 @@ void StatisticsDialog::OnClose( wxCommandEvent& event )
 {
     Hide();
     m_pypilot_pi.UpdateWatchlist();
+#ifdef __OCPN__ANDROID__
+//    EndModal();
+#endif
 }
 
 void StatisticsDialog::OnResetAmpHours( wxCommandEvent& event )
