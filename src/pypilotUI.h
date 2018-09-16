@@ -46,6 +46,7 @@ class pypilotDialogBase : public wxDialog
 	protected:
 		wxToggleButton* m_bAP;
 		wxChoice* m_cMode;
+		wxStaticText* m_stServoMode;
 		wxStaticText* m_stServoFlags;
 		wxStaticText* m_stCommand;
 		wxStaticText* m_stHeading;
@@ -152,12 +153,6 @@ class ConfigurationDialogBase : public wxDialog
 		wxStaticText* m_staticText32;
 		wxSpinCtrl* m_sMaxMotorTemp;
 		wxStaticText* m_staticText311;
-		wxStaticText* m_staticText41;
-		wxSpinCtrl* m_sMinRudderPos;
-		wxStaticText* m_staticText42;
-		wxStaticText* m_staticText43;
-		wxSpinCtrl* m_sMaxRudderPos;
-		wxStaticText* m_staticText44;
 		wxButton* m_bInformation;
 		wxStdDialogButtonSizer* m_sdbSizer2;
 		wxButton* m_sdbSizer2OK;
@@ -203,6 +198,9 @@ class StatisticsDialogBase : public wxDialog
 		wxStaticText* m_staticText21;
 		wxStaticText* m_stAmpHours;
 		wxButton* m_bResetAmpHours;
+		wxStaticText* m_staticText45;
+		wxStaticText* m_stVoltage;
+		wxStaticText* m_staticText47;
 		wxStaticText* m_staticText24;
 		wxStaticText* m_stControllerTemp;
 		wxStaticText* m_staticText26;
@@ -233,8 +231,16 @@ class CalibrationDialogBase : public wxDialog
 	private:
 	
 	protected:
+		wxStaticText* m_stAccelCalibration;
+		wxStaticText* m_staticText48;
+		wxStaticText* m_stAccelCalibrationAge;
+		wxCheckBox* m_cbAccelCalibrationLocked;
+		wxButton* m_button1711;
+		wxStaticText* m_stCompassCalibration;
 		wxStaticText* m_staticText30;
 		wxStaticText* m_stCompassCalibrationAge;
+		wxCheckBox* m_cbCompassCalibrationLocked;
+		wxButton* m_button171;
 		wxStaticText* m_staticText25;
 		wxStaticText* m_stPitchRoll;
 		wxGauge* m_gLevel;
@@ -243,15 +249,28 @@ class CalibrationDialogBase : public wxDialog
 		wxStaticText* m_staticText34;
 		wxSpinCtrl* m_sHeadingOffset;
 		wxButton* m_button17;
+		wxStaticText* m_staticText49;
+		wxStaticText* m_stRudder;
+		wxButton* m_button22;
+		wxButton* m_button23;
+		wxButton* m_button172;
+		wxStaticText* m_staticText51;
+		wxSpinCtrl* m_sRudderRange;
 		wxStdDialogButtonSizer* m_sdbSizer3;
 		wxButton* m_sdbSizer3OK;
 		
 		// Virtual event handlers, overide them in your derived class
 		virtual void OnClose( wxCloseEvent& event ) { event.Skip(); }
+		virtual void OnCalibrationLocked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnAboutCalibrationLocked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnLevel( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnAboutLevel( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnHeadingOffset( wxSpinEvent& event ) { event.Skip(); }
 		virtual void OnAboutHeadingOffset( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnRudderCentered( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnRudderAtRange( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnAboutRudderCalibration( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnRudderRange( wxSpinEvent& event ) { event.Skip(); }
 		virtual void OnClose( wxCommandEvent& event ) { event.Skip(); }
 		
 	

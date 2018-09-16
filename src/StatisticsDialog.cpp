@@ -48,9 +48,11 @@ void StatisticsDialog::Receive(std::string name, Json::Value &value)
     else if(name == "ap.runtime")
         m_stAPRuntime->SetLabel(value.asString());
     else if(name == "servo.watts")
-        m_stWatts->SetLabel(jsonformat("%.1f", value));
+        m_stWatts->SetLabel(jsonformat("%.2f", value));
     else if(name == "servo.amp_hours")
-        m_stAmpHours->SetLabel(jsonformat("%.1f", value));
+        m_stAmpHours->SetLabel(jsonformat("%.2f", value));
+    else if(name == "servo.voltage")
+        m_stVoltage->SetLabel(jsonformat("%.2f", value));
     else if(name == "servo.controller_temp")
         m_stControllerTemp->SetLabel(jsonformat("%.1f", value));
     else if(name == "servo.motor_temp")
@@ -60,7 +62,7 @@ void StatisticsDialog::Receive(std::string name, Json::Value &value)
 const char **StatisticsDialog::GetWatchlist()
 {
     static const char *watchlist[] =
-        {"imu.uptime", "ap.runtime", "servo.watts", "servo.amp_hours", "servo.controller_temp", "servo.motor_temp", 0};
+        {"imu.uptime", "ap.runtime", "servo.watts", "servo.amp_hours", "servo.voltage", "servo.controller_temp", "servo.motor_temp", 0};
     return watchlist;
 }
 

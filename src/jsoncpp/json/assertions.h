@@ -1,4 +1,4 @@
-// Copyright 2007-2010 Baptiste Lepilleur and The JsonCpp Authors
+// Copyright 2007-2010 Baptiste Lepilleur
 // Distributed under MIT license, or public domain if desired and
 // recognized in your jurisdiction.
 // See file LICENSE for detail or copy at http://jsoncpp.sourceforge.net/LICENSE
@@ -13,32 +13,20 @@
 #include "config.h"
 #endif // if !defined(JSON_IS_AMALGAMATION)
 
-/** It should not be possible for a maliciously designed file to
- *  cause an abort() or seg-fault, so these macros are used only
- *  for pre-condition violations and internal logic errors.
- */
 #if JSON_USE_EXCEPTION
-
-// @todo <= add detail about condition in exception
-# define JSON_ASSERT(condition)                                                \
-  {if (!(condition)) {Json::throwLogicError( "assert json failed" );}}
-
-# define JSON_FAIL_MESSAGE(message)                                            \
-  {                                                                            \
-    JSONCPP_OSTRINGSTREAM oss; oss << message;                                    \
-    Json::throwLogicError(oss.str());                                          \
-    abort();                                                                   \
-  }
-
+#include <stdexcept>
+#define JSON_ASSERT(condition)                                                 \
+  if (!(condition)) {throw std::runtime_error( "assert json failed" );} // @todo <= add detail about condition in exception
+#define JSON_FAIL_MESSAGE(message) do{std::ostringstream oss; oss << message; throw std::runtime_error(oss.str());}while(0)
+//#define JSON_FAIL_MESSAGE(message) throw std::runtime_error(message)
 #else // JSON_USE_EXCEPTION
-
-# define JSON_ASSERT(condition) assert(condition)
+#define JSON_ASSERT(condition) assert(condition);
 
 // The call to assert() will show the failure message in debug builds. In
-// release builds we abort, for a core-dump or debugger.
-# define JSON_FAIL_MESSAGE(message)                                            \
+// release bugs we abort, for a core-dump or debugger.
+#define JSON_FAIL_MESSAGE(message)                                             \
   {                                                                            \
-    JSONCPP_OSTRINGSTREAM oss; oss << message;                                    \
+    std::ostringstream oss; oss << message;                                    \
     assert(false && oss.str().c_str());                                        \
     abort();                                                                   \
   }

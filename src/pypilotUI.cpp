@@ -52,9 +52,10 @@ pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxS
 	fgSizer38->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
 	wxFlexGridSizer* fgSizer39;
-	fgSizer39 = new wxFlexGridSizer( 0, 2, 0, 0 );
+	fgSizer39 = new wxFlexGridSizer( 1, 0, 0, 0 );
 	fgSizer39->AddGrowableCol( 0 );
 	fgSizer39->AddGrowableCol( 1 );
+	fgSizer39->AddGrowableCol( 2 );
 	fgSizer39->SetFlexibleDirection( wxBOTH );
 	fgSizer39->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
@@ -63,6 +64,12 @@ pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxS
 	m_stStatus->SetMaxSize( wxSize( 200,-1 ) );
 	
 	fgSizer39->Add( m_stStatus, 0, wxALL, 5 );
+	
+	m_stServoMode = new wxStaticText( this, wxID_ANY, _("-----"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_stServoMode->Wrap( -1 );
+	m_stServoMode->SetFont( wxFont( 10, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxT("Sans") ) );
+	
+	fgSizer39->Add( m_stServoMode, 0, wxALL, 5 );
 	
 	m_stServoFlags = new wxStaticText( this, wxID_ANY, _("-----"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_stServoFlags->Wrap( 200 );
@@ -519,28 +526,6 @@ ConfigurationDialogBase::ConfigurationDialogBase( wxWindow* parent, wxWindowID i
 	m_staticText311->Wrap( -1 );
 	fgSizer21->Add( m_staticText311, 0, wxALL, 3 );
 	
-	m_staticText41 = new wxStaticText( sbSizer2->GetStaticBox(), wxID_ANY, _("Min Rudder Pos"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText41->Wrap( -1 );
-	fgSizer21->Add( m_staticText41, 0, wxALL, 3 );
-	
-	m_sMinRudderPos = new wxSpinCtrl( sbSizer2->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 100,-1 ), wxSP_ARROW_KEYS, -100, 100, 0 );
-	fgSizer21->Add( m_sMinRudderPos, 0, wxALL, 3 );
-	
-	m_staticText42 = new wxStaticText( sbSizer2->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText42->Wrap( -1 );
-	fgSizer21->Add( m_staticText42, 0, wxALL, 5 );
-	
-	m_staticText43 = new wxStaticText( sbSizer2->GetStaticBox(), wxID_ANY, _("Max Rudder Pos"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText43->Wrap( -1 );
-	fgSizer21->Add( m_staticText43, 0, wxALL, 3 );
-	
-	m_sMaxRudderPos = new wxSpinCtrl( sbSizer2->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 100,-1 ), wxSP_ARROW_KEYS, -100, 100, 0 );
-	fgSizer21->Add( m_sMaxRudderPos, 0, wxALL, 3 );
-	
-	m_staticText44 = new wxStaticText( sbSizer2->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText44->Wrap( -1 );
-	fgSizer21->Add( m_staticText44, 0, wxALL, 5 );
-	
 	
 	fgSizer14->Add( fgSizer21, 1, wxEXPAND, 5 );
 	
@@ -676,6 +661,18 @@ StatisticsDialogBase::StatisticsDialogBase( wxWindow* parent, wxWindowID id, con
 	m_bResetAmpHours = new wxButton( this, wxID_ANY, _("Reset"), wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer19->Add( m_bResetAmpHours, 0, wxALL, 5 );
 	
+	m_staticText45 = new wxStaticText( this, wxID_ANY, _("Voltage"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText45->Wrap( -1 );
+	fgSizer19->Add( m_staticText45, 0, wxALL, 5 );
+	
+	m_stVoltage = new wxStaticText( this, wxID_ANY, _("-------"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_stVoltage->Wrap( -1 );
+	fgSizer19->Add( m_stVoltage, 0, wxALL, 5 );
+	
+	m_staticText47 = new wxStaticText( this, wxID_ANY, _("V"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText47->Wrap( -1 );
+	fgSizer19->Add( m_staticText47, 0, wxALL, 5 );
+	
 	m_staticText24 = new wxStaticText( this, wxID_ANY, _("Controller Temperature"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText24->Wrap( -1 );
 	fgSizer19->Add( m_staticText24, 0, wxALL, 5 );
@@ -737,12 +734,64 @@ CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, c
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 	
 	wxFlexGridSizer* fgSizer19;
-	fgSizer19 = new wxFlexGridSizer( 0, 1, 0, 0 );
+	fgSizer19 = new wxFlexGridSizer( 0, 2, 0, 0 );
 	fgSizer19->SetFlexibleDirection( wxBOTH );
 	fgSizer19->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
+	wxStaticBoxSizer* sbSizer6;
+	sbSizer6 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Accel") ), wxVERTICAL );
+	
+	wxFlexGridSizer* fgSizer35;
+	fgSizer35 = new wxFlexGridSizer( 0, 1, 0, 0 );
+	fgSizer35->AddGrowableCol( 0 );
+	fgSizer35->SetFlexibleDirection( wxBOTH );
+	fgSizer35->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
+	m_stAccelCalibration = new wxStaticText( sbSizer6->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_stAccelCalibration->Wrap( 30 );
+	fgSizer35->Add( m_stAccelCalibration, 0, wxALL|wxEXPAND, 5 );
+	
+	wxFlexGridSizer* fgSizer36;
+	fgSizer36 = new wxFlexGridSizer( 0, 2, 0, 0 );
+	fgSizer36->SetFlexibleDirection( wxBOTH );
+	fgSizer36->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
+	m_staticText48 = new wxStaticText( sbSizer6->GetStaticBox(), wxID_ANY, _("Age"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText48->Wrap( -1 );
+	fgSizer36->Add( m_staticText48, 0, wxALL, 5 );
+	
+	m_stAccelCalibrationAge = new wxStaticText( sbSizer6->GetStaticBox(), wxID_ANY, _("-----"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_stAccelCalibrationAge->Wrap( -1 );
+	fgSizer36->Add( m_stAccelCalibrationAge, 0, wxALL, 5 );
+	
+	m_cbAccelCalibrationLocked = new wxCheckBox( sbSizer6->GetStaticBox(), wxID_ANY, _("Calibration Locked"), wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer36->Add( m_cbAccelCalibrationLocked, 0, wxALL, 5 );
+	
+	m_button1711 = new wxButton( sbSizer6->GetStaticBox(), wxID_ANY, _("?"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_button1711->SetMaxSize( wxSize( 40,-1 ) );
+	
+	fgSizer36->Add( m_button1711, 0, wxALL, 5 );
+	
+	
+	fgSizer35->Add( fgSizer36, 1, wxEXPAND, 5 );
+	
+	
+	sbSizer6->Add( fgSizer35, 1, wxEXPAND, 5 );
+	
+	
+	fgSizer19->Add( sbSizer6, 1, wxEXPAND, 5 );
+	
 	wxStaticBoxSizer* sbSizer4;
 	sbSizer4 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Compass") ), wxVERTICAL );
+	
+	wxFlexGridSizer* fgSizer41;
+	fgSizer41 = new wxFlexGridSizer( 0, 1, 0, 0 );
+	fgSizer41->SetFlexibleDirection( wxBOTH );
+	fgSizer41->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
+	m_stCompassCalibration = new wxStaticText( sbSizer4->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_stCompassCalibration->Wrap( 30 );
+	fgSizer41->Add( m_stCompassCalibration, 0, wxALL, 5 );
 	
 	wxFlexGridSizer* fgSizer22;
 	fgSizer22 = new wxFlexGridSizer( 0, 2, 0, 0 );
@@ -758,8 +807,19 @@ CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, c
 	m_stCompassCalibrationAge->Wrap( -1 );
 	fgSizer22->Add( m_stCompassCalibrationAge, 0, wxALL|wxEXPAND, 5 );
 	
+	m_cbCompassCalibrationLocked = new wxCheckBox( sbSizer4->GetStaticBox(), wxID_ANY, _("Calibration Locked"), wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer22->Add( m_cbCompassCalibrationLocked, 0, wxALL, 5 );
 	
-	sbSizer4->Add( fgSizer22, 1, wxEXPAND, 5 );
+	m_button171 = new wxButton( sbSizer4->GetStaticBox(), wxID_ANY, _("?"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_button171->SetMaxSize( wxSize( 40,-1 ) );
+	
+	fgSizer22->Add( m_button171, 0, wxALL, 5 );
+	
+	
+	fgSizer41->Add( fgSizer22, 1, wxEXPAND, 5 );
+	
+	
+	sbSizer4->Add( fgSizer41, 1, wxEXPAND, 5 );
 	
 	
 	fgSizer19->Add( sbSizer4, 1, wxEXPAND, 5 );
@@ -784,7 +844,7 @@ CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, c
 	sbSizer3->Add( fgSizer20, 1, wxEXPAND, 5 );
 	
 	wxFlexGridSizer* fgSizer31;
-	fgSizer31 = new wxFlexGridSizer( 2, 3, 0, 0 );
+	fgSizer31 = new wxFlexGridSizer( 0, 3, 0, 0 );
 	fgSizer31->SetFlexibleDirection( wxBOTH );
 	fgSizer31->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
@@ -820,6 +880,70 @@ CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, c
 	
 	fgSizer19->Add( sbSizer3, 1, wxEXPAND, 5 );
 	
+	wxStaticBoxSizer* sbSizer7;
+	sbSizer7 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Rudder Feedback") ), wxVERTICAL );
+	
+	wxFlexGridSizer* fgSizer42;
+	fgSizer42 = new wxFlexGridSizer( 0, 1, 0, 0 );
+	fgSizer42->SetFlexibleDirection( wxBOTH );
+	fgSizer42->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
+	wxFlexGridSizer* fgSizer39;
+	fgSizer39 = new wxFlexGridSizer( 0, 2, 0, 0 );
+	fgSizer39->SetFlexibleDirection( wxBOTH );
+	fgSizer39->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
+	m_staticText49 = new wxStaticText( sbSizer7->GetStaticBox(), wxID_ANY, _("Rudder"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText49->Wrap( -1 );
+	fgSizer39->Add( m_staticText49, 0, wxALL, 5 );
+	
+	m_stRudder = new wxStaticText( sbSizer7->GetStaticBox(), wxID_ANY, _("-----"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_stRudder->Wrap( -1 );
+	fgSizer39->Add( m_stRudder, 0, wxALL, 5 );
+	
+	
+	fgSizer42->Add( fgSizer39, 1, wxEXPAND, 5 );
+	
+	wxFlexGridSizer* fgSizer40;
+	fgSizer40 = new wxFlexGridSizer( 1, 0, 0, 0 );
+	fgSizer40->SetFlexibleDirection( wxBOTH );
+	fgSizer40->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
+	m_button22 = new wxButton( sbSizer7->GetStaticBox(), wxID_ANY, _("Centered"), wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer40->Add( m_button22, 0, wxALL, 5 );
+	
+	m_button23 = new wxButton( sbSizer7->GetStaticBox(), wxID_ANY, _("At Range"), wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer40->Add( m_button23, 0, wxALL, 5 );
+	
+	m_button172 = new wxButton( sbSizer7->GetStaticBox(), wxID_ANY, _("?"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_button172->SetMaxSize( wxSize( 40,-1 ) );
+	
+	fgSizer40->Add( m_button172, 0, wxALL, 5 );
+	
+	
+	fgSizer42->Add( fgSizer40, 1, wxEXPAND, 5 );
+	
+	wxFlexGridSizer* fgSizer411;
+	fgSizer411 = new wxFlexGridSizer( 0, 2, 0, 0 );
+	fgSizer411->SetFlexibleDirection( wxBOTH );
+	fgSizer411->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
+	m_staticText51 = new wxStaticText( sbSizer7->GetStaticBox(), wxID_ANY, _("Range"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText51->Wrap( -1 );
+	fgSizer411->Add( m_staticText51, 0, wxALL, 5 );
+	
+	m_sRudderRange = new wxSpinCtrl( sbSizer7->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 10, 90, 30 );
+	fgSizer411->Add( m_sRudderRange, 0, wxALL, 5 );
+	
+	
+	fgSizer42->Add( fgSizer411, 1, wxEXPAND, 5 );
+	
+	
+	sbSizer7->Add( fgSizer42, 1, wxEXPAND, 5 );
+	
+	
+	fgSizer19->Add( sbSizer7, 1, wxEXPAND, 5 );
+	
 	m_sdbSizer3 = new wxStdDialogButtonSizer();
 	m_sdbSizer3OK = new wxButton( this, wxID_OK );
 	m_sdbSizer3->AddButton( m_sdbSizer3OK );
@@ -836,10 +960,18 @@ CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, c
 	
 	// Connect Events
 	this->Connect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( CalibrationDialogBase::OnClose ) );
+	m_cbAccelCalibrationLocked->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnCalibrationLocked ), NULL, this );
+	m_button1711->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnAboutCalibrationLocked ), NULL, this );
+	m_cbCompassCalibrationLocked->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnCalibrationLocked ), NULL, this );
+	m_button171->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnAboutCalibrationLocked ), NULL, this );
 	m_bLevel->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnLevel ), NULL, this );
 	m_button16->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnAboutLevel ), NULL, this );
 	m_sHeadingOffset->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( CalibrationDialogBase::OnHeadingOffset ), NULL, this );
 	m_button17->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnAboutHeadingOffset ), NULL, this );
+	m_button22->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnRudderCentered ), NULL, this );
+	m_button23->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnRudderAtRange ), NULL, this );
+	m_button172->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnAboutRudderCalibration ), NULL, this );
+	m_sRudderRange->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( CalibrationDialogBase::OnRudderRange ), NULL, this );
 	m_sdbSizer3OK->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnClose ), NULL, this );
 }
 
@@ -847,10 +979,18 @@ CalibrationDialogBase::~CalibrationDialogBase()
 {
 	// Disconnect Events
 	this->Disconnect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( CalibrationDialogBase::OnClose ) );
+	m_cbAccelCalibrationLocked->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnCalibrationLocked ), NULL, this );
+	m_button1711->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnAboutCalibrationLocked ), NULL, this );
+	m_cbCompassCalibrationLocked->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnCalibrationLocked ), NULL, this );
+	m_button171->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnAboutCalibrationLocked ), NULL, this );
 	m_bLevel->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnLevel ), NULL, this );
 	m_button16->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnAboutLevel ), NULL, this );
 	m_sHeadingOffset->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( CalibrationDialogBase::OnHeadingOffset ), NULL, this );
 	m_button17->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnAboutHeadingOffset ), NULL, this );
+	m_button22->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnRudderCentered ), NULL, this );
+	m_button23->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnRudderAtRange ), NULL, this );
+	m_button172->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnAboutRudderCalibration ), NULL, this );
+	m_sRudderRange->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( CalibrationDialogBase::OnRudderRange ), NULL, this );
 	m_sdbSizer3OK->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnClose ), NULL, this );
 	
 }

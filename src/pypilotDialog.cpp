@@ -95,8 +95,9 @@ void pypilotDialog::Receive(std::string name, Json::Value &value)
     else if(name == "ap.mode") {
         m_sAPMode = value.asString();
         m_cMode->SetStringSelection(m_sAPMode);
+        RebuildControlAngles();
 
-        SetAPColor();
+        SetAPColor(m_sAPMode);
     } else if(name == "ap.enabled") {
         bool enabled = value.asBool();
         m_bAP->SetValue(enabled);
@@ -104,7 +105,7 @@ void pypilotDialog::Receive(std::string name, Json::Value &value)
         m_fgControlAnglesPos->Show(enabled);
         m_fgControlAnglesNeg->Show(enabled);
         m_fgControlManual->Show(!enabled);
-        SetAPColor();
+        SetAPColor(m_cMode->GetStringSelection());
 
         wxSize s(100,100);
         SetMinSize(s);
@@ -115,6 +116,8 @@ void pypilotDialog::Receive(std::string name, Json::Value &value)
     } else if(name == "wind.source") {
         m_bAPHaveWind = value.asString() != "none";
         UpdateModes();
+    } else if(name == "servo.mode") {
+        m_stServoMode->SetLabel(value.asString());
     } else if(name == "servo.flags") {
         m_stServoFlags->SetLabel(value.asString());
     } else if(name == "servo.mode") {
@@ -128,17 +131,18 @@ void pypilotDialog::Receive(std::string name, Json::Value &value)
     }
 }
 
-void pypilotDialog::SetAPColor()
+void pypilotDialog::SetAPColor(wxString mode)
 {
     wxColour c = *wxBLACK;
+    wxString sel = m_cMode->GetStringSelection();
     if(m_bAP->GetValue()) {
-        if(m_cMode->GetStringSelection() == "compass")
+        if(mode == "compass")
             c = *wxGREEN;
-        else if(m_cMode->GetStringSelection() == "gps")
+        else if(mode == "gps")
             c = *wxYELLOW;
-        else if(m_cMode->GetStringSelection() == "wind")
+        else if(mode == "wind")
             c = *wxBLUE;
-        else if(m_cMode->GetStringSelection() == "true wind")
+        else if(mode == "true wind")
             c = *wxCYAN;
     }
     m_bAP->SetForegroundColour(c);
@@ -148,12 +152,15 @@ const char **pypilotDialog::GetWatchlist()
 {
     static const char *watchlist[] =
         {"ap.enabled", "ap.mode", "ap.heading", "ap.heading_command",
-         "gps.source", "wind.source", "servo.flags", "servo.mode", 0};
+         "gps.source", "wind.source",
+         "servo.mode", "servo.flags", "servo.mode", 0};
     return watchlist;
 }
 
 void pypilotDialog::RebuildControlAngles()
 {
+    bool shown = m_fgControlAnglesPos->AreAnyItemsShown();
+
     wxFileConfig *pConf = GetOCPNConfigObject();
     pConf->SetPath ( _T( "/Settings/pypilot" ) );
     wxString ControlAngles = pConf->Read ( _T ( "ControlAngles" ), "1;10;110;" );
@@ -179,6 +186,7 @@ void pypilotDialog::RebuildControlAngles()
     int cols = pConf->Read ( _T ( "ControlColumns" ), 3 );
     m_fgControlAnglesPos->SetCols(cols);
     m_fgControlAnglesNeg->SetCols(cols);
+
     for(unsigned int i=0; i<angles.size()+cols-1; i++) {
         if(i < angles.size())
             AddButton(angles[i], m_fgControlAnglesPos);
@@ -189,12 +197,16 @@ void pypilotDialog::RebuildControlAngles()
             m_fgControlAnglesNeg->AddSpacer(0);
     }
 
+    m_fgControlAnglesPos->Show(shown);
+    m_fgControlAnglesNeg->Show(shown);
+    
     m_bTrueNorthMode = pConf->Read ( _T ( "TrueNorthMode" ), 0L );
     if(m_bTrueNorthMode && (wxDateTime::UNow() - m_pypilot_pi.m_declinationTime).GetSeconds() > 2000) {
         wxMessageDialog mdlg(GetOCPNCanvasWindow(), _("\
 True North mode not possible without declination.\n\nIs the wmm plugin enabled and a gps fix available?"),
                          "pypilot", wxOK | wxICON_WARNING);
         mdlg.ShowModal();
+        m_bTrueNorthMode = false;
     }
 
     Fit();
@@ -268,7 +280,7 @@ void pypilotDialog::OnControlAngle( wxCommandEvent& event )
     wxString angle = button->GetLabel(), heading_command = m_stCommand->GetLabel();
     double a, b;
     if(heading_command.ToDouble(&a) && angle.ToDouble(&b)) {
-        double cmd = a + b;
+        double cmd = heading_resolve_pos(a + b);
         m_stCommand->SetLabel(wxString::Format("%.1f", cmd));
         m_HeadingCommandUpdate = wxDateTime::UNow();
         if(m_bTrueNorthMode && m_cMode->GetSelection() == 0 /*compass*/)
@@ -310,6 +322,9 @@ void pypilotDialog::OnManualTimer( wxTimerEvent & )
 
 void pypilotDialog::AddButton(int angle, wxSizer *sizer)
 {
+    if(m_sAPMode.Contains("wind"))
+        angle = -angle;
+
     wxButton *button = new wxButton( this, wxID_ANY, wxString::Format("%ld", angle));
     button->Connect( wxEVT_COMMAND_BUTTON_CLICKED,
                      wxCommandEventHandler( pypilotDialog::OnControlAngle ), NULL, this );

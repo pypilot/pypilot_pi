@@ -50,6 +50,7 @@ public:
     void watch(std::string name, bool on=true);
 
     bool info(std::string name, Json::Value &info);
+    void update_watchlist(std::map<std::string, bool> &watchlist, bool refresh=false);
 
 protected:
     virtual void OnConnected() = 0;
@@ -69,6 +70,8 @@ private:
     bool m_bQueueMode;
     
     bool m_bRequestList, m_bRequestingList;
+
+    std::map<std::string, bool> m_watchlist;
 
 DECLARE_EVENT_TABLE()
 };

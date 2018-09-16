@@ -32,8 +32,8 @@
 #include "msvcdefs.h"
 #endif
 
-#include "plugingl/pidc.h"
 
+#include "plugingl/pidc.h"
 #include "pypilot_pi.h"
 
 #include "pypilotDialog.h"
@@ -44,11 +44,7 @@
 
 #include "icons.h"
 
-
-static double deg2rad(double deg)
-{
-    return (deg * M_PI / 180.0);
-}
+inline double deg2rad(double degrees) { return M_PI * degrees / 180.0; }
 
 // the class factories, used to create and destroy instances of the PlugIn
 
@@ -200,7 +196,7 @@ void pypilot_pi::RearrangeWindow()
 double pypilot_pi::AdjustHeading(double heading)
 {
     if(m_mode == "compass")
-        return heading + m_declination;
+        return heading - m_declination;
     if(m_mode == "gps")
         return heading;
     // otherwise wind or true wind
@@ -295,22 +291,7 @@ void pypilot_pi::UpdateWatchlist()
     static const char *wl[] = {"ap.mode", "ap.enabled", 0};
     MergeWatchlist(watchlist, wl);
 
-    // watch new keys we weren't watching
-    for(std::map<std::string, bool>::iterator it = watchlist.begin(); it != watchlist.end(); it++)
-        if(m_watchlist.find(it->first) == m_watchlist.end()) {
-            //printf("add watch %s\n", it->first.mb_str().data());
-            m_client.watch(it->first);
-        } else
-            m_client.get(it->first); // make sure we get the value again to update dialog here
-
-    // unwatch old keys we don't need
-    for(std::map<std::string, bool>::iterator it = m_watchlist.begin(); it != m_watchlist.end(); it++)
-        if(watchlist.find(it->first) == watchlist.end()) {
-            //printf("remove watch %s\n", it->first.mb_str().data());
-            m_client.watch(it->first, false);
-        }
-
-    m_watchlist = watchlist;
+    m_client.update_watchlist(watchlist, true);
 }
 
 void pypilot_pi::OnToolbarToolCallback(int id)
@@ -461,7 +442,6 @@ void pypilot_pi::OnConnected()
 void pypilot_pi::OnDisconnected()
 {
     m_status = _("Disconnected");
-    m_watchlist.clear();
     if(m_pypilotDialog)
         m_pypilotDialog->Disconnected();
     SetToolbarToolBitmaps(m_leftclick_tool_id, _img_pypilot_grey, _img_pypilot_grey);

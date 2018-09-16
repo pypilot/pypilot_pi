@@ -68,6 +68,7 @@ void SignalKClient::disconnect()
 {
     m_sock.Close();
     m_list = Json::Value();
+    m_watchlist.clear();
     OnDisconnected();
 }
 
@@ -159,6 +160,23 @@ void SignalKClient::send(Json::Value &request)
     Json::FastWriter writer;
     std::string str = writer.write(request);
     m_sock.Write(str.c_str(), str.size());
+}
+
+void SignalKClient::update_watchlist(std::map<std::string, bool> &watchlist, bool refresh)
+{
+        // watch new keys we weren't watching
+    for(std::map<std::string, bool>::iterator it = watchlist.begin(); it != watchlist.end(); it++)
+        if(m_watchlist.find(it->first) == m_watchlist.end())
+            watch(it->first);
+        else if(refresh)
+            get(it->first); // make sure we get the value again to update dialog here
+
+    // unwatch old keys we don't need
+    for(std::map<std::string, bool>::iterator it = m_watchlist.begin(); it != m_watchlist.end(); it++)
+        if(watchlist.find(it->first) == watchlist.end())
+            watch(it->first, false);
+
+    m_watchlist = watchlist;
 }
 
 void SignalKClient::OnSocketEvent(wxSocketEvent& event)

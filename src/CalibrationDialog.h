@@ -38,13 +38,22 @@ public:
     const char **GetWatchlist();
 
 private:
+    void OnCalibrationLocked( wxCommandEvent& event );
+    void OnAboutCalibrationLocked( wxCommandEvent& event );
     void OnClose( wxCommandEvent& event );
     void OnLevel( wxCommandEvent& event );
     void OnAboutLevel( wxCommandEvent& event );
     void OnHeadingOffset( wxSpinEvent& event );
     void OnAboutHeadingOffset( wxCommandEvent& event );
 
+    void OnRudderCentered( wxCommandEvent& event );
+    void OnRudderAtRange( wxCommandEvent& event );
+    void OnRudderRange( wxSpinEvent& event );
+    void OnAboutRudderCalibration( wxCommandEvent& event );
+
     double m_pitch;
+
+    double m_rudder, m_rudder_offset, m_rudder_scale;
     pypilot_pi &m_pypilot_pi;
     wxDateTime m_lastOffsetTime;
 
