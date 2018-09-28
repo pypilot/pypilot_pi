@@ -114,11 +114,14 @@ void pypilotDialog::Receive(std::string name, Json::Value &value)
         m_bAPHaveWind = value.asString() != "none";
         UpdateModes();
     } else if(name == "servo.mode") {
-        m_stServoMode->SetLabel(value.asString());
+        if(m_servoController != "none")
+            m_stServoMode->SetLabel(value.asString());
     } else if(name == "servo.flags") {
         m_stServoFlags->SetLabel(value.asString());
-    } else if(name == "servo.mode") {
-        // do something with this?
+    } else if(name == "servo.controller") {
+        if(value == "none")
+            m_stServoMode->SetLabel(_("No Motor Controller"));
+        m_servoController = value.asString();
     }
 
     if(!wxIsNaN(m_HeadingCommand) &&
@@ -150,7 +153,7 @@ const char **pypilotDialog::GetWatchlist()
     static const char *watchlist[] =
         {"ap.enabled", "ap.mode", "ap.heading", "ap.heading_command",
          "gps.source", "wind.source",
-         "servo.mode", "servo.flags", "servo.mode", 0};
+         "servo.mode", "servo.flags", "servo.controller", 0};
     return watchlist;
 }
 
