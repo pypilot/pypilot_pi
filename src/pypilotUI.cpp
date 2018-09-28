@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Feb 20 2018)
+// C++ code generated with wxFormBuilder (version May 19 2018)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO *NOT* EDIT THIS FILE!
@@ -35,8 +35,9 @@ pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxS
 	
 	fgSizer13->Add( m_bAP, 0, wxALL, 5 );
 	
-	wxArrayString m_cModeChoices;
-	m_cMode = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_cModeChoices, 0 );
+	wxString m_cModeChoices[] = { _("N/A") };
+	int m_cModeNChoices = sizeof( m_cModeChoices ) / sizeof( wxString );
+	m_cMode = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_cModeNChoices, m_cModeChoices, 0 );
 	m_cMode->SetSelection( 0 );
 	m_cMode->SetMaxSize( wxSize( 100,-1 ) );
 	
@@ -100,9 +101,6 @@ pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxS
 	
 	fgSizer12->Add( m_stHeading, 0, wxALL|wxEXPAND, 5 );
 	
-	
-	fgSizer38->Add( fgSizer12, 1, wxEXPAND, 5 );
-	
 	wxFlexGridSizer* fgSizer29;
 	fgSizer29 = new wxFlexGridSizer( 0, 2, 0, 0 );
 	fgSizer29->SetFlexibleDirection( wxBOTH );
@@ -123,7 +121,10 @@ pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxS
 	fgSizer29->Add( m_fgControlAnglesPos, 1, wxEXPAND, 5 );
 	
 	
-	fgSizer38->Add( fgSizer29, 1, wxEXPAND, 5 );
+	fgSizer12->Add( fgSizer29, 1, wxEXPAND, 5 );
+	
+	
+	fgSizer38->Add( fgSizer12, 1, wxEXPAND, 5 );
 	
 	m_fgControlManual = new wxFlexGridSizer( 1, 0, 0, 0 );
 	m_fgControlManual->AddGrowableCol( 0 );
@@ -370,6 +371,8 @@ ConfigurationDialogBase::ConfigurationDialogBase( wxWindow* parent, wxWindowID i
 	fgSizer26->Add( m_sControlAngle, 0, wxALL, 5 );
 	
 	m_lControlAngles = new wxListBox( sbSizer5->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 ); 
+	m_lControlAngles->SetMinSize( wxSize( -1,10 ) );
+	
 	fgSizer26->Add( m_lControlAngles, 0, wxALL|wxEXPAND, 5 );
 	
 	
