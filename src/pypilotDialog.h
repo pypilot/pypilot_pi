@@ -24,6 +24,10 @@
  ***************************************************************************
  */
 
+#ifdef __OCPN__ANDROID__
+#include <wx/qt/private/wxQtGesture.h>
+#endif
+
 #include "pypilotUI.h"
 
 class pypilot_pi;
@@ -33,6 +37,12 @@ class pypilotDialog: public pypilotDialogBase
 public:
     pypilotDialog( pypilot_pi &_pypilot_pi, wxWindow* parent);
     ~pypilotDialog();
+
+#ifdef __OCPN__ANDROID__
+    void OnMouseEvent( wxMouseEvent& event );
+    void OnEvtPinchGesture( wxQT_PinchGestureEvent &event);
+    void OnEvtPanGesture( wxQT_PanGestureEvent &event);
+#endif
 
     void Disconnected();
     void Receive(std::string name, Json::Value &value);

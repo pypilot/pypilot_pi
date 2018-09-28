@@ -33,11 +33,17 @@
 #include "CalibrationDialog.h"
 #include "StatisticsDialog.h"
 
+static wxWindow *g_Window;
 pypilotDialog::pypilotDialog( pypilot_pi &_pypilot_pi, wxWindow* parent)
     : pypilotDialogBase( parent ),
       m_bAPHaveGPS(false), m_bAPHaveWind(false),
       m_pypilot_pi(_pypilot_pi)
 {
+#ifdef __OCPN__ANDROID__
+    g_Window = this;
+    GetHandle()->setStyleSheet( qtStyleSheet);
+    Connect( wxEVT_MOTION, wxMouseEventHandler( pypilotDialog::OnMouseEvent ) );
+#endif
     wxFileConfig *pConf = GetOCPNConfigObject();
 
     pConf->SetPath ( _T( "/Settings/pypilot" ) );
@@ -71,6 +77,54 @@ pypilotDialog::~pypilotDialog()
     pConf->Write ( _T ( "DialogPosX" ), p.x );
     pConf->Write ( _T ( "DialogPosY" ), p.y );
 }
+
+
+#ifdef __OCPN__ANDROID__ 
+wxPoint g_startPos;
+wxPoint g_startMouse;
+wxPoint g_mouse_pos_screen;
+
+void pypilotDialog::OnMouseEvent( wxMouseEvent& event )
+{
+    g_mouse_pos_screen = ClientToScreen( event.GetPosition() );
+    
+    if(event.Dragging()){
+        int x = wxMax(0, g_startPos.x + (g_mouse_pos_screen.x - g_startMouse.x));
+        int y = wxMax(0, g_startPos.y + (g_mouse_pos_screen.y - g_startMouse.y));
+        int xmax = ::wxGetDisplaySize().x - GetSize().x;
+        x = wxMin(x, xmax);
+        int ymax = ::wxGetDisplaySize().y - (GetSize().y * 2);          // Some fluff at the bottom
+        y = wxMin(y, ymax);
+        
+        g_Window->Move(x, y);
+    }
+}
+
+void pypilotDialog::OnEvtPinchGesture( wxQT_PinchGestureEvent &event)
+{
+}
+
+void pypilotDialog::OnEvtPanGesture( wxQT_PanGestureEvent &event)
+{
+    switch(event.GetState()){
+        case GestureStarted:
+            g_startPos = GetPosition();
+            g_startMouse = event.GetCursorPos(); //g_mouse_pos_screen;
+            break;
+            
+        case GestureFinished:
+            break;
+            
+        case GestureCanceled:
+            break;
+            
+        default:
+            break;
+    }
+    
+}
+#endif
+
 
 void pypilotDialog::Disconnected()
 {
@@ -260,8 +314,12 @@ void pypilotDialog::OnCalibration( wxCommandEvent& event )
 
 void pypilotDialog::OnStatistics( wxCommandEvent& event )
 {
+    (!m_pypilot_pi.m_StatisticsDialog->IsShown());
     m_pypilot_pi.m_StatisticsDialog->Show(!m_pypilot_pi.m_StatisticsDialog->IsShown());
     m_pypilot_pi.UpdateWatchlist();
+#ifdef __OCPN__ANDROID__
+    m_pypilot_pi.m_StatisticsDialog->ShowModal();
+#endif
 }
 
 void pypilotDialog::OnClose( wxCommandEvent& event )

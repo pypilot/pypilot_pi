@@ -32,6 +32,9 @@ ConfigurationDialog::ConfigurationDialog( pypilot_pi &_pypilot_pi, wxWindow* par
     : ConfigurationDialogBase(parent),
       m_pypilot_pi(_pypilot_pi)
 {
+#ifdef __OCPN__ANDROID__
+        GetHandle()->setStyleSheet( qtStyleSheet);
+#endif
     m_sPeriod->SetRange(1, 30);
     m_sMaxCurrent->SetRange(0, 600);
 }
@@ -45,7 +48,8 @@ bool ConfigurationDialog::Show( bool show )
     if(show) {
         wxFileConfig *pConf = GetOCPNConfigObject();
         pConf->SetPath ( _T( "/Settings/pypilot" ) );
-        m_cHost->SetValue(pConf->Read ( _T ( "Host" ), "127.0.0.1" ));
+        m_cHost->Insert(pConf->Read ( _T ( "Host" ), "192.168.14.1" ), 0);
+        m_cHost->SetSelection(0);
         m_cbForwardnmea->SetValue((bool)pConf->Read ( _T ( "Forwardnema" ), 0L ));
         m_cbEnableGraphicOverlay->SetValue((bool)pConf->Read ( _T ( "EnableGraphicOverlay" ), 0L ));
         m_cbTrueNorthMode->SetValue((bool)pConf->Read ( _T ( "TrueNorthMode" ), 0L ));
@@ -157,7 +161,13 @@ void ConfigurationDialog::OnMaxCurrent( wxSpinEvent& event )
 
 void ConfigurationDialog::OnInformation( wxCommandEvent& event )
 {
-    wxLaunchDefaultBrowser(_T("http://www.github.com/pypilot/pypilot_pi"));
+#ifdef __OCPN__ANDROID__
+        wxMessageDialog mdlg(GetOCPNCanvasWindow(), "\
+Visit http://www.github.com/pypilot/pypilot_pi",
+                         "pypilot", wxOK | wxICON_INFORMATION);
+    mdlg.ShowModal();
+#endif
+    wxLaunchDefaultBrowser("http://www.github.com/pypilot/pypilot_pi");
 }
 
 void ConfigurationDialog::OnOk( wxCommandEvent& event )
@@ -177,8 +187,8 @@ void ConfigurationDialog::OnOk( wxCommandEvent& event )
 
     wxFileConfig *pConf = GetOCPNConfigObject();
     pConf->SetPath ( _T( "/Settings/pypilot" ) );
-    pConf->Write ( _T ( "Host" ), m_cHost->GetValue());
-    pConf->Write ( _T ( "Forwardnema" ), m_cbForwardnmea->GetValue( ));
+    pConf->Write ( _T ( "Host" ), m_cHost->GetValue().BeforeFirst(' '));
+    pConf->Write ( _T ( "Forwardnema" ), m_cbForwardnmea->GetValue());
     pConf->Write ( _T ( "EnableGraphicOverlay" ), m_cbEnableGraphicOverlay->GetValue() );
     pConf->Write ( _T ( "TrueNorthMode" ), m_cbTrueNorthMode->GetValue() );
 

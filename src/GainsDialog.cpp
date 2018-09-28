@@ -82,6 +82,9 @@ GainsDialog::GainsDialog(pypilot_pi &_pypilot_pi, wxWindow* parent) :
     GainsDialogBase(parent),
     m_pypilot_pi(_pypilot_pi)
 {
+#ifdef __OCPN__ANDROID__
+        GetHandle()->setStyleSheet( qtStyleSheet);
+#endif
     wxFileConfig *pConf = GetOCPNConfigObject();
 
     pConf->SetPath ( _T( "/Settings/pypilot" ) );

@@ -32,6 +32,9 @@ CalibrationDialog::CalibrationDialog(pypilot_pi &_pypilot_pi, wxWindow* parent) 
     CalibrationDialogBase(parent),
     m_pypilot_pi(_pypilot_pi)
 {
+#ifdef __OCPN__ANDROID__
+        GetHandle()->setStyleSheet( qtStyleSheet);
+#endif
 }
 
 CalibrationDialog::~CalibrationDialog()

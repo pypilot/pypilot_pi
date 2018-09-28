@@ -32,6 +32,8 @@
 #include "msvcdefs.h"
 #endif
 
+
+#include "plugingl/pidc.h"
 #include "pypilot_pi.h"
 
 #include "pypilotDialog.h"
@@ -41,6 +43,8 @@
 #include "CalibrationDialog.h"
 
 #include "icons.h"
+
+inline double deg2rad(double degrees) { return M_PI * degrees / 180.0; }
 
 // the class factories, used to create and destroy instances of the PlugIn
 
@@ -62,7 +66,7 @@ extern "C" DECL_EXP void destroy_pi(opencpn_plugin* p)
 pypilot_pi *g_pypilot_pi = NULL;
 
 pypilot_pi::pypilot_pi(void *ppimgr)
-    : opencpn_plugin_110(ppimgr), m_client(*this)
+    : opencpn_plugin_111(ppimgr), m_client(*this)
 {
     // Create the PlugIn icons
     initialize_images();
@@ -334,8 +338,8 @@ bool pypilot_pi::RenderOverlay(wxDC &dc, PlugIn_ViewPort *vp)
 {
     if(!m_bEnableGraphicOverlay)
         return false;
-//    pyDC odc(dc);
-//    Render(odc, *vp);
+    piDC odc(dc);
+    Render(odc, *vp);
     return true;
 }
 
@@ -343,20 +347,20 @@ bool pypilot_pi::RenderGLOverlay(wxGLContext *pcontext, PlugIn_ViewPort *vp)
 {
     if(!m_bEnableGraphicOverlay)
         return false;
-//    pyDC odc;
-//    glEnable( GL_BLEND );
-//    Render(odc, *vp);
-//    glDisable( GL_BLEND );
+    piDC odc;
+    glEnable( GL_BLEND );
+    Render(odc, *vp);
+    glDisable( GL_BLEND );
     return true;
 }
 
-void pypilot_pi::Render(pyDC &dc, PlugIn_ViewPort &vp)
+void pypilot_pi::Render(piDC &dc, PlugIn_ViewPort &vp)
 {
     if(m_lastfix.nSats == 0)
         return;
     if(!m_enabled)
         return;
-#if 0
+
     wxPoint boat;
     GetCanvasPixLL(&vp, &boat, m_lastfix.Lat, m_lastfix.Lon);
 
@@ -372,7 +376,6 @@ void pypilot_pi::Render(pyDC &dc, PlugIn_ViewPort &vp)
     dc.SetPen(wxPen(*wxGREEN, 3));
     dc.DrawLine(boat.x, boat.y, p2.x, p2.y);
     dc.DrawCircle(p2.x, p2.y, 5);
-#endif
 }
 
 void pypilot_pi::ReadConfig()
