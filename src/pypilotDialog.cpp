@@ -281,12 +281,12 @@ void pypilotDialog::Fit()
 
 void pypilotDialog::OnAP( wxCommandEvent& event )
 {
-    m_pypilot_pi.m_client.set("ap.enabled", m_bAP->GetValue());
     if(m_bAP->GetValue()) {
         double heading;
         if(m_stHeading->GetLabel().ToDouble(&heading))
             m_pypilot_pi.m_client.set("ap.heading_command", wxRound(heading));
     }
+    m_pypilot_pi.m_client.set("ap.enabled", m_bAP->GetValue());
 }
 
 void pypilotDialog::OnMode( wxCommandEvent& event )
