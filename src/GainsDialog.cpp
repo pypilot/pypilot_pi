@@ -76,6 +76,7 @@ Gain::~Gain()
     delete value;
     delete gauge;
     delete slider;
+    delete sizer;
 }
 
 GainsDialog::GainsDialog(pypilot_pi &_pypilot_pi, wxWindow* parent) :
@@ -118,40 +119,8 @@ GainsDialog::~GainsDialog()
 bool GainsDialog::Show( bool show )
 {
     if(show && !IsShown()) {
-        for(std::map<std::string, Gain*>::iterator i = m_gains.begin(); i != m_gains.end(); i++) {
-            Gain *g = i->second;
-            delete g;
-        }
-        while(!m_fgGains->IsEmpty())
-            m_fgGains->Remove(0);
-
-        m_gains.clear();
-        m_watchlist.clear();
-        std::list<std::string> gains;
-        m_pypilot_pi.m_client.GetGains(gains);
-        for(std::list<std::string>::iterator i = gains.begin(); i != gains.end(); i++) {
-            std::string name = *i;
-            m_watchlist.push_back(name);
-            m_watchlist.push_back(name+"gain");
-
-            Json::Value info;
-            m_pypilot_pi.m_client.info(name, info);
-            double min_val = jsondouble(info["min"]), max_val = jsondouble(info["max"]);
-
-            Gain *g = new Gain(m_swGains, name, min_val, max_val);
-            int events[] = {wxEVT_SCROLL_TOP, wxEVT_SCROLL_BOTTOM,
-                            wxEVT_SCROLL_LINEUP, wxEVT_SCROLL_LINEDOWN,
-                            wxEVT_SCROLL_PAGEUP, wxEVT_SCROLL_PAGEDOWN,
-                            wxEVT_SCROLL_THUMBTRACK, wxEVT_SCROLL_THUMBRELEASE,
-                            wxEVT_SCROLL_CHANGED};
-            for(unsigned int i=0; i<(sizeof events) / (sizeof *events); i++)
-                g->slider->Connect( events[i], wxScrollEventHandler( GainsDialog::OnGainSlider ), NULL, this );
-            m_fgGains->Add( g->sizer, 1, wxEXPAND, 5 );
-            m_gains[name] = g;
-        }
-        wxSize s = GetSize();
-        SetSize(s);
-//        Fit();
+        EnumeratePilots();
+        EnumerateGains();
     }
     return GainsDialogBase::Show(show);
 }
@@ -165,7 +134,13 @@ static bool hasEnding (std::string const &str, std::string const &ending)
 
 void GainsDialog::Receive(std::string name, Json::Value &value)
 {
-    if(hasEnding(name, "gain")) {
+    if(name == "ap.pilot") {
+        int i = m_cPilot->FindString(value.asCString());
+        if(i >= 0) {
+            m_cPilot->SetSelection(i);
+            EnumerateGains();
+        }
+    } else if(hasEnding(name, "gain")) {
         name = name.substr(0, name.size()-4);
         if(m_gains.find(name) != m_gains.end()) {
             Gain *g = m_gains[name];
@@ -181,6 +156,13 @@ void GainsDialog::Receive(std::string name, Json::Value &value)
         }
     } else if(m_gains.find(name) != m_gains.end())
         m_gains[name]->gain_val = jsondouble(value);
+}
+
+void GainsDialog::OnPilot( wxCommandEvent& event )
+{
+    int ind = m_cPilot->GetSelection();
+    if(ind >= 0)
+        m_pypilot_pi.m_client.set("ap.pilot", m_cPilot->GetString(ind));
 }
 
 void GainsDialog::OnClose( wxCommandEvent& event )
@@ -228,7 +210,103 @@ void GainsDialog::OnGainSlider( wxScrollEvent& event )
     }
 }
 
-std::list<std::string> GainsDialog::GetWatchlist()
+std::list<std::string> &GainsDialog::GetWatchlist()
 {
     return m_watchlist;
 }
+
+void GainsDialog::EnumeratePilots()
+{
+    std::list<std::string> gains;
+    m_pypilot_pi.m_client.GetGains(gains);
+
+    // enumerate the pilots from the gains
+    std::map<std::string, bool> pilots;
+    for(std::list<std::string>::iterator i = gains.begin(); i != gains.end(); i++) {
+        if(i->length() > 9) {
+            std::string p = i->substr(0, 9);
+            int c = p.compare("ap.pilot.");
+            if(c == 0) {
+                int end = i->find(".", 9);
+                if(end > 0) {
+                    p = i->substr(9, end-9);
+                    pilots[p] = true;
+                }
+            }
+        }
+    }
+
+    m_cPilot->Clear();
+    for(std::map<std::string, bool>::iterator pilot = pilots.begin(); pilot != pilots.end(); pilot++)
+        m_cPilot->Append(pilot->first);
+}
+
+void GainsDialog::EnumerateGains()
+{
+    int ind = m_cPilot->GetSelection();
+    wxString inds = m_cPilot->GetString(ind);
+    const char *pilot = ind >= 0 ? inds.ToUTF8() : "";
+
+    m_watchlist.clear();
+    m_watchlist.push_back("ap.pilot");
+
+
+    while(!m_fgGains->IsEmpty())
+        m_fgGains->Detach(0);
+
+    for(std::map<std:: string, Gain*>::iterator i = m_gains.begin(); i != m_gains.end(); i++) {
+        Gain *g = i->second;
+        delete g;
+    }
+
+    std::list<std::string> gains;
+    m_pypilot_pi.m_client.GetGains(gains);
+    m_watchlist.clear();
+    m_watchlist.push_back("ap.pilot");
+    m_gains.clear();
+    
+    for(std::list<std::string>::iterator i = gains.begin(); i != gains.end(); i++) {
+        std::string name = *i;
+        
+        m_watchlist.push_back(name);
+        m_watchlist.push_back(name+"gain");
+
+        int ret = name.find(pilot);
+        if(ret < 0)
+            continue;
+
+        Json::Value info;
+        m_pypilot_pi.m_client.info(name, info);
+        double min_val = jsondouble(info["min"]), max_val = jsondouble(info["max"]);
+
+        int start = name.rfind(".");
+        std::string lname = name;
+        if(start >=0 )
+            lname = name.substr(start + 1);
+        Gain *g = new Gain(m_swGains, lname, min_val, max_val);
+        int events[] = {wxEVT_SCROLL_TOP, wxEVT_SCROLL_BOTTOM,
+                        wxEVT_SCROLL_LINEUP, wxEVT_SCROLL_LINEDOWN,
+                        wxEVT_SCROLL_PAGEUP, wxEVT_SCROLL_PAGEDOWN,
+                        wxEVT_SCROLL_THUMBTRACK, wxEVT_SCROLL_THUMBRELEASE,
+                        wxEVT_SCROLL_CHANGED};
+        for(unsigned int i=0; i<(sizeof events) / (sizeof *events); i++)
+            g->slider->Connect( events[i], wxScrollEventHandler( GainsDialog::OnGainSlider ), NULL, this );
+        m_fgGains->Add( g->sizer, 1, wxEXPAND, 5 );
+        m_gains[name] = g;
+    }
+
+    wxSize s = m_swGains->GetSize();
+    s.x+=1;
+    m_swGains->SetSize(s);
+    m_swGains->Fit();
+
+    s = GetSize();
+    Fit();
+    s.x+=1;
+    SetSize(s);
+
+//    s = GetSize();
+//    SetSize(s);
+//        Fit();
+}
+

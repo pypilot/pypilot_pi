@@ -57,6 +57,9 @@ class pypilotDialogBase : public wxDialog
 		wxButton* m_bManualPortShort;
 		wxButton* m_bManualStarboardShort;
 		wxButton* m_bManualStarboardLong;
+		wxStaticText* m_staticText55;
+		wxButton* m_bTackPort;
+		wxButton* m_bTackStarboard;
 		wxButton* m_bGains;
 		wxButton* m_bConfiguration;
 		wxButton* m_bCalibration;
@@ -71,6 +74,8 @@ class pypilotDialogBase : public wxDialog
 		virtual void OnManualPortShort( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnManualStarboardShort( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnManualStarboardLong( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnTackPort( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnTackStarboard( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnGains( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnConfiguration( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnCalibration( wxCommandEvent& event ) { event.Skip(); }
@@ -96,11 +101,14 @@ class GainsDialogBase : public wxDialog
 	protected:
 		wxScrolledWindow* m_swGains;
 		wxFlexGridSizer* m_fgGains;
+		wxStaticText* m_staticText52;
+		wxChoice* m_cPilot;
 		wxStdDialogButtonSizer* m_sdbSizer4;
 		wxButton* m_sdbSizer4OK;
 		
 		// Virtual event handlers, overide them in your derived class
 		virtual void OnClose( wxCloseEvent& event ) { event.Skip(); }
+		virtual void OnPilot( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnClose( wxCommandEvent& event ) { event.Skip(); }
 		
 	
@@ -141,18 +149,7 @@ class ConfigurationDialogBase : public wxDialog
 		wxStaticText* m_stMaxCurrent;
 		wxSpinButton* m_sMaxCurrent;
 		wxStaticText* m_staticText9;
-		wxStaticText* m_staticText10;
-		wxSpinCtrl* m_sMinSpeed;
-		wxStaticText* m_staticText11;
-		wxStaticText* m_staticText101;
-		wxSpinCtrl* m_sMaxSpeed;
-		wxStaticText* m_staticText111;
-		wxStaticText* m_staticText30;
-		wxSpinCtrl* m_sMaxControllerTemp;
-		wxStaticText* m_staticText31;
-		wxStaticText* m_staticText32;
-		wxSpinCtrl* m_sMaxMotorTemp;
-		wxStaticText* m_staticText311;
+		wxButton* m_bSignalKClient;
 		wxButton* m_bInformation;
 		wxStdDialogButtonSizer* m_sdbSizer2;
 		wxButton* m_sdbSizer2OK;
@@ -168,6 +165,7 @@ class ConfigurationDialogBase : public wxDialog
 		virtual void OnRemoveControlAngle( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnPeriod( wxSpinEvent& event ) { event.Skip(); }
 		virtual void OnMaxCurrent( wxSpinEvent& event ) { event.Skip(); }
+		virtual void OnSignalKClient( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnInformation( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnClose( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnOk( wxCommandEvent& event ) { event.Skip(); }
@@ -177,6 +175,30 @@ class ConfigurationDialogBase : public wxDialog
 		
 		ConfigurationDialogBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("pypilot Configuration"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxCAPTION|wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER ); 
 		~ConfigurationDialogBase();
+	
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class SignalKClientDialogBase
+///////////////////////////////////////////////////////////////////////////////
+class SignalKClientDialogBase : public wxDialog 
+{
+	private:
+	
+	protected:
+		wxScrolledWindow* m_scrolledWindow;
+		wxFlexGridSizer* m_fgSizer;
+		wxStdDialogButtonSizer* m_sdbSizer5;
+		wxButton* m_sdbSizer5OK;
+		
+		// Virtual event handlers, overide them in your derived class
+		virtual void OnOK( wxCommandEvent& event ) { event.Skip(); }
+		
+	
+	public:
+		
+		SignalKClientDialogBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 600,300 ), long style = wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER ); 
+		~SignalKClientDialogBase();
 	
 };
 

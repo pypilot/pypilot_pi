@@ -5,7 +5,7 @@
  * Author:   Sean D'Epagnier
  *
  ***************************************************************************
- *   Copyright (C) 2018 by Sean D'Epagnier                                 *
+ *   Copyright (C) 2019 by Sean D'Epagnier                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -24,35 +24,35 @@
  ***************************************************************************
  */
 
+#include <map>
+#include <list>
+
 #include "pypilotUI.h"
 
 class pypilot_pi;
 
-class ConfigurationDialog : public ConfigurationDialogBase
+class SignalKClientDialog : public SignalKClientDialogBase
 {
 public:
-    ConfigurationDialog( pypilot_pi &_pypilot_pi, wxWindow* parent);
-    ~ConfigurationDialog() {}
-    bool Show( bool show=true );
+    SignalKClientDialog( pypilot_pi &_pypilot_pi, wxWindow* parent);
+    ~SignalKClientDialog() {}
 
     void Receive(std::string name, Json::Value &value);
-    const char **GetWatchlist();
+    std::list<std::string> &GetWatchlist();
+
+    bool Show( bool show=true );
 
 private:
-    void OnAboutForwardnema( wxCommandEvent& event );
-    void OnAboutEnableOverlay( wxCommandEvent& event );
-    void OnAboutTrueNorth( wxCommandEvent& event );
-    void OnAddControlAngle( wxCommandEvent& event );
-    void OnRemoveControlAngle( wxCommandEvent& event );
-    void OnPeriod( wxSpinEvent& event );
-    void OnMaxCurrent( wxSpinEvent& event );
-    void OnInformation( wxCommandEvent& event );
-    void OnSignalKClient( wxCommandEvent& event );
-    void OnOk( wxCommandEvent& event );
-    void OnClose( wxCommandEvent& event );
-    void OnHost( wxCommandEvent& event );
+    void OnCommand(wxCommandEvent &event) { SendValues(); }
+    void OnSpin(wxSpinDoubleEvent &event) { SendValues(); }
 
-    double ApplyTrueNorth(double value);
-    
+    void SendValues();
+
+    void OnOK( wxCommandEvent& event );
+
+    std::map<std::string, wxStaticText*> m_values;
+    std::map<std::string, wxControl*> m_controls;
+
+    std::list<std::string> m_watchlist;
     pypilot_pi &m_pypilot_pi;
 };

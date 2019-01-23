@@ -65,6 +65,8 @@ private:
     void OnStatistics( wxCommandEvent& event );
     void OnClose( wxCommandEvent& event );
     void OnControlAngle( wxCommandEvent& event );
+    void OnTackPort( wxCommandEvent& event );
+    void OnTackStarboard( wxCommandEvent& event );
 
     void UpdateModes();
     void Manual(double amount);

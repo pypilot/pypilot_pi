@@ -41,6 +41,7 @@
 #include "ConfigurationDialog.h"
 #include "StatisticsDialog.h"
 #include "CalibrationDialog.h"
+#include "SignalKClientDialog.h"
 
 #include "icons.h"
 
@@ -101,6 +102,7 @@ int pypilot_pi::Init(void)
     m_ConfigurationDialog = NULL;
     m_StatisticsDialog = NULL;
     m_CalibrationDialog = NULL;
+    m_SignalKClientDialog = NULL;
 
     m_status = _("Disconnected");
 
@@ -126,6 +128,7 @@ bool pypilot_pi::DeInit(void)
     delete m_ConfigurationDialog;
     delete m_StatisticsDialog;
     delete m_CalibrationDialog;
+    delete m_SignalKClientDialog;
 
     RemovePlugInTool(m_leftclick_tool_id);
 
@@ -250,7 +253,7 @@ static void MergeWatchlist(std::map<std::string, bool> &watchlist, const char **
         watchlist[*w] = true;
 }
 
-static void MergeWatchlist(std::map<std::string, bool> &watchlist, std::list<std::string> list)
+static void MergeWatchlist(std::map<std::string, bool> &watchlist, std::list<std::string> &list)
 {
     for(std::list<std::string>::iterator i = list.begin(); i != list.end(); i++)
         watchlist[*i] = true;
@@ -278,6 +281,9 @@ void pypilot_pi::UpdateWatchlist()
         
         if(m_CalibrationDialog->IsShown())
             MergeWatchlist(watchlist, m_CalibrationDialog->GetWatchlist());
+
+        if(m_SignalKClientDialog->IsShown())
+            MergeWatchlist(watchlist, m_SignalKClientDialog->GetWatchlist());
     }
 
     if(m_bEnableGraphicOverlay) {
@@ -305,6 +311,7 @@ void pypilot_pi::OnToolbarToolCallback(int id)
         m_ConfigurationDialog = new ConfigurationDialog(*this, GetOCPNCanvasWindow());
         m_StatisticsDialog = new StatisticsDialog(*this, GetOCPNCanvasWindow());
         m_CalibrationDialog = new CalibrationDialog(*this, GetOCPNCanvasWindow());
+        m_SignalKClientDialog = new SignalKClientDialog(*this, GetOCPNCanvasWindow());
 
         wxIcon icon;
         icon.CopyFromBitmap(*_img_pypilot_grey);
@@ -313,6 +320,7 @@ void pypilot_pi::OnToolbarToolCallback(int id)
         m_ConfigurationDialog->SetIcon(icon);
         m_StatisticsDialog->SetIcon(icon);
         m_CalibrationDialog->SetIcon(icon);
+        m_SignalKClientDialog->SetIcon(icon);
     }
 
     bool show = !m_pypilotDialog->IsShown();
@@ -322,6 +330,7 @@ void pypilot_pi::OnToolbarToolCallback(int id)
         m_ConfigurationDialog->Show(false);
         m_StatisticsDialog->Show(false);
         m_CalibrationDialog->Show(false);
+        m_SignalKClientDialog->Show(false);
     }
     UpdateWatchlist();
 
@@ -409,10 +418,12 @@ void pypilot_pi::OnTimer( wxTimerEvent & )
     std::string name;
     Json::Value data;
     wxDateTime now = wxDateTime::Now();
-    while(m_client.receive(name, data)) {
+     while(m_client.receive(name, data)) {
         //wxString value = data["value"].AsString();
         //printf("msg %s %s\n", name.mb_str().data(), value.mb_str().data());
 
+         try
+         {
         Json::Value &val = data["value"];
         if(m_pypilotDialog) {
             m_pypilotDialog->Receive(name, val);
@@ -420,8 +431,14 @@ void pypilot_pi::OnTimer( wxTimerEvent & )
             m_ConfigurationDialog->Receive(name, val);
             m_StatisticsDialog->Receive(name, val);
             m_CalibrationDialog->Receive(name, val);
+            m_SignalKClientDialog->Receive(name, val);
         }
         Receive(name, val);
+         }     catch(std::exception e)
+         {
+             printf("exception!!! %s\n", name.c_str());
+         }
+
         m_lastMessage = now;
     }
 

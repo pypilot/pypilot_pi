@@ -83,6 +83,7 @@ bool SignalKClient::receive(std::string &name, Json::Value &value)
     
         name = val.first;
         value = val.second;
+
         return true;
     }
 
@@ -133,6 +134,7 @@ void SignalKClient::set(std::string name, const char *value)
 
 void SignalKClient::watch(std::string name, bool on)
 {
+//    printf("watch %s %d\n", name.c_str(), on);
     if(on)
         get(name);
     Json::Value request;
@@ -240,8 +242,10 @@ void SignalKClient::OnSocketEvent(wxSocketEvent& event)
                                 }
                                 std::pair<std::string, Json::Value > p(val.key().asString(), *val);
                                 m_queue.push_back(p);
-                            } else
+                            } else {
                                 m_map[val.key().asString()] = *val;
+                                //printf("got %s\n", val.key().asString().c_str());
+                            }
                     }
                 }
 

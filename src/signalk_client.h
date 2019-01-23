@@ -50,6 +50,7 @@ public:
     void watch(std::string name, bool on=true);
 
     bool info(std::string name, Json::Value &info);
+    Json::Value &list() { return m_list; }
     void update_watchlist(std::map<std::string, bool> &watchlist, bool refresh=false);
 
 protected:

@@ -27,6 +27,7 @@
 #include "pypilotUI.h"
 #include "pypilot_pi.h"
 #include "ConfigurationDialog.h"
+#include "SignalKClientDialog.h"
 
 ConfigurationDialog::ConfigurationDialog( pypilot_pi &_pypilot_pi, wxWindow* parent)
     : ConfigurationDialogBase(parent),
@@ -37,10 +38,6 @@ ConfigurationDialog::ConfigurationDialog( pypilot_pi &_pypilot_pi, wxWindow* par
 #endif
     m_sPeriod->SetRange(1, 30);
     m_sMaxCurrent->SetRange(0, 600);
-}
-
-ConfigurationDialog::~ConfigurationDialog()
-{
 }
 
 bool ConfigurationDialog::Show( bool show )
@@ -76,20 +73,13 @@ void ConfigurationDialog::Receive(std::string name, Json::Value &value)
     } else if(name == "servo.max_current") {
         m_sMaxCurrent->SetValue(jsondouble(value) * 10);
         m_stMaxCurrent->SetLabel(jsonformat("%.1f", value));
-    } else if(name == "servo.min_speed")
-        m_sMinSpeed->SetValue(jsondouble(value)*100);
-    else if(name == "servo.max_speed")
-        m_sMaxSpeed->SetValue(jsondouble(value)*100);
-    else if(name == "servo.max_controller_temp")
-        m_sMaxControllerTemp->SetValue(jsondouble(value));
-    else if(name == "servo.max_motor_temp")
-        m_sMaxMotorTemp->SetValue(jsondouble(value));
+    }
 }
 
 const char **ConfigurationDialog::GetWatchlist()
 {
     static const char *watchlist[] =
-        {"servo.period", "servo.max_current", "servo.min_speed", "servo.max_speed", "servo.max_controller_temp", "servo.max_motor_temp", 0};
+        {"servo.period", "servo.max_current", 0};
     return watchlist;
 }
 
@@ -170,6 +160,13 @@ Visit http://www.github.com/pypilot/pypilot_pi",
     wxLaunchDefaultBrowser("http://www.github.com/pypilot/pypilot_pi");
 }
 
+void ConfigurationDialog::OnSignalKClient( wxCommandEvent& event )
+{
+    m_pypilot_pi.m_SignalKClientDialog->Show(!m_pypilot_pi.m_SignalKClientDialog->IsShown());
+    m_pypilot_pi.UpdateWatchlist();
+}
+
+
 void ConfigurationDialog::OnOk( wxCommandEvent& event )
 {
     Hide();
@@ -180,10 +177,6 @@ void ConfigurationDialog::OnOk( wxCommandEvent& event )
         m_pypilot_pi.m_client.set("servo.period", x);
     if(m_stMaxCurrent->GetLabel().ToDouble(&x))
         m_pypilot_pi.m_client.set("servo.max_current", x);
-    m_pypilot_pi.m_client.set("servo.min_speed", m_sMinSpeed->GetValue()/100.0);
-    m_pypilot_pi.m_client.set("servo.max_speed", m_sMaxSpeed->GetValue()/100.0);
-    m_pypilot_pi.m_client.set("servo.max_controller_temp", m_sMaxControllerTemp->GetValue());
-    m_pypilot_pi.m_client.set("servo.max_motor_temp", m_sMaxMotorTemp->GetValue());
 
     wxFileConfig *pConf = GetOCPNConfigObject();
     pConf->SetPath ( _T( "/Settings/pypilot" ) );

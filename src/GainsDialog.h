@@ -40,12 +40,16 @@ public:
     bool Show( bool show=true );
 
     void Receive(std::string name, Json::Value &value);
-    std::list<std::string> GetWatchlist();
+    std::list<std::string> &GetWatchlist();
 
 private:
+    void OnPilot( wxCommandEvent& event );
     void OnClose( wxCommandEvent& event );
     void OnTimer( wxTimerEvent & );
     void OnGainSlider( wxScrollEvent& event );
+
+    void EnumeratePilots();
+    void EnumerateGains();
 
     wxTimer m_Timer;
     std::list<std::string> m_watchlist;

@@ -74,6 +74,7 @@ class GainsDialog;
 class ConfigurationDialog;
 class StatisticsDialog;
 class CalibrationDialog;
+class SignalKClientDialog;
 
 class pypilot_pi : public wxEvtHandler, public opencpn_plugin_111
 {
@@ -124,6 +125,7 @@ public:
       ConfigurationDialog *m_ConfigurationDialog;
       StatisticsDialog   *m_StatisticsDialog;
       CalibrationDialog  *m_CalibrationDialog;
+      SignalKClientDialog *m_SignalKClientDialog;
 
       double m_declination;
       wxDateTime m_declinationTime;
@@ -132,7 +134,7 @@ private:
       void SetNMEASentence(wxString &sentence);
       void SetPositionFixEx(PlugIn_Position_Fix_Ex &pfix);
       void SetPluginMessage(wxString &message_id, wxString &message_body);
-      void              RearrangeWindow();
+      void RearrangeWindow();
       double AdjustHeading(double heading);
       void Receive(std::string name, Json::Value &value);
       void UpdateStatus();
