@@ -165,10 +165,13 @@ void pypilotDialog::Receive(std::string name, Json::Value &value)
         Fit();
     } else if(name == "ap.tack.direction") {
         wxButton *big, *small;
-        if(value.asString() == "port")
-            big = m_bTackPort, small = m_bTackStarboard;
-        else
-            small = m_bTackPort, big = m_bTackStarboard;
+        if(value.asString() == "port") {
+            big = m_bTackPort;
+            small = m_bTackStarboard;
+        } else {
+            small = m_bTackPort;
+            big = m_bTackStarboard;
+        }
         big->SetSize(35, big->GetSize().y);
         small->SetSize(15, small->GetSize().y);
     } else if(name == "gps.source") {
@@ -265,7 +268,7 @@ void pypilotDialog::RebuildControlAngles()
     m_fgControlAnglesPos->Show(shown);
     m_fgControlAnglesNeg->Show(shown);
     
-    m_bTrueNorthMode = pConf->Read ( _T ( "TrueNorthMode" ), 0L );
+    m_bTrueNorthMode = (bool)pConf->Read ( _T ( "TrueNorthMode" ), 0L );
     if(m_bTrueNorthMode && (wxDateTime::UNow() - m_pypilot_pi.m_declinationTime).GetSeconds() > 2000) {
         wxMessageDialog mdlg(GetOCPNCanvasWindow(), _("\
 True North mode not possible without declination.\n\nIs the wmm plugin enabled and a gps fix available?"),
