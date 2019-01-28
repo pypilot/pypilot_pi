@@ -5,7 +5,7 @@
  * Author:   Sean D'Epagnier
  *
  ***************************************************************************
- *   Copyright (C) 2018 by Sean D'Epagnier                                 *
+ *   Copyright (C) 2019 by Sean D'Epagnier                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -29,15 +29,61 @@
 #include "ConfigurationDialog.h"
 #include "SignalKClientDialog.h"
 
+enum ui_place {SERVO, TACKING};
+struct ui_setting {
+    const char *signalk_name;
+    const char *name, *units;
+    double step;
+    enum ui_place placement;
+    wxStaticText *label;
+    wxSpinButton *spin;
+} ui_settings[] = {{"servo.period", "Period", "Seconds", .1, SERVO},
+                   {"servo.max_current", "Max Current", "Amps", .1, SERVO},
+                   {"ap.tack.angle", "Angle", "Degrees", 1, TACKING},
+                   {"ap.tack.speed", "Speed", "Degrees/s", 1, TACKING},
+                   {"ap.tack.complete", "Complete", "Degrees", 1, TACKING},
+                   {"ap.tack.delay", "Delay", "Seconds", .5, TACKING}
+};
+
+
 ConfigurationDialog::ConfigurationDialog( pypilot_pi &_pypilot_pi, wxWindow* parent)
     : ConfigurationDialogBase(parent),
       m_pypilot_pi(_pypilot_pi)
 {
 #ifdef __OCPN__ANDROID__
-        GetHandle()->setStyleSheet( qtStyleSheet);
+    GetHandle()->setStyleSheet( qtStyleSheet);
 #endif
-    m_sPeriod->SetRange(1, 30);
-    m_sMaxCurrent->SetRange(0, 600);
+
+    for(unsigned int i=0; i<(sizeof ui_settings) / (sizeof *ui_settings); i++) {
+        ui_setting &s = ui_settings[i];
+        wxStaticBoxSizer *sbSizer = s.placement == SERVO ? m_sbSizerServo : m_sbSizerTacking;
+            
+        wxFlexGridSizer* fgSizer = new wxFlexGridSizer( 1, 0, 0, 0 );
+        fgSizer->SetFlexibleDirection( wxBOTH );
+        fgSizer->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+        
+        wxStaticText *stname = new wxStaticText( sbSizer->GetStaticBox(), wxID_ANY, _(s.name), wxDefaultPosition, wxDefaultSize, 0 );
+        stname->Wrap( -1 );
+        fgSizer->Add( stname, 0, wxALL, 3 );
+        
+        s.label = new wxStaticText( sbSizer->GetStaticBox(), wxID_ANY, "-------", wxDefaultPosition, wxDefaultSize, 0 );
+        s.label->Wrap( -1 );
+        fgSizer->Add( s.label, 0, wxALL, 3 );
+        
+        s.spin = new wxSpinButton( sbSizer->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS|wxSP_VERTICAL );
+        fgSizer->Add( s.spin, 0, wxALL, 3 );
+        s.spin->SetRange(-1, 1);
+
+	s.spin->Connect( wxEVT_SCROLL_THUMBTRACK, wxSpinEventHandler( ConfigurationDialog::OnSpin ), NULL, this );
+        
+        wxStaticText *stUnits = new wxStaticText( sbSizer->GetStaticBox(), wxID_ANY, _(s.units), wxDefaultPosition, wxDefaultSize, 0 );
+        stUnits->Wrap( -1 );
+        fgSizer->Add( stUnits, 0, wxALL, 3 );
+            
+        sbSizer->Add( fgSizer, 1, wxEXPAND, 5 );
+
+        m_watchlist.push_back(s.signalk_name);
+    }
 }
 
 bool ConfigurationDialog::Show( bool show )
@@ -67,20 +113,12 @@ bool ConfigurationDialog::Show( bool show )
 
 void ConfigurationDialog::Receive(std::string name, Json::Value &value)
 {
-    if(name == "servo.period") {
-        m_sPeriod->SetValue(jsondouble(value) * 10);
-        m_stPeriod->SetLabel(jsonformat("%.1f", value));
-    } else if(name == "servo.max_current") {
-        m_sMaxCurrent->SetValue(jsondouble(value) * 10);
-        m_stMaxCurrent->SetLabel(jsonformat("%.1f", value));
+    for(unsigned int i=0; i<(sizeof ui_settings) / (sizeof *ui_settings); i++) {
+        ui_setting &s = ui_settings[i];
+   
+        if(name == s.signalk_name)
+            s.label->SetLabel(jsonformat("%.1f", value));
     }
-}
-
-const char **ConfigurationDialog::GetWatchlist()
-{
-    static const char *watchlist[] =
-        {"servo.period", "servo.max_current", 0};
-    return watchlist;
 }
 
 void ConfigurationDialog::OnAboutForwardnema( wxCommandEvent& event )
@@ -130,23 +168,20 @@ void ConfigurationDialog::OnRemoveControlAngle( wxCommandEvent& event )
         m_lControlAngles->Delete(selection);
 }
 
-static void HandleSpin(wxSpinButton *s, wxStaticText *st)
+void ConfigurationDialog::OnSpin(wxSpinEvent& event )
 {
-    double d;
-    if(st->GetLabel().ToDouble(&d)) {
-        d = s->GetValue() / 10.0;
-        st->SetLabel(wxString::Format("%.1f", d));
+    for(unsigned int i=0; i<(sizeof ui_settings) / (sizeof *ui_settings); i++) {
+        ui_setting &s = ui_settings[i];
+        if(!s.spin->HasFocus())
+            continue;
+    
+        double d;
+        if(s.label->GetLabel().ToDouble(&d)) {
+            d = s.spin->GetValue() * s.step;
+            s.label->SetLabel(wxString::Format("%.1f", d));
+            s.spin->SetValue(0);
+        }
     }
-}
-
-void ConfigurationDialog::OnPeriod( wxSpinEvent& event )
-{
-    HandleSpin(m_sPeriod, m_stPeriod);
-}
-
-void ConfigurationDialog::OnMaxCurrent( wxSpinEvent& event )
-{
-    HandleSpin(m_sMaxCurrent, m_stMaxCurrent);
 }
 
 void ConfigurationDialog::OnInformation( wxCommandEvent& event )
@@ -172,11 +207,12 @@ void ConfigurationDialog::OnOk( wxCommandEvent& event )
     Hide();
     m_pypilot_pi.UpdateWatchlist();
 
-    double x;
-    if(m_stPeriod->GetLabel().ToDouble(&x))
-        m_pypilot_pi.m_client.set("servo.period", x);
-    if(m_stMaxCurrent->GetLabel().ToDouble(&x))
-        m_pypilot_pi.m_client.set("servo.max_current", x);
+    for(unsigned int i=0; i<(sizeof ui_settings) / (sizeof *ui_settings); i++) {
+        ui_setting &s = ui_settings[i];
+        double x;
+        if(s.label->GetLabel().ToDouble(&x))
+            m_pypilot_pi.m_client.set(s.signalk_name, x);
+    }
 
     wxFileConfig *pConf = GetOCPNConfigObject();
     pConf->SetPath ( _T( "/Settings/pypilot" ) );

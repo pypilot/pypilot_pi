@@ -28,7 +28,6 @@
 #include <wx/statbox.h>
 #include <wx/spinctrl.h>
 #include <wx/listbox.h>
-#include <wx/spinbutt.h>
 #include <wx/gauge.h>
 
 #include "wxWTranslateCatalog.h"
@@ -57,9 +56,9 @@ class pypilotDialogBase : public wxDialog
 		wxButton* m_bManualPortShort;
 		wxButton* m_bManualStarboardShort;
 		wxButton* m_bManualStarboardLong;
-		wxStaticText* m_staticText55;
-		wxButton* m_bTackPort;
-		wxButton* m_bTackStarboard;
+		wxStaticText* m_stTackState;
+		wxButton* m_bTack;
+		wxChoice* m_cTackDirection;
 		wxButton* m_bGains;
 		wxButton* m_bConfiguration;
 		wxButton* m_bCalibration;
@@ -74,8 +73,8 @@ class pypilotDialogBase : public wxDialog
 		virtual void OnManualPortShort( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnManualStarboardShort( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnManualStarboardLong( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnTackPort( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnTackStarboard( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnTack( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnTackDirection( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnGains( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnConfiguration( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnCalibration( wxCommandEvent& event ) { event.Skip(); }
@@ -141,14 +140,8 @@ class ConfigurationDialogBase : public wxDialog
 		wxButton* m_button11;
 		wxStaticText* m_staticText35;
 		wxSpinCtrl* m_sControlColumns;
-		wxStaticText* m_staticText5;
-		wxStaticText* m_stPeriod;
-		wxSpinButton* m_sPeriod;
-		wxStaticText* m_staticText7;
-		wxStaticText* m_staticText8;
-		wxStaticText* m_stMaxCurrent;
-		wxSpinButton* m_sMaxCurrent;
-		wxStaticText* m_staticText9;
+		wxStaticBoxSizer* m_sbSizerServo;
+		wxStaticBoxSizer* m_sbSizerTacking;
 		wxButton* m_bSignalKClient;
 		wxButton* m_bInformation;
 		wxStdDialogButtonSizer* m_sdbSizer2;
@@ -163,8 +156,6 @@ class ConfigurationDialogBase : public wxDialog
 		virtual void OnAboutTrueNorth( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnAddControlAngle( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnRemoveControlAngle( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnPeriod( wxSpinEvent& event ) { event.Skip(); }
-		virtual void OnMaxCurrent( wxSpinEvent& event ) { event.Skip(); }
 		virtual void OnSignalKClient( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnInformation( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnClose( wxCommandEvent& event ) { event.Skip(); }

@@ -36,7 +36,7 @@ public:
     bool Show( bool show=true );
 
     void Receive(std::string name, Json::Value &value);
-    const char **GetWatchlist();
+    std::list<std::string> &GetWatchlist() { return m_watchlist; }
 
 private:
     void OnAboutForwardnema( wxCommandEvent& event );
@@ -44,8 +44,7 @@ private:
     void OnAboutTrueNorth( wxCommandEvent& event );
     void OnAddControlAngle( wxCommandEvent& event );
     void OnRemoveControlAngle( wxCommandEvent& event );
-    void OnPeriod( wxSpinEvent& event );
-    void OnMaxCurrent( wxSpinEvent& event );
+    void OnSpin(wxSpinEvent& event );
     void OnInformation( wxCommandEvent& event );
     void OnSignalKClient( wxCommandEvent& event );
     void OnOk( wxCommandEvent& event );
@@ -54,5 +53,6 @@ private:
 
     double ApplyTrueNorth(double value);
     
+    std::list<std::string> m_watchlist;
     pypilot_pi &m_pypilot_pi;
 };

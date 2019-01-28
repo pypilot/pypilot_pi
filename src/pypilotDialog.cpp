@@ -163,17 +163,17 @@ void pypilotDialog::Receive(std::string name, Json::Value &value)
         wxSize s(100, 100);
         SetMinSize(s);
         Fit();
+    } else if(name == "ap.tack.state") {
+        m_stTackState->SetLabel(value.asString());
+        if(value.asString() == "")
+            m_bTack->SetLabel(_("Tack"));
+        else
+            m_bTack->SetLabel(_("Cancel"));
     } else if(name == "ap.tack.direction") {
-        wxButton *big, *small;
-        if(value.asString() == "port") {
-            big = m_bTackPort;
-            small = m_bTackStarboard;
-        } else {
-            small = m_bTackPort;
-            big = m_bTackStarboard;
-        }
-        big->SetSize(35, big->GetSize().y);
-        small->SetSize(15, small->GetSize().y);
+        if(value.asString() == "port")
+            m_cTackDirection->SetSelection(0);
+        else
+            m_cTackDirection->SetSelection(1);
     } else if(name == "gps.source") {
         m_bAPHaveGPS = value.asString() != "none";
         UpdateModes();
@@ -219,7 +219,7 @@ const char **pypilotDialog::GetWatchlist()
 {
     static const char *watchlist[] =
         {"ap.enabled", "ap.mode", "ap.heading", "ap.heading_command",
-         "ap.tack.direction",
+         "ap.tack.state", "ap.tack.direction",
          "gps.source", "wind.source",
          "servo.mode", "servo.flags", "servo.controller", 0};
     return watchlist;
@@ -358,16 +358,14 @@ void pypilotDialog::OnControlAngle( wxCommandEvent& event )
     }        
 }
 
-void pypilotDialog::OnTackPort( wxCommandEvent& event )
+void pypilotDialog::OnTack( wxCommandEvent& event )
 {
-    m_pypilot_pi.m_client.set("ap.tack.direction", "port");
-    m_pypilot_pi.m_client.set("ap.tack.state", "start");
+    m_pypilot_pi.m_client.set("ap.tack.state", m_bTack->GetLabel() == _("Tack") ? "begin": "");
 }
 
-void pypilotDialog::OnTackStarboard( wxCommandEvent& event )
+void pypilotDialog::OnTackDirection( wxCommandEvent& event )
 {
-    m_pypilot_pi.m_client.set("ap.tack.direction", "starboard");
-    m_pypilot_pi.m_client.set("ap.tack.state", "start");
+    m_pypilot_pi.m_client.set("ap.tack.direction", m_cTackDirection->GetSelection() ? "port" : "starboard");
 }
 
 void pypilotDialog::UpdateModes()
