@@ -48,7 +48,7 @@ build_script:
   - cmake --build . --config Release --target package
 
 artifacts:
-  - path: build\pypilot_pi*.exe'
+  - path: build\pypilot_pi*.exe
     name: installer
 
 deploy:
