@@ -165,7 +165,7 @@ void pypilotDialog::Receive(std::string name, Json::Value &value)
         Fit();
     } else if(name == "ap.tack.state") {
         m_stTackState->SetLabel(value.asString());
-        if(value.asString() == "")
+        if(value.asString() == "none")
             m_bTack->SetLabel(_("Tack"));
         else
             m_bTack->SetLabel(_("Cancel"));
@@ -189,6 +189,18 @@ void pypilotDialog::Receive(std::string name, Json::Value &value)
         if(value == "none")
             m_stServoMode->SetLabel(_("No Motor Controller"));
         m_servoController = value.asString();
+    } else if(name == "rudder.angle") {
+        wxString str = value.asString();
+        bool show_center=!m_bAP->GetValue();
+        if(str == "False") {
+            str = "";
+            show_center=false;
+        }
+
+        if(m_bCenter->IsShown() != show_center)
+            m_bCenter->Show(show_center);
+        
+        m_stRudder->SetLabel(wxString::Format("%.1f", value.asDouble()));
     }
 
     if(!wxIsNaN(m_HeadingCommand) &&
@@ -220,7 +232,7 @@ const char **pypilotDialog::GetWatchlist()
     static const char *watchlist[] =
         {"ap.enabled", "ap.mode", "ap.heading", "ap.heading_command",
          "ap.tack.state", "ap.tack.direction",
-         "gps.source", "wind.source",
+         "gps.source", "wind.source", "rudder.angle",
          "servo.mode", "servo.flags", "servo.controller", 0};
     return watchlist;
 }
@@ -386,6 +398,11 @@ void pypilotDialog::Manual(double amount)
     m_ManualCommand = amount > 0 ? 1 : -1;
     m_ManualTimeout = wxDateTime::UNow() + wxTimeSpan::Milliseconds(abs(1000.0*amount));
     m_ManualTimer.Start(100);
+}
+
+void pypilotDialog::OnManualCenter( wxCommandEvent& event )
+{
+    m_pypilot_pi.m_client.set("servo.position_command", 0.0);
 }
 
 void pypilotDialog::OnManualTimer( wxTimerEvent & )
