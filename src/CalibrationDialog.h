@@ -47,13 +47,13 @@ private:
     void OnAboutHeadingOffset( wxCommandEvent& event );
 
     void OnRudderCentered( wxCommandEvent& event );
-    void OnRudderAtRange( wxCommandEvent& event );
+    void OnRudderStarboardRange( wxCommandEvent& event );
+    void OnRudderPortRange( wxCommandEvent& event );
     void OnRudderRange( wxSpinEvent& event );
     void OnAboutRudderCalibration( wxCommandEvent& event );
 
     double m_pitch;
 
-    double m_rudder, m_rudder_offset, m_rudder_scale;
     pypilot_pi &m_pypilot_pi;
     wxDateTime m_lastOffsetTime;
 

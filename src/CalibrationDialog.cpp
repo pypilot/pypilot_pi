@@ -65,13 +65,11 @@ static wxString StringValue(Json::Value &value)
 
 void CalibrationDialog::Receive(std::string name, Json::Value &value)
 {
-    if(name == "imu.pitch" || name == "imu.roll") {
-        if(name == "imu.pitch")
-            m_pitch = jsondouble(value);
-        else {
-            double roll = jsondouble(value);
-            m_stPitchRoll->SetLabel(wxString::Format("%.1f / %.1f", m_pitch, roll));
-        }
+    if(name == "imu.pitch")
+        m_pitch = jsondouble(value);
+    else if(name == "imu.roll") {
+        double roll = jsondouble(value);
+        m_stPitchRoll->SetLabel(wxString::Format("%.1f / %.1f", m_pitch, roll));
     } else if(name == "imu.alignmentCounter")
         m_gLevel->SetValue(100-jsondouble(value));
     else if(name == "imu.accel.calibration")
@@ -89,14 +87,15 @@ void CalibrationDialog::Receive(std::string name, Json::Value &value)
     else if(name == "imu.heading_offset") {
         if(!m_lastOffsetTime.IsValid() || (wxDateTime::Now() - m_lastOffsetTime).GetSeconds() > 3)
             m_sHeadingOffset->SetValue(jsondouble(value));
-    } else if(name == "servo.rudder") {
-        m_rudder = value.asDouble();
-        m_stRudder->SetLabel(wxString::Format("%.3f", value.asDouble()));
-    } else if(name == "servo.rudder.offset")
-        m_rudder_offset = value.asDouble();
-    else if(name == "servo.rudder.scale")
-        m_rudder_scale = value.asDouble();
-    else if(name == "servo.rudder.range")
+    } else if(name == "rudder.angle")
+        m_stRudderAngle->SetLabel(wxString::Format("%.3f", value.asDouble()));
+    else if(name == "rudder.offset")
+        m_stRudderOffset->SetLabel(wxString::Format("%.3f", value.asDouble()));
+    else if(name == "rudder.scale")
+        m_stRudderScale->SetLabel(wxString::Format("%.3f", value.asDouble()));
+    else if(name == "rudder.nonlinearity")
+        m_stRudderNonlinearity->SetLabel(wxString::Format("%.3f", value.asDouble()));
+    else if(name == "rudder.range")
         m_sRudderRange->SetValue(value.asDouble());
 }
 
@@ -109,7 +108,7 @@ const char **CalibrationDialog::GetWatchlist()
          "imu.compass.calibration", "imu.compass.calibration.age",
          "imu.compass.calibration.locked",
          "imu.heading_offset",
-         "servo.rudder", "servo.rudder.offset", "servo.rudder.scale", "servo.rudder.range"};
+         "rudder.angle", "rudder.offset", "rudder.scale", "rudder.nonlinearity", "rudder.range"};
 
     return watchlist;
 }
@@ -151,25 +150,32 @@ void CalibrationDialog::OnAboutHeadingOffset( wxCommandEvent& event )
 
 void CalibrationDialog::OnRudderCentered( wxCommandEvent& event )
 {
-    double rudder_pos = m_rudder / m_rudder_scale - m_rudder_offset + .5;
-    m_pypilot_pi.m_client.set("servo.rudder.offset", .5 - rudder_pos);
+    m_pypilot_pi.m_client.set("rudder.calibration_state", "centered");
 }
 
-void CalibrationDialog::OnRudderAtRange( wxCommandEvent& event )
+void CalibrationDialog::OnRudderStarboardRange( wxCommandEvent& event )
 {
-    double scale = m_sRudderRange->GetValue() * m_rudder_scale / m_rudder;
-    m_pypilot_pi.m_client.set("servo.rudder.scale", scale);
+    m_pypilot_pi.m_client.set("rudder.calibration_state", "starboard range");
+}
+
+void CalibrationDialog::OnRudderPortRange( wxCommandEvent& event )
+{
+    m_pypilot_pi.m_client.set("rudder.calibration_state", "portboard range");
 }
 
 void CalibrationDialog::OnRudderRange( wxSpinEvent& event )
 {
-    m_pypilot_pi.m_client.set("servo.rudder.range", m_sRudderRange->GetValue());
+    m_pypilot_pi.m_client.set("rudder.range", m_sRudderRange->GetValue());
 }
 
 void CalibrationDialog::OnAboutRudderCalibration( wxCommandEvent& event )
 {
     wxMessageDialog mdlg(GetOCPNCanvasWindow(),
-                         _("To calibrate rudder feedback, first manually center the rudder, and press 'Centered'.\n\nNext, turn the rudder to starboard as far as the autopilot maximum range should be, and enter this value in degrees and press 'At Range'."),
+                         _("To calibrate rudder feedback:\n\
+1) manually center the rudder and press 'Centered'.\n\
+2) set 'Range' to the angle the autopilot maximum range should be\n\
+3) manually turn rudder to starboard this maximum angle and press 'Starboard Range'\n\
+4) manually turn rudder to port this maximum angle and press 'Port Range'"),
                          "pypilot", wxOK | wxICON_INFORMATION);
     mdlg.ShowModal();
 }
