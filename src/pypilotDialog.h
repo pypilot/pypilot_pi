@@ -67,10 +67,12 @@ private:
     void OnControlAngle( wxCommandEvent& event );
     void OnTack( wxCommandEvent& event );
     void OnTackDirection( wxCommandEvent& event );
+    void OnCenter( wxCommandEvent& event );
 
     void UpdateModes();
     void Manual(double amount);
     void OnManualTimer( wxTimerEvent & );
+    void OnRudderPollTimer( wxTimerEvent & );
     void AddButton(int angle, wxSizer *sizer);
 
     bool m_bAPHaveGPS, m_bAPHaveWind;
@@ -82,7 +84,7 @@ private:
     wxDateTime m_HeadingCommandUpdate;
 
     double m_ManualCommand;
-    wxDateTime m_ManualTimeout;
+    wxDateTime m_ManualTimeout, m_RudderPollTimer;
     wxTimer m_ManualTimer;
     
     bool m_bTrueNorthMode;
