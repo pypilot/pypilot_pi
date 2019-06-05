@@ -40,8 +40,8 @@ struct ui_setting {
 } ui_settings[] = {{"servo.period", "Period", "Seconds", .1, SERVO},
                    {"servo.max_current", "Max Current", "Amps", .1, SERVO},
                    {"ap.tack.angle", "Angle", "Degrees", 1, TACKING},
-                   {"ap.tack.speed", "Speed", "Degrees/s", 1, TACKING},
-                   {"ap.tack.complete", "Complete", "Degrees", 1, TACKING},
+                   {"ap.tack.rate", "Rate", "Degrees/s", 1, TACKING},
+                   {"ap.tack.threshold", "Complete", "Degrees", 1, TACKING},
                    {"ap.tack.delay", "Delay", "Seconds", .5, TACKING}
 };
 

@@ -135,8 +135,6 @@ void pypilotDialog::Disconnected()
     m_fgControlAnglesPos->Show(false);
     m_fgControlAnglesNeg->Show(false);
     m_fgControlManual->Show(false);
-    m_fgControlTack->Show(false);
-    m_fgControlCenter->Show(false);
 
     wxSize s(100,100);
     SetMinSize(s);
@@ -162,12 +160,10 @@ void pypilotDialog::Receive(std::string name, Json::Value &value)
         m_fgControlAnglesPos->Show(enabled);
         m_fgControlAnglesNeg->Show(enabled);
         m_fgControlManual->Show(!enabled);
-        m_fgControlTack->Show(enabled);
-        m_fgControlCenter->Show(!enabled);
         if(enabled)
             m_RudderPollTimer.Stop();
         else
-            m_RudderPollTimer.Start(500, False);
+            m_RudderPollTimer.Start(500, false);
 
         SetAPColor(m_cMode->GetStringSelection());
 
@@ -191,14 +187,14 @@ void pypilotDialog::Receive(std::string name, Json::Value &value)
     } else if(name == "wind.source") {
         m_bAPHaveWind = value.asString() != "none";
         UpdateModes();
-    } else if(name == "servo.mode") {
+    } else if(name == "servo.state") {
         if(m_servoController != "none")
-            m_stServoMode->SetLabel(value.asString());
+            m_stServoState->SetLabel(value.asString());
     } else if(name == "servo.flags") {
         m_stServoFlags->SetLabel(value.asString());
     } else if(name == "servo.controller") {
         if(value == "none")
-            m_stServoMode->SetLabel(_("No Motor Controller"));
+            m_stServoState->SetLabel(_("No Motor Controller"));
         m_servoController = value.asString();
     } else if(name == "rudder.angle") {
         wxString str = value.asString();
@@ -243,8 +239,8 @@ const char **pypilotDialog::GetWatchlist()
     static const char *watchlist[] =
         {"ap.enabled", "ap.mode", "ap.heading", "ap.heading_command",
          "ap.tack.state", "ap.tack.direction",
-         "gps.source", "wind.source", "rudder.angle",
-         "servo.mode", "servo.flags", "servo.controller", 0};
+         "gps.source", "wind.source",
+         "servo.state", "servo.flags", "servo.controller", 0};
     return watchlist;
 }
 
@@ -391,11 +387,6 @@ void pypilotDialog::OnTackDirection( wxCommandEvent& event )
     m_pypilot_pi.m_client.set("ap.tack.direction", m_cTackDirection->GetSelection() ? "port" : "starboard");
 }
 
-void OnCenter( wxCommandEvent& event )
-{
-    m_pypilot_pi.m_client.set("servo.position_command", 0);
-}
-
 void pypilotDialog::UpdateModes()
 {
     m_cMode->Clear();
@@ -432,9 +423,9 @@ void pypilotDialog::OnManualTimer( wxTimerEvent & )
 }
 
 
-void pypilotDialog::OnRudderPoll( wxTimerEvent & )
+void pypilotDialog::OnRudderPollTimer( wxTimerEvent & )
 {
-    m_pypilot_pi.m_client.get("servo.rudder");
+    m_pypilot_pi.m_client.get("rudder.angle");
 }
 
 void pypilotDialog::AddButton(int angle, wxSizer *sizer)

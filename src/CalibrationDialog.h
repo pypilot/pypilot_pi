@@ -35,7 +35,7 @@ public:
     ~CalibrationDialog();
 
     void Receive(std::string name, Json::Value &value);
-    const char **GetWatchlist();
+    std::list<std::string> &GetWatchlist();
 
 private:
     void OnCalibrationLocked( wxCommandEvent& event );
