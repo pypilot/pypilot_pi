@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Apr 18 2019)
+// C++ code generated with wxFormBuilder (version Mar 28 2019)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO *NOT* EDIT THIS FILE!
@@ -787,11 +787,7 @@ CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, c
 	m_panel1->SetSizer( sbSizer6 );
 	m_panel1->Layout();
 	sbSizer6->Fit( m_panel1 );
-<<<<<<< HEAD
 	m_notebook1->AddPage( m_panel1, _("Accelerometers"), false );
-=======
-	m_notebook1->AddPage( m_panel1, _("Accelerometers"), true );
->>>>>>> 00f3b2f6181c75a64c70064919db359f9019c28c
 	m_panel2 = new wxPanel( m_notebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxStaticBoxSizer* sbSizer4;
 	sbSizer4 = new wxStaticBoxSizer( new wxStaticBox( m_panel2, wxID_ANY, _("Compass") ), wxVERTICAL );
@@ -993,11 +989,7 @@ CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, c
 	m_panel4->SetSizer( sbSizer7 );
 	m_panel4->Layout();
 	sbSizer7->Fit( m_panel4 );
-<<<<<<< HEAD
-	m_notebook1->AddPage( m_panel4, _("Rudder"), true );
-=======
 	m_notebook1->AddPage( m_panel4, _("Rudder"), false );
->>>>>>> 00f3b2f6181c75a64c70064919db359f9019c28c
 
 	fgSizer19->Add( m_notebook1, 1, wxEXPAND | wxALL, 5 );
 
