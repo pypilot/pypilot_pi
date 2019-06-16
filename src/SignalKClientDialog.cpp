@@ -103,8 +103,13 @@ std::list<std::string> &SignalKClientDialog::GetWatchlist()
 
 bool SignalKClientDialog::Show( bool show )
 {
-    m_fgSizer->DeleteWindows();
+#ifdef __OCPN__ANDROID__  // wxqt broken reenumarate
+    if(m_values.size())
+        return SignalKClientDialogBase::Show(show);
+#endif
 
+    m_fgSizer->DeleteWindows();
+    
     m_values.clear();
     m_controls.clear();
 
@@ -114,7 +119,7 @@ bool SignalKClientDialog::Show( bool show )
             std::string name = val.key().asString();
             m_fgSizer->Add( new wxStaticText(m_scrolledWindow, wxID_ANY, name), 0, wxALL, 5 );
             m_values[name] = new wxStaticText(m_scrolledWindow, wxID_ANY, "");
-            m_fgSizer->Add( m_values[name], 0, wxALL, 5 );
+            m_fgSizer->Add( m_values[name], 0, wxALL|wxEXPAND, 5 );
             
             std::string t = (*val)["type"].asString();            
 #if 0            

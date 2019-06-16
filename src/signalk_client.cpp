@@ -135,6 +135,8 @@ void SignalKClient::set(std::string name, const char *value)
 void SignalKClient::watch(std::string name, bool on)
 {
 //    printf("watch %s %d\n", name.c_str(), on);
+//    wxString l = "send watch request" + name;
+//    wxLogMessage(l);
     if(on)
         get(name);
     Json::Value request;

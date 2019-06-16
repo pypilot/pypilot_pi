@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Mar 28 2019)
+// C++ code generated with wxFormBuilder (version Apr 18 2019)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO *NOT* EDIT THIS FILE!
@@ -49,7 +49,7 @@ class pypilotDialogBase : public wxDialog
 	protected:
 		wxToggleButton* m_bAP;
 		wxChoice* m_cMode;
-		wxStaticText* m_stServoMode;
+		wxStaticText* m_stServoState;
 		wxStaticText* m_stServoFlags;
 		wxStaticText* m_stRudder;
 		wxStaticText* m_stCommand;

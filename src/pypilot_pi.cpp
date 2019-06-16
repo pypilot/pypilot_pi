@@ -306,12 +306,13 @@ void pypilot_pi::OnToolbarToolCallback(int id)
     {
         m_pypilotDialog = new pypilotDialog(*this, GetOCPNCanvasWindow());
         UpdateStatus();
-                
-        m_GainsDialog = new GainsDialog(*this, GetOCPNCanvasWindow());
+        
         m_ConfigurationDialog = new ConfigurationDialog(*this, GetOCPNCanvasWindow());
+        
         m_StatisticsDialog = new StatisticsDialog(*this, GetOCPNCanvasWindow());
         m_CalibrationDialog = new CalibrationDialog(*this, GetOCPNCanvasWindow());
         m_SignalKClientDialog = new SignalKClientDialog(*this, GetOCPNCanvasWindow());
+        m_GainsDialog = new GainsDialog(*this, GetOCPNCanvasWindow());
 
         wxIcon icon;
         icon.CopyFromBitmap(*_img_pypilot_grey);

@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Mar 28 2019)
+// C++ code generated with wxFormBuilder (version Apr 18 2019)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO *NOT* EDIT THIS FILE!
@@ -31,7 +31,7 @@ pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxS
 	fgSizer13->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
 	m_bAP = new wxToggleButton( this, wxID_ANY, _("AP"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_bAP->SetFont( wxFont( 36, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString ) );
+	m_bAP->SetFont( wxFont( 36, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, wxT("Sawasdee") ) );
 
 	fgSizer13->Add( m_bAP, 0, wxALL, 5 );
 
@@ -54,10 +54,7 @@ pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxS
 
 	wxFlexGridSizer* fgSizer39;
 	fgSizer39 = new wxFlexGridSizer( 1, 0, 0, 0 );
-	fgSizer39->AddGrowableCol( 0 );
-	fgSizer39->AddGrowableCol( 1 );
 	fgSizer39->AddGrowableCol( 2 );
-	fgSizer39->AddGrowableCol( 3 );
 	fgSizer39->SetFlexibleDirection( wxBOTH );
 	fgSizer39->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
@@ -67,18 +64,18 @@ pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxS
 
 	fgSizer39->Add( m_stStatus, 0, wxALL, 5 );
 
-	m_stServoMode = new wxStaticText( this, wxID_ANY, _("-----"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_stServoMode->Wrap( -1 );
-	m_stServoMode->SetFont( wxFont( 10, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxT("Sans") ) );
+	m_stServoState = new wxStaticText( this, wxID_ANY, _("-----"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_stServoState->Wrap( -1 );
+	m_stServoState->SetFont( wxFont( 10, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxT("Sans") ) );
 
-	fgSizer39->Add( m_stServoMode, 0, wxALL, 5 );
+	fgSizer39->Add( m_stServoState, 0, wxALL, 5 );
 
 	m_stServoFlags = new wxStaticText( this, wxID_ANY, _("-----"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_stServoFlags->Wrap( 200 );
+	m_stServoFlags->Wrap( 30 );
 	m_stServoFlags->SetFont( wxFont( 10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString ) );
 	m_stServoFlags->SetMaxSize( wxSize( 200,-1 ) );
 
-	fgSizer39->Add( m_stServoFlags, 0, wxALL, 5 );
+	fgSizer39->Add( m_stServoFlags, 0, wxALL|wxEXPAND, 5 );
 
 	m_stRudder = new wxStaticText( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_stRudder->Wrap( -1 );
@@ -94,15 +91,15 @@ pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxS
 	fgSizer12->SetFlexibleDirection( wxBOTH );
 	fgSizer12->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
-	m_stCommand = new wxStaticText( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_stCommand = new wxStaticText( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,30 ), 0 );
 	m_stCommand->Wrap( -1 );
-	m_stCommand->SetFont( wxFont( 24, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString ) );
+	m_stCommand->SetFont( wxFont( 26, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxT("Sawasdee") ) );
 
 	fgSizer12->Add( m_stCommand, 0, wxALL|wxEXPAND, 5 );
 
 	m_stHeading = new wxStaticText( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_stHeading->Wrap( -1 );
-	m_stHeading->SetFont( wxFont( 24, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString ) );
+	m_stHeading->SetFont( wxFont( 26, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxT("Sawasdee") ) );
 
 	fgSizer12->Add( m_stHeading, 0, wxALL|wxEXPAND, 5 );
 
@@ -297,8 +294,9 @@ GainsDialogBase::GainsDialogBase( wxWindow* parent, wxWindowID id, const wxStrin
 	m_staticText52->Wrap( -1 );
 	fgSizer42->Add( m_staticText52, 0, wxALL, 5 );
 
-	wxArrayString m_cPilotChoices;
-	m_cPilot = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_cPilotChoices, 0 );
+	wxString m_cPilotChoices[] = { _("N/A") };
+	int m_cPilotNChoices = sizeof( m_cPilotChoices ) / sizeof( wxString );
+	m_cPilot = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_cPilotNChoices, m_cPilotChoices, 0 );
 	m_cPilot->SetSelection( 0 );
 	fgSizer42->Add( m_cPilot, 0, wxALL, 5 );
 
@@ -486,7 +484,7 @@ ConfigurationDialogBase::ConfigurationDialogBase( wxWindow* parent, wxWindowID i
 
 	fgSizer46->Add( m_sbSizerTacking, 1, wxEXPAND, 5 );
 
-	m_bSignalKClient = new wxButton( this, wxID_ANY, _("SignalK Client"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_bSignalKClient = new wxButton( this, wxID_ANY, _("SignalK Client"), wxDefaultPosition, wxSize( 180,-1 ), 0 );
 	fgSizer46->Add( m_bSignalKClient, 0, wxALL, 5 );
 
 
@@ -789,7 +787,11 @@ CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, c
 	m_panel1->SetSizer( sbSizer6 );
 	m_panel1->Layout();
 	sbSizer6->Fit( m_panel1 );
+<<<<<<< HEAD
 	m_notebook1->AddPage( m_panel1, _("Accelerometers"), false );
+=======
+	m_notebook1->AddPage( m_panel1, _("Accelerometers"), true );
+>>>>>>> 00f3b2f6181c75a64c70064919db359f9019c28c
 	m_panel2 = new wxPanel( m_notebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxStaticBoxSizer* sbSizer4;
 	sbSizer4 = new wxStaticBoxSizer( new wxStaticBox( m_panel2, wxID_ANY, _("Compass") ), wxVERTICAL );
@@ -801,7 +803,7 @@ CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, c
 
 	m_stCompassCalibration = new wxStaticText( sbSizer4->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_stCompassCalibration->Wrap( 30 );
-	fgSizer41->Add( m_stCompassCalibration, 0, wxALL, 5 );
+	fgSizer41->Add( m_stCompassCalibration, 0, wxALL|wxEXPAND, 5 );
 
 	wxFlexGridSizer* fgSizer22;
 	fgSizer22 = new wxFlexGridSizer( 0, 2, 0, 0 );
@@ -991,7 +993,11 @@ CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, c
 	m_panel4->SetSizer( sbSizer7 );
 	m_panel4->Layout();
 	sbSizer7->Fit( m_panel4 );
+<<<<<<< HEAD
 	m_notebook1->AddPage( m_panel4, _("Rudder"), true );
+=======
+	m_notebook1->AddPage( m_panel4, _("Rudder"), false );
+>>>>>>> 00f3b2f6181c75a64c70064919db359f9019c28c
 
 	fgSizer19->Add( m_notebook1, 1, wxEXPAND | wxALL, 5 );
 
