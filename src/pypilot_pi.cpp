@@ -436,7 +436,7 @@ void pypilot_pi::OnTimer( wxTimerEvent & )
         Receive(name, val);
          }     catch(std::exception e)
          {
-             printf("exception!!! %s\n", name.c_str());
+             printf("exception!!! %s: %s\n", name.c_str(), e.what());
          }
 
         m_lastMessage = now;

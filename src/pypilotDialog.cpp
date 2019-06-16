@@ -188,6 +188,8 @@ void pypilotDialog::Receive(std::string name, Json::Value &value)
     } else if(name == "servo.controller") {
         if(value == "none")
             m_stServoMode->SetLabel(_("No Motor Controller"));
+        else
+            m_stServoMode->SetLabel(_("OK"));
         m_servoController = value.asString();
     } else if(name == "rudder.angle") {
         wxString str = value.asString();

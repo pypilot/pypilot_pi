@@ -148,19 +148,9 @@ void CalibrationDialog::OnAboutHeadingOffset( wxCommandEvent& event )
     mdlg.ShowModal();
 }
 
-void CalibrationDialog::OnRudderCentered( wxCommandEvent& event )
+void CalibrationDialog::RudderCalCommand(const char *command)
 {
-    m_pypilot_pi.m_client.set("rudder.calibration_state", "centered");
-}
-
-void CalibrationDialog::OnRudderStarboardRange( wxCommandEvent& event )
-{
-    m_pypilot_pi.m_client.set("rudder.calibration_state", "starboard range");
-}
-
-void CalibrationDialog::OnRudderPortRange( wxCommandEvent& event )
-{
-    m_pypilot_pi.m_client.set("rudder.calibration_state", "portboard range");
+    m_pypilot_pi.m_client.set("rudder.calibration_state", command);
 }
 
 void CalibrationDialog::OnRudderRange( wxSpinEvent& event )
