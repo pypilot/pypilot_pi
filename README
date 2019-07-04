@@ -10,7 +10,7 @@ for graphical overlays of the autopilot settings directly onto the chart.
 Compiling
 =========
 
-* git clone git://github.com/pypilot_pi/pypilot_pi.git
+* git clone git://github.com/pypilot/pypilot_pi.git
 
 Do NOT attempt to build this plugin from within the OpenCPN source tree.
 
