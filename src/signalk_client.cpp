@@ -69,6 +69,7 @@ void SignalKClient::disconnect()
     m_sock.Close();
     m_list = Json::Value();
     m_watchlist.clear();
+    m_sock_buffer.clear();
     OnDisconnected();
 }
 
@@ -135,6 +136,8 @@ void SignalKClient::set(std::string name, const char *value)
 void SignalKClient::watch(std::string name, bool on)
 {
 //    printf("watch %s %d\n", name.c_str(), on);
+//    wxString l = "send watch request" + name;
+//    wxLogMessage(l);
     if(on)
         get(name);
     Json::Value request;
@@ -203,16 +206,22 @@ void SignalKClient::OnSocketEvent(wxSocketEvent& event)
 
         case wxSOCKET_INPUT:
         {
-    #define RD_BUF_SIZE    8192
+    #define RD_BUF_SIZE    65536
             std::vector<char> data(RD_BUF_SIZE+1);
-            event.GetSocket()->Read(&data.front(),RD_BUF_SIZE);
-            if(!event.GetSocket()->Error())
-            {
+
+            event.GetSocket()->Read(&data.front(), RD_BUF_SIZE);
+            if(!event.GetSocket()->Error()) {
                 size_t count = event.GetSocket()->LastCount();
-                if(count && count < RD_BUF_SIZE)
-                {
+                if(count) {
                     data[count]=0;
                     m_sock_buffer += (&data.front());
+                }
+
+                // overflow and reset connection at 640k in buffer
+                if(m_sock_buffer.size() >= 1024*640) {
+                    wxLogMessage( "signalk client input buffer overflow!\n" );
+                    disconnect();
+                    break;
                 }
             }
 
@@ -221,6 +230,7 @@ void SignalKClient::OnSocketEvent(wxSocketEvent& event)
                 if(line_end <= 0)
                     break;
                 std::string json_line = m_sock_buffer.substr(0, line_end);
+
                 Json::Value value;
                 Json::Reader reader;
                 if(!reader.parse(json_line, value)) {
@@ -244,7 +254,7 @@ void SignalKClient::OnSocketEvent(wxSocketEvent& event)
                                 m_queue.push_back(p);
                             } else {
                                 m_map[val.key().asString()] = *val;
-                                //printf("got %s\n", val.key().asString().c_str());
+//                                printf("got %s\n", val.key().asString().c_str());
                             }
                     }
                 }

@@ -30,7 +30,9 @@
 #include <wx/statbox.h>
 #include <wx/spinctrl.h>
 #include <wx/listbox.h>
+#include <wx/panel.h>
 #include <wx/gauge.h>
+#include <wx/notebook.h>
 
 #include "wxWTranslateCatalog.h"
 
@@ -47,7 +49,7 @@ class pypilotDialogBase : public wxDialog
 	protected:
 		wxToggleButton* m_bAP;
 		wxChoice* m_cMode;
-		wxStaticText* m_stServoMode;
+		wxStaticText* m_stServoState;
 		wxStaticText* m_stServoFlags;
 		wxStaticText* m_stRudder;
 		wxStaticText* m_stCommand;
@@ -249,16 +251,20 @@ class CalibrationDialogBase : public wxDialog
 	private:
 
 	protected:
+		wxNotebook* m_notebook1;
+		wxPanel* m_panel1;
 		wxStaticText* m_stAccelCalibration;
 		wxStaticText* m_staticText48;
 		wxStaticText* m_stAccelCalibrationAge;
 		wxCheckBox* m_cbAccelCalibrationLocked;
 		wxButton* m_button1711;
+		wxPanel* m_panel2;
 		wxStaticText* m_stCompassCalibration;
 		wxStaticText* m_staticText30;
 		wxStaticText* m_stCompassCalibrationAge;
 		wxCheckBox* m_cbCompassCalibrationLocked;
 		wxButton* m_button171;
+		wxPanel* m_panel3;
 		wxStaticText* m_staticText25;
 		wxStaticText* m_stPitchRoll;
 		wxGauge* m_gLevel;
@@ -267,6 +273,7 @@ class CalibrationDialogBase : public wxDialog
 		wxStaticText* m_staticText34;
 		wxSpinCtrl* m_sHeadingOffset;
 		wxButton* m_button17;
+		wxPanel* m_panel4;
 		wxStaticText* m_staticText49;
 		wxStaticText* m_stRudderAngle;
 		wxStaticText* m_staticText42;
@@ -276,11 +283,12 @@ class CalibrationDialogBase : public wxDialog
 		wxStaticText* m_staticText46;
 		wxStaticText* m_stRudderNonlinearity;
 		wxButton* m_button22;
-		wxButton* m_button172;
+		wxButton* m_button29;
 		wxButton* m_button23;
 		wxButton* m_button28;
 		wxStaticText* m_staticText51;
 		wxSpinCtrl* m_sRudderRange;
+		wxButton* m_button172;
 		wxStdDialogButtonSizer* m_sdbSizer3;
 		wxButton* m_sdbSizer3OK;
 
@@ -293,10 +301,11 @@ class CalibrationDialogBase : public wxDialog
 		virtual void OnHeadingOffset( wxSpinEvent& event ) { event.Skip(); }
 		virtual void OnAboutHeadingOffset( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnRudderCentered( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnAboutRudderCalibration( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnRudderResetCalibration( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnRudderStarboardRange( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnRudderPortRange( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnRudderRange( wxSpinEvent& event ) { event.Skip(); }
+		virtual void OnAboutRudderCalibration( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnClose( wxCommandEvent& event ) { event.Skip(); }
 
 

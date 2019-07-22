@@ -99,18 +99,27 @@ void CalibrationDialog::Receive(std::string name, Json::Value &value)
         m_sRudderRange->SetValue(value.asDouble());
 }
 
-const char **CalibrationDialog::GetWatchlist()
+std::list<std::string> &CalibrationDialog::GetWatchlist()
 {
-    static const char *watchlist[] =
-        {"imu.pitch", "imu.roll", "imu.alignmentCounter",
-         "imu.accel.calibration", "imu.accel.calibration.age",
-         "imu.accel.calibration.locked",
-         "imu.compass.calibration", "imu.compass.calibration.age",
-         "imu.compass.calibration.locked",
-         "imu.heading_offset",
-         "rudder.angle", "rudder.offset", "rudder.scale", "rudder.nonlinearity", "rudder.range"};
-
-    return watchlist;
+    static std::list<std::string> list;
+    if(list.size() == 0) {
+        list.push_back("imu.pitch");
+        list.push_back("imu.roll");
+        list.push_back("imu.alignmentCounter");
+        list.push_back("imu.accel.calibration");
+        list.push_back("imu.accel.calibration.age");
+        list.push_back("imu.accel.calibration.locked");
+        list.push_back("imu.compass.calibration");
+        list.push_back("imu.compass.calibration.age");
+        list.push_back("imu.compass.calibration.locked");
+        list.push_back("imu.heading_offset");
+        list.push_back("rudder.angle");
+        list.push_back("rudder.offset");
+        list.push_back("rudder.scale");
+        list.push_back("rudder.nonlinearity");
+        list.push_back("rudder.range");
+    }
+    return list;
 }
 
 void CalibrationDialog::OnClose( wxCommandEvent& event )
@@ -148,19 +157,9 @@ void CalibrationDialog::OnAboutHeadingOffset( wxCommandEvent& event )
     mdlg.ShowModal();
 }
 
-void CalibrationDialog::OnRudderCentered( wxCommandEvent& event )
+void CalibrationDialog::RudderCalCommand(const char *command)
 {
-    m_pypilot_pi.m_client.set("rudder.calibration_state", "centered");
-}
-
-void CalibrationDialog::OnRudderStarboardRange( wxCommandEvent& event )
-{
-    m_pypilot_pi.m_client.set("rudder.calibration_state", "starboard range");
-}
-
-void CalibrationDialog::OnRudderPortRange( wxCommandEvent& event )
-{
-    m_pypilot_pi.m_client.set("rudder.calibration_state", "portboard range");
+    m_pypilot_pi.m_client.set("rudder.calibration_state", command);
 }
 
 void CalibrationDialog::OnRudderRange( wxSpinEvent& event )
