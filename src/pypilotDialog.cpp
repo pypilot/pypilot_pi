@@ -22,7 +22,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,  USA.         *
  ***************************************************************************
- */
+v */
 
 #include <vector>
 
@@ -66,6 +66,8 @@ pypilotDialog::pypilotDialog( pypilot_pi &_pypilot_pi, wxWindow* parent)
 
     m_ManualTimer.Connect(wxEVT_TIMER, wxTimerEventHandler
                           ( pypilotDialog::OnManualTimer ), NULL, this);
+    m_RudderPollTimer.Connect(wxEVT_TIMER, wxTimerEventHandler
+                          ( pypilotDialog::OnRudderPollTimer ), NULL, this);
 
     Disconnected();
 }
@@ -158,6 +160,11 @@ void pypilotDialog::Receive(std::string name, Json::Value &value)
         m_fgControlAnglesPos->Show(enabled);
         m_fgControlAnglesNeg->Show(enabled);
         m_fgControlManual->Show(!enabled);
+        if(enabled)
+            m_RudderPollTimer.Stop();
+        else
+            m_RudderPollTimer.Start(500, false);
+
         SetAPColor(m_cMode->GetStringSelection());
 
         wxSize s(100, 100);
@@ -180,14 +187,16 @@ void pypilotDialog::Receive(std::string name, Json::Value &value)
     } else if(name == "wind.source") {
         m_bAPHaveWind = value.asString() != "none";
         UpdateModes();
-    } else if(name == "servo.mode") {
+    } else if(name == "servo.state") {
         if(m_servoController != "none")
-            m_stServoMode->SetLabel(value.asString());
+            m_stServoState->SetLabel(value.asString());
     } else if(name == "servo.flags") {
         m_stServoFlags->SetLabel(value.asString());
     } else if(name == "servo.controller") {
         if(value == "none")
-            m_stServoMode->SetLabel(_("No Motor Controller"));
+            m_stServoState->SetLabel(_("No Motor Controller"));
+        else
+            m_stServoState->SetLabel(_("OK"));
         m_servoController = value.asString();
     } else if(name == "rudder.angle") {
         wxString str = value.asString();
@@ -232,8 +241,8 @@ const char **pypilotDialog::GetWatchlist()
     static const char *watchlist[] =
         {"ap.enabled", "ap.mode", "ap.heading", "ap.heading_command",
          "ap.tack.state", "ap.tack.direction",
-         "gps.source", "wind.source", "rudder.angle",
-         "servo.mode", "servo.flags", "servo.controller", 0};
+         "gps.source", "wind.source",
+         "servo.state", "servo.flags", "servo.controller", 0};
     return watchlist;
 }
 
@@ -413,6 +422,12 @@ void pypilotDialog::OnManualTimer( wxTimerEvent & )
     }
     //printf("manual %f %d\n", m_ManualCommand, (wxDateTime::UNow() - m_ManualTimeout).GetMilliseconds());
     m_pypilot_pi.m_client.set("servo.command", m_ManualCommand);
+}
+
+
+void pypilotDialog::OnRudderPollTimer( wxTimerEvent & )
+{
+    m_pypilot_pi.m_client.get("rudder.angle");
 }
 
 void pypilotDialog::AddButton(int angle, wxSizer *sizer)

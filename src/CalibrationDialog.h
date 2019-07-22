@@ -35,7 +35,7 @@ public:
     ~CalibrationDialog();
 
     void Receive(std::string name, Json::Value &value);
-    const char **GetWatchlist();
+    std::list<std::string> &GetWatchlist();
 
 private:
     void OnCalibrationLocked( wxCommandEvent& event );
@@ -46,9 +46,11 @@ private:
     void OnHeadingOffset( wxSpinEvent& event );
     void OnAboutHeadingOffset( wxCommandEvent& event );
 
-    void OnRudderCentered( wxCommandEvent& event );
-    void OnRudderStarboardRange( wxCommandEvent& event );
-    void OnRudderPortRange( wxCommandEvent& event );
+    void RudderCalCommand(const char *command);
+    void OnRudderCentered( wxCommandEvent& event ) { RudderCalCommand("centered"); }
+    void OnRudderResetCalibration( wxCommandEvent& event ) { RudderCalCommand("reset"); }
+    void OnRudderStarboardRange( wxCommandEvent& event ) { RudderCalCommand("starboard range"); }
+    void OnRudderPortRange( wxCommandEvent& event ) { RudderCalCommand("portboard range"); }
     void OnRudderRange( wxSpinEvent& event );
     void OnAboutRudderCalibration( wxCommandEvent& event );
 

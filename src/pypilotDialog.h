@@ -72,6 +72,8 @@ private:
     void UpdateModes();
     void Manual(double amount);
     void OnManualTimer( wxTimerEvent & );
+    void OnRudderPollTimer( wxTimerEvent & );
+
     void AddButton(int angle, wxSizer *sizer);
 
     bool m_bAPHaveGPS, m_bAPHaveWind;
@@ -84,7 +86,7 @@ private:
 
     double m_ManualCommand;
     wxDateTime m_ManualTimeout;
-    wxTimer m_ManualTimer;
+    wxTimer m_ManualTimer, m_RudderPollTimer;
     
     bool m_bTrueNorthMode;
     pypilot_pi &m_pypilot_pi;
