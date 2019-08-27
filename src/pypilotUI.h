@@ -282,10 +282,10 @@ class CalibrationDialogBase : public wxDialog
 		wxStaticText* m_stRudderScale;
 		wxStaticText* m_staticText46;
 		wxStaticText* m_stRudderNonlinearity;
-		wxButton* m_button22;
+		wxButton* m_bRudderCentered;
 		wxButton* m_button29;
-		wxButton* m_button23;
-		wxButton* m_button28;
+		wxButton* m_bRudderStarboardRange;
+		wxButton* m_bRudderPortRange;
 		wxStaticText* m_staticText51;
 		wxSpinCtrl* m_sRudderRange;
 		wxButton* m_button172;

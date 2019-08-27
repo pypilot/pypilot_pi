@@ -947,17 +947,17 @@ CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, c
 	fgSizer40->SetFlexibleDirection( wxBOTH );
 	fgSizer40->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
-	m_button22 = new wxButton( sbSizer7->GetStaticBox(), wxID_ANY, _("Centered"), wxDefaultPosition, wxDefaultSize, 0 );
-	fgSizer40->Add( m_button22, 0, wxALL, 5 );
+	m_bRudderCentered = new wxButton( sbSizer7->GetStaticBox(), wxID_ANY, _("Centered"), wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer40->Add( m_bRudderCentered, 0, wxALL, 5 );
 
 	m_button29 = new wxButton( sbSizer7->GetStaticBox(), wxID_ANY, _("Reset Calibration"), wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer40->Add( m_button29, 0, wxALL, 5 );
 
-	m_button23 = new wxButton( sbSizer7->GetStaticBox(), wxID_ANY, _("Starboard Range"), wxDefaultPosition, wxDefaultSize, 0 );
-	fgSizer40->Add( m_button23, 0, wxALL, 5 );
+	m_bRudderStarboardRange = new wxButton( sbSizer7->GetStaticBox(), wxID_ANY, _("Starboard Range"), wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer40->Add( m_bRudderStarboardRange, 0, wxALL, 5 );
 
-	m_button28 = new wxButton( sbSizer7->GetStaticBox(), wxID_ANY, _("Port Range"), wxDefaultPosition, wxDefaultSize, 0 );
-	fgSizer40->Add( m_button28, 0, wxALL, 5 );
+	m_bRudderPortRange = new wxButton( sbSizer7->GetStaticBox(), wxID_ANY, _("Port Range"), wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer40->Add( m_bRudderPortRange, 0, wxALL, 5 );
 
 
 	fgSizer42->Add( fgSizer40, 1, wxEXPAND, 5 );
@@ -989,7 +989,7 @@ CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, c
 	m_panel4->SetSizer( sbSizer7 );
 	m_panel4->Layout();
 	sbSizer7->Fit( m_panel4 );
-	m_notebook1->AddPage( m_panel4, _("Rudder"), false );
+	m_notebook1->AddPage( m_panel4, _("Rudder"), true );
 
 	fgSizer19->Add( m_notebook1, 1, wxEXPAND | wxALL, 5 );
 
@@ -1017,10 +1017,10 @@ CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, c
 	m_button16->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnAboutLevel ), NULL, this );
 	m_sHeadingOffset->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( CalibrationDialogBase::OnHeadingOffset ), NULL, this );
 	m_button17->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnAboutHeadingOffset ), NULL, this );
-	m_button22->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnRudderCentered ), NULL, this );
+	m_bRudderCentered->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnRudderCentered ), NULL, this );
 	m_button29->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnRudderResetCalibration ), NULL, this );
-	m_button23->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnRudderStarboardRange ), NULL, this );
-	m_button28->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnRudderPortRange ), NULL, this );
+	m_bRudderStarboardRange->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnRudderStarboardRange ), NULL, this );
+	m_bRudderPortRange->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnRudderPortRange ), NULL, this );
 	m_sRudderRange->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( CalibrationDialogBase::OnRudderRange ), NULL, this );
 	m_button172->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnAboutRudderCalibration ), NULL, this );
 	m_sdbSizer3OK->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnClose ), NULL, this );
@@ -1038,10 +1038,10 @@ CalibrationDialogBase::~CalibrationDialogBase()
 	m_button16->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnAboutLevel ), NULL, this );
 	m_sHeadingOffset->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( CalibrationDialogBase::OnHeadingOffset ), NULL, this );
 	m_button17->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnAboutHeadingOffset ), NULL, this );
-	m_button22->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnRudderCentered ), NULL, this );
+	m_bRudderCentered->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnRudderCentered ), NULL, this );
 	m_button29->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnRudderResetCalibration ), NULL, this );
-	m_button23->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnRudderStarboardRange ), NULL, this );
-	m_button28->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnRudderPortRange ), NULL, this );
+	m_bRudderStarboardRange->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnRudderStarboardRange ), NULL, this );
+	m_bRudderPortRange->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnRudderPortRange ), NULL, this );
 	m_sRudderRange->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( CalibrationDialogBase::OnRudderRange ), NULL, this );
 	m_button172->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnAboutRudderCalibration ), NULL, this );
 	m_sdbSizer3OK->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnClose ), NULL, this );

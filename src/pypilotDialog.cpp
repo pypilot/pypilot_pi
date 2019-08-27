@@ -435,7 +435,7 @@ void pypilotDialog::AddButton(int angle, wxSizer *sizer)
     if(m_sAPMode.Contains("wind"))
         angle = -angle;
 
-    wxButton *button = new wxButton( this, wxID_ANY, wxString::Format("%ld", angle));
+    wxButton *button = new wxButton( this, wxID_ANY, wxString::Format("%i", angle));
     button->Connect( wxEVT_COMMAND_BUTTON_CLICKED,
                      wxCommandEventHandler( pypilotDialog::OnControlAngle ), NULL, this );
     button->SetMaxSize(wxSize(60, -1));

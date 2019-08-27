@@ -18,7 +18,7 @@ sudo apt install libwxbase3.0-dev libbz2-dev wx-common libwxgtk3.0-dev
 
 Build as normally:
 
-$ git clone git://github.com/seandepagnier/pypilot_pi.git
+$ git clone https://github.com/pypilot/pypilot_pi
 $ cd pypilot_pi
 $ mkdir build
 $ cd build
