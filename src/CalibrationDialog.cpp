@@ -87,9 +87,18 @@ void CalibrationDialog::Receive(std::string name, Json::Value &value)
     else if(name == "imu.heading_offset") {
         if(!m_lastOffsetTime.IsValid() || (wxDateTime::Now() - m_lastOffsetTime).GetSeconds() > 3)
             m_sHeadingOffset->SetValue(jsondouble(value));
-    } else if(name == "rudder.angle")
+    } else if(name == "rudder.angle") {
+        bool ena = true;
+        if(value.asString() == "False") {
+            m_stRudderAngle->SetLabel("No Rudder Feedback");
+            ena = false;
+        }
         m_stRudderAngle->SetLabel(wxString::Format("%.3f", value.asDouble()));
-    else if(name == "rudder.offset")
+
+        m_bRudderCentered->Enable(ena);
+        m_bRudderStarboardRange->Enable(ena);
+        m_bRudderPortRange->Enable(ena);
+    } else if(name == "rudder.offset")
         m_stRudderOffset->SetLabel(wxString::Format("%.3f", value.asDouble()));
     else if(name == "rudder.scale")
         m_stRudderScale->SetLabel(wxString::Format("%.3f", value.asDouble()));
