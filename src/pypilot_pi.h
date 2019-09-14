@@ -132,6 +132,7 @@ public:
       
 private:
       void SetNMEASentence(wxString &sentence);
+      void OnNMEASocketEvent(wxSocketEvent& event);
       void SetPositionFixEx(PlugIn_Position_Fix_Ex &pfix);
       void SetPluginMessage(wxString &message_id, wxString &message_body);
       void RearrangeWindow();
@@ -157,6 +158,12 @@ private:
 
       bool m_enabled;
       wxString m_mode;
+
+      
+      wxSocketClient      m_nmeasocket;
+      std::string         m_nmeasock_buffer;
+
+DECLARE_EVENT_TABLE()
 };
 
 double heading_resolve(double degrees);

@@ -38,6 +38,7 @@ public:
     virtual void OnDisconnected();
 
     void GetGains(std::list<std::string> &gains);
+    void GetSettings(std::list<std::string> &settings);
 
 private:
     pypilot_pi &m_pypilot_pi;

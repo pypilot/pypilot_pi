@@ -201,7 +201,8 @@ void pypilotDialog::Receive(std::string name, Json::Value &value)
     } else if(name == "rudder.angle") {
         wxString str = value.asString();
         bool show_center=!m_bAP->GetValue();
-        if(str == "False") {
+
+        if(str == "False" || !m_pypilot_pi.m_ConfigurationDialog->m_cbCenterButton->GetValue()) {
             str = "";
             show_center=false;
         }
@@ -217,6 +218,13 @@ void pypilotDialog::Receive(std::string name, Json::Value &value)
         m_stCommand->SetLabel(wxString::Format("%.1f", m_HeadingCommand));
         m_HeadingCommand = NAN;
     }
+
+        wxFileConfig *pConf = GetOCPNConfigObject();
+        pConf->SetPath ( _T( "/Settings/pypilot" ) );
+        bool show_tacking  = (bool)pConf->Read ( _T ( "TackingButton" ), 1);
+    //bool show_tacking = m_pypilot_pi.m_ConfigurationDialog->m_cbTackingButton->GetValue();
+    if(m_bTack->IsShown() != show_tacking)
+        m_fgSizerTacking->Show(show_tacking);
 }
 
 void pypilotDialog::SetAPColor(wxString mode)

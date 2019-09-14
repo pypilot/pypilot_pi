@@ -27,9 +27,9 @@
 #include <wx/scrolwin.h>
 #include <wx/combobox.h>
 #include <wx/checkbox.h>
-#include <wx/statbox.h>
 #include <wx/spinctrl.h>
 #include <wx/listbox.h>
+#include <wx/statbox.h>
 #include <wx/panel.h>
 #include <wx/gauge.h>
 #include <wx/notebook.h>
@@ -62,6 +62,7 @@ class pypilotDialogBase : public wxDialog
 		wxButton* m_bCenter;
 		wxButton* m_bManualStarboardShort;
 		wxButton* m_bManualStarboardLong;
+		wxFlexGridSizer* m_fgSizerTacking;
 		wxStaticText* m_stTackState;
 		wxButton* m_bTack;
 		wxChoice* m_cTackDirection;
@@ -135,7 +136,11 @@ class ConfigurationDialogBase : public wxDialog
 	protected:
 		wxStaticText* m_staticText6;
 		wxComboBox* m_cHost;
-		wxCheckBox* m_cbForwardnmea;
+		wxCheckBox* m_cbTackingButton;
+		wxButton* m_button31;
+		wxCheckBox* m_cbCenterButton;
+		wxButton* m_button32;
+		wxCheckBox* m_cbForwardNMEA;
 		wxButton* m_bAboutForwardnema;
 		wxCheckBox* m_cbEnableGraphicOverlay;
 		wxButton* m_bAboutEnableOverlay;
@@ -147,9 +152,6 @@ class ConfigurationDialogBase : public wxDialog
 		wxButton* m_button11;
 		wxStaticText* m_staticText35;
 		wxSpinCtrl* m_sControlColumns;
-		wxStaticBoxSizer* m_sbSizerServo;
-		wxStaticBoxSizer* m_sbSizerTacking;
-		wxButton* m_bSignalKClient;
 		wxButton* m_bInformation;
 		wxStdDialogButtonSizer* m_sdbSizer2;
 		wxButton* m_sdbSizer2OK;
@@ -158,12 +160,13 @@ class ConfigurationDialogBase : public wxDialog
 		// Virtual event handlers, overide them in your derived class
 		virtual void OnClose( wxCloseEvent& event ) { event.Skip(); }
 		virtual void OnHost( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnAboutForwardnema( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnAboutTacking( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnAboutCenter( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnAboutForwardNMEA( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnAboutEnableOverlay( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnAboutTrueNorth( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnAddControlAngle( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnRemoveControlAngle( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnSignalKClient( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnInformation( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnClose( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnOk( wxCommandEvent& event ) { event.Skip(); }
@@ -195,7 +198,7 @@ class SignalKClientDialogBase : public wxDialog
 
 	public:
 
-		SignalKClientDialogBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 600,300 ), long style = wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER );
+		SignalKClientDialogBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 600,600 ), long style = wxDEFAULT_DIALOG_STYLE|wxMAXIMIZE_BOX|wxRESIZE_BORDER );
 		~SignalKClientDialogBase();
 
 };
@@ -212,6 +215,7 @@ class StatisticsDialogBase : public wxDialog
 		wxStaticText* m_stUptime;
 		wxStaticText* m_staticText36;
 		wxStaticText* m_stAPRuntime;
+		wxFlexGridSizer* m_fgStats;
 		wxStaticText* m_staticText18;
 		wxStaticText* m_stWatts;
 		wxStaticText* m_staticText20;
@@ -289,6 +293,9 @@ class CalibrationDialogBase : public wxDialog
 		wxStaticText* m_staticText51;
 		wxSpinCtrl* m_sRudderRange;
 		wxButton* m_button172;
+		wxPanel* m_pSettings;
+		wxFlexGridSizer* m_fgSettings;
+		wxButton* m_bSignalKClient;
 		wxStdDialogButtonSizer* m_sdbSizer3;
 		wxButton* m_sdbSizer3OK;
 
@@ -306,6 +313,7 @@ class CalibrationDialogBase : public wxDialog
 		virtual void OnRudderPortRange( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnRudderRange( wxSpinEvent& event ) { event.Skip(); }
 		virtual void OnAboutRudderCalibration( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnSignalKClient( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnClose( wxCommandEvent& event ) { event.Skip(); }
 
 

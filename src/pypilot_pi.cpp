@@ -64,6 +64,12 @@ extern "C" DECL_EXP void destroy_pi(opencpn_plugin* p)
 //    pypilot PlugIn Implementation
 //
 //-----------------------------------------------------------------------------
+
+BEGIN_EVENT_TABLE(pypilot_pi, wxEvtHandler)
+    EVT_SOCKET(-1, pypilot_pi::OnNMEASocketEvent)
+END_EVENT_TABLE()
+
+
 pypilot_pi *g_pypilot_pi = NULL;
 
 pypilot_pi::pypilot_pi(void *ppimgr)
@@ -75,6 +81,12 @@ pypilot_pi::pypilot_pi(void *ppimgr)
     m_imu_heading = NAN;
     m_lastfix.nSats = 0;
 
+
+    m_nmeasocket.SetEventHandler(*this);
+    m_nmeasocket.SetNotify(wxSOCKET_CONNECTION_FLAG | wxSOCKET_INPUT_FLAG | wxSOCKET_LOST_FLAG);
+    m_nmeasocket.Notify(true);
+    m_nmeasocket.SetTimeout(1);
+    
     m_enabled = false;
     m_mode = "";
 }
@@ -273,9 +285,6 @@ void pypilot_pi::UpdateWatchlist()
         if(m_GainsDialog->IsShown())
             MergeWatchlist(watchlist, m_GainsDialog->GetWatchlist());
         
-        if(m_ConfigurationDialog->IsShown())
-            MergeWatchlist(watchlist, m_ConfigurationDialog->GetWatchlist());
-        
         if(m_StatisticsDialog->IsShown())
             MergeWatchlist(watchlist, m_StatisticsDialog->GetWatchlist());
         
@@ -304,10 +313,9 @@ void pypilot_pi::OnToolbarToolCallback(int id)
 {
     if(!m_pypilotDialog)
     {
+        m_ConfigurationDialog = new ConfigurationDialog(*this, GetOCPNCanvasWindow());
         m_pypilotDialog = new pypilotDialog(*this, GetOCPNCanvasWindow());
         UpdateStatus();
-        
-        m_ConfigurationDialog = new ConfigurationDialog(*this, GetOCPNCanvasWindow());
         
         m_StatisticsDialog = new StatisticsDialog(*this, GetOCPNCanvasWindow());
         m_CalibrationDialog = new CalibrationDialog(*this, GetOCPNCanvasWindow());
@@ -429,7 +437,6 @@ void pypilot_pi::OnTimer( wxTimerEvent & )
         if(m_pypilotDialog) {
             m_pypilotDialog->Receive(name, val);
             m_GainsDialog->Receive(name, val);
-            m_ConfigurationDialog->Receive(name, val);
             m_StatisticsDialog->Receive(name, val);
             m_CalibrationDialog->Receive(name, val);
             m_SignalKClientDialog->Receive(name, val);
@@ -468,6 +475,79 @@ void pypilot_pi::OnDisconnected()
 
 void pypilot_pi::SetNMEASentence(wxString &sentence)
 {
+    wxFileConfig *pConf = GetOCPNConfigObject();
+    pConf->SetPath ( "/Settings/pypilot" );
+
+    if(!pConf->Read ( "ForwardNMEA" , 0L ))
+        return;
+
+    if(!m_nmeasocket.IsConnected()) {
+        wxString host = pConf->Read ( "Host", "192.168.14.1" );
+        wxIPV4address addr;
+        addr.Hostname(host);
+        addr.Service(20220);
+        m_nmeasocket.Connect(addr, false);
+    }
+        
+    if(m_nmeasocket.IsConnected())
+        m_nmeasocket.Write(sentence.c_str(), sentence.size());
+}
+
+void pypilot_pi::OnNMEASocketEvent(wxSocketEvent& event)
+{
+    wxFileConfig *pConf = GetOCPNConfigObject();
+    pConf->SetPath ( "/Settings/pypilot" );
+
+    if(!pConf->Read ( "ForwardNMEA" , 0L )) {
+        m_nmeasocket.Close();
+        return;
+    }
+        
+    switch(event.GetSocketEvent())
+    {
+        case wxSOCKET_CONNECTION:
+            break;
+
+        case wxSOCKET_LOST:
+            m_nmeasocket.Close();
+            break;
+
+        case wxSOCKET_INPUT:
+        {
+    #define RD_BUF_SIZE    65536
+            std::vector<char> data(RD_BUF_SIZE+1);
+            event.GetSocket()->Read(&data.front(), RD_BUF_SIZE);
+            if(!event.GetSocket()->Error()) {
+                size_t count = event.GetSocket()->LastCount();
+                if(count) {
+                    data[count]=0;
+                    m_nmeasock_buffer += (&data.front());
+                }
+
+                // overflow and reset connection at 640k in buffer
+                if(m_nmeasock_buffer.size() >= 1024*640) {
+                    wxLogMessage( "nmea input buffer overflow!\n" );
+                    m_nmeasocket.Close();
+                    break;
+                }
+            }
+
+            for(;;) {
+                int line_end = m_nmeasock_buffer.find_first_of("\n");
+                if(line_end <= 0)
+                    break;
+                std::string nmea_line = m_nmeasock_buffer.substr(0, line_end);
+                if(line_end < 1024) // discard nmea lines longer than 1024
+                    PushNMEABuffer(nmea_line);
+
+                if(line_end > (int)m_nmeasock_buffer.size())
+                    m_nmeasock_buffer.clear();
+                else
+                    m_nmeasock_buffer = m_nmeasock_buffer.substr(line_end+1);
+            }
+        } break;
+    default:;
+    }
 }
 
 void pypilot_pi::SetPositionFixEx(PlugIn_Position_Fix_Ex &pfix)

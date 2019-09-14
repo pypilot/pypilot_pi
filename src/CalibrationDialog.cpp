@@ -27,6 +27,7 @@
 #include "pypilotUI.h"
 #include "pypilot_pi.h"
 #include "CalibrationDialog.h"
+#include "SignalKClientDialog.h"
 
 CalibrationDialog::CalibrationDialog(pypilot_pi &_pypilot_pi, wxWindow* parent) :
     CalibrationDialogBase(parent),
@@ -106,12 +107,33 @@ void CalibrationDialog::Receive(std::string name, Json::Value &value)
         m_stRudderNonlinearity->SetLabel(wxString::Format("%.3f", value.asDouble()));
     else if(name == "rudder.range")
         m_sRudderRange->SetValue(value.asDouble());
+    else if(m_settings.find(name) != m_settings.end())
+        m_settings[name]->SetValue(value.asDouble());
 }
 
 std::list<std::string> &CalibrationDialog::GetWatchlist()
 {
     static std::list<std::string> list;
     if(list.size() == 0) {
+        m_pypilot_pi.m_client.GetSettings(list);
+        if(list.size() == 0)
+            return list;
+
+        for(std::list<std::string>::iterator i = list.begin(); i != list.end(); i++) {
+            Json::Value &list = m_pypilot_pi.m_client.list();
+            Json::Value setting = list[*i];
+            wxSpinCtrlDouble *s = new wxSpinCtrlDouble(m_pSettings, wxID_ANY);
+            double min = setting["min"].asDouble(), max = setting["max"].asDouble();
+            s->SetRange(min, max);
+            s->SetIncrement(wxMin(1, (max - min) / 100.0));
+            s->SetDigits(-log(s->GetIncrement()) / log(10) + 1);
+            m_fgSettings->Add(new wxStaticText(m_pSettings, wxID_ANY, *i), 0, wxALL, 5 );
+            m_fgSettings->Add(s, 0, wxALL | wxEXPAND);
+            m_fgSettings->Add(new wxStaticText(m_pSettings, wxID_ANY, setting["units"].asString()), 0, wxALL, 5 );
+            m_settings[*i] = s;
+            s->Connect( wxEVT_SPINCTRLDOUBLE, wxSpinDoubleEventHandler( CalibrationDialog::OnSpin ), NULL, this);
+        }
+        
         list.push_back("imu.pitch");
         list.push_back("imu.roll");
         list.push_back("imu.alignmentCounter");
@@ -180,10 +202,11 @@ void CalibrationDialog::OnAboutRudderCalibration( wxCommandEvent& event )
 {
     wxMessageDialog mdlg(GetOCPNCanvasWindow(),
                          _("To calibrate rudder feedback:\n\
-1) manually center the rudder and press 'Centered'.\n\
-2) set 'Range' to the angle the autopilot maximum range should be\n\
-3) manually turn rudder to starboard this maximum angle and press 'Starboard Range'\n\
-4) manually turn rudder to port this maximum angle and press 'Port Range'"),
+1) set 'Range' to a known angle\n\
+2) manually center the rudder and press 'Centered'.\n\
+3) manually turn rudder to starboard this angle and press 'Starboard Range'\n\
+4) manually turn rudder to port this angle and press 'Port Range'\
+5) set 'Range' to the maximum  allowed autopilot movement"),
                          "pypilot", wxOK | wxICON_INFORMATION);
     mdlg.ShowModal();
 }
@@ -198,6 +221,29 @@ void CalibrationDialog::OnCalibrationLocked( wxCommandEvent& event )
 void CalibrationDialog::OnAboutCalibrationLocked( wxCommandEvent& event )
 {
     wxMessageDialog mdlg(GetOCPNCanvasWindow(),
-                         _("You may wish to lock the compass calibration against automatically updating"), "pypilot", wxOK | wxICON_INFORMATION);
+                         _("You may wish to lock the calibration against automatically updating"), "pypilot", wxOK | wxICON_INFORMATION);
     mdlg.ShowModal();
+}
+
+void CalibrationDialog::OnSignalKClient( wxCommandEvent& event )
+{
+    m_pypilot_pi.m_SignalKClientDialog->Show(!m_pypilot_pi.m_SignalKClientDialog->IsShown());
+    m_pypilot_pi.UpdateWatchlist();
+}
+
+void CalibrationDialog::OnSpin(wxSpinDoubleEvent& event )
+{
+    for(std::map<std::string, wxSpinCtrlDouble*>::iterator i = m_settings.begin();
+        i != m_settings.end(); i++) {
+        wxSpinCtrlDouble *s = i->second;
+#ifdef __OCPN__ANDROID__
+        if(!s->HasFocus())
+            continue;
+#else
+        if(event.GetEventObject() != s)
+            continue;
+#endif
+        std::string name = i->first;
+        m_pypilot_pi.m_client.set(name, s->GetValue());
+    }
 }

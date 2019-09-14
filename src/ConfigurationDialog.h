@@ -30,23 +30,22 @@ class pypilot_pi;
 
 class ConfigurationDialog : public ConfigurationDialogBase
 {
+    friend pypilotDialog;
 public:
     ConfigurationDialog( pypilot_pi &_pypilot_pi, wxWindow* parent);
     ~ConfigurationDialog() {}
     bool Show( bool show=true );
 
-    void Receive(std::string name, Json::Value &value);
-    std::list<std::string> &GetWatchlist() { return m_watchlist; }
-
 private:
-    void OnAboutForwardnema( wxCommandEvent& event );
+    void OnAboutTacking( wxCommandEvent& event );
+    void OnAboutCenter( wxCommandEvent& event );
+    void OnAboutForwardNMEA( wxCommandEvent& event );
     void OnAboutEnableOverlay( wxCommandEvent& event );
     void OnAboutTrueNorth( wxCommandEvent& event );
     void OnAddControlAngle( wxCommandEvent& event );
     void OnRemoveControlAngle( wxCommandEvent& event );
-    void OnSpin(wxSpinEvent& event );
     void OnInformation( wxCommandEvent& event );
-    void OnSignalKClient( wxCommandEvent& event );
+
     void OnOk( wxCommandEvent& event );
     void OnClose( wxCommandEvent& event );
     void OnHost( wxCommandEvent& event );

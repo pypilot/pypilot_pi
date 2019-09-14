@@ -32,7 +32,7 @@
 
 class pypilot_pi;
 
-class pypilotDialog: public pypilotDialogBase
+class pypilotDialog : public pypilotDialogBase
 {
 public:
     pypilotDialog( pypilot_pi &_pypilot_pi, wxWindow* parent);

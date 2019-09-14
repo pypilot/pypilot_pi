@@ -33,7 +33,7 @@ SignalKClientDialog::SignalKClientDialog( pypilot_pi &_pypilot_pi, wxWindow* par
       m_pypilot_pi(_pypilot_pi)
 {
 #ifdef __OCPN__ANDROID__
-         GetHandle()->setStyleSheet( qtStyleSheet);
+    GetHandle()->setStyleSheet( qtStyleSheet);
 #endif
 }
 

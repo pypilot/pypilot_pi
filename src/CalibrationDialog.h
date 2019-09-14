@@ -24,6 +24,8 @@
  ***************************************************************************
  */
 
+#include <map>
+
 #include "pypilotUI.h"
 
 class pypilot_pi;
@@ -40,6 +42,8 @@ public:
 private:
     void OnCalibrationLocked( wxCommandEvent& event );
     void OnAboutCalibrationLocked( wxCommandEvent& event );
+    void OnSignalKClient( wxCommandEvent& event );
+    void OnSpin(wxSpinDoubleEvent& event );
     void OnClose( wxCommandEvent& event );
     void OnLevel( wxCommandEvent& event );
     void OnAboutLevel( wxCommandEvent& event );
@@ -59,4 +63,5 @@ private:
     pypilot_pi &m_pypilot_pi;
     wxDateTime m_lastOffsetTime;
 
+    std::map<std::string, wxSpinCtrlDouble*> m_settings;
 };

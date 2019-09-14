@@ -48,3 +48,13 @@ void pypilot_SignalKClient::GetGains(std::list<std::string> &gains)
         if(val->isMember("AutopilotGain"))
             gains.push_back(val.key().asString());
 }
+
+void pypilot_SignalKClient::GetSettings(std::list<std::string> &settings)
+{
+    if(m_list.isNull())
+        return;
+
+    for(Json::ValueIterator val = m_list.begin(); val != m_list.end(); val++)
+        if(val->isMember("units"))
+            settings.push_back(val.key().asString());
+}
