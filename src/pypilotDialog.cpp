@@ -202,7 +202,7 @@ void pypilotDialog::Receive(std::string name, Json::Value &value)
         wxString str = value.asString();
         bool show_center=!m_bAP->GetValue();
 
-        if(str == "False" || !m_pypilot_pi.m_ConfigurationDialog->m_cbCenterButton->GetValue()) {
+        if(str == "false" || !m_pypilot_pi.m_ConfigurationDialog->m_cbCenterButton->GetValue()) {
             str = "";
             show_center=false;
         }
@@ -414,7 +414,7 @@ void pypilotDialog::Manual(double amount)
 {
     m_ManualCommand = amount > 0 ? 1 : -1;
     m_ManualTimeout = wxDateTime::UNow() + wxTimeSpan::Milliseconds(abs(1000.0*amount));
-    m_ManualTimer.Start(100);
+    m_ManualTimer.Start(50);
 }
 
 void pypilotDialog::OnManualCenter( wxCommandEvent& event )

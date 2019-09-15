@@ -56,9 +56,9 @@ private:
     void OnAP( wxCommandEvent& event );
     void OnMode( wxCommandEvent& event );
     void OnManualPortLong( wxCommandEvent& event ) { Manual(1.8); }
-    void OnManualPortShort( wxCommandEvent& event ) { Manual(.6); }
+    void OnManualPortShort( wxCommandEvent& event ) { Manual(.8); }
     void OnManualCenter( wxCommandEvent& event );
-    void OnManualStarboardShort( wxCommandEvent& event ) { Manual(-.6); }
+    void OnManualStarboardShort( wxCommandEvent& event ) { Manual(-.8); }
     void OnManualStarboardLong( wxCommandEvent& event ) { Manual(-1.8); }
     void OnGains( wxCommandEvent& event );
     void OnConfiguration( wxCommandEvent& event );
