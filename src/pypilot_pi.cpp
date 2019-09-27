@@ -240,7 +240,7 @@ void pypilot_pi::Receive(std::string name, Json::Value &value)
 void pypilot_pi::UpdateStatus()
 {
     if(m_pypilotDialog)
-        m_pypilotDialog->m_stStatus->SetLabel(m_status);
+        m_pypilotDialog->SetLabel(m_status);
 }
 
 void pypilot_pi::SetToolbarIcon()

@@ -50,8 +50,8 @@ class pypilotDialogBase : public wxDialog
 		wxToggleButton* m_bAP;
 		wxChoice* m_cMode;
 		wxStaticText* m_stServoState;
-		wxStaticText* m_stServoFlags;
 		wxStaticText* m_stRudder;
+		wxStaticText* m_stServoFlags;
 		wxStaticText* m_stCommand;
 		wxStaticText* m_stHeading;
 		wxFlexGridSizer* m_fgControlAnglesNeg;
@@ -91,7 +91,6 @@ class pypilotDialogBase : public wxDialog
 
 
 	public:
-		wxStaticText* m_stStatus;
 
 		pypilotDialogBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("pypilot"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxCAPTION|wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxTAB_TRAVERSAL );
 		~pypilotDialogBase();
