@@ -5,8 +5,8 @@ src/pypilot_pi.cpp
 src/StatisticsDialog.cpp
 src/ConfigurationDialog.cpp
 src/pydc.cpp
-src/signalk_client.cpp
-src/pypilot_signalk_client.cpp
+src/pypilot_client.cpp
 src/pypilotDialog.cpp
 src/TexFont.cpp
 src/pypilotUI.cpp
+src/pypilotClientDialog.cpp

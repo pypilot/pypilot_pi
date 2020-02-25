@@ -218,7 +218,7 @@ std::list<std::string> &GainsDialog::GetWatchlist()
 void GainsDialog::EnumeratePilots()
 {
     std::list<std::string> gains;
-    m_pypilot_pi.m_client.GetGains(gains);
+    m_pypilot_pi.m_client.GetSettings(gains, "AutopilotGain");
 
     // enumerate the pilots from the gains
     std::map<std::string, bool> pilots;
@@ -260,7 +260,7 @@ void GainsDialog::EnumerateGains()
     }
 
     std::list<std::string> gains;
-    m_pypilot_pi.m_client.GetGains(gains);
+    m_pypilot_pi.m_client.GetSettings(gains, "AutopilotGain");
     m_watchlist.clear();
     m_watchlist.push_back("ap.pilot");
     m_gains.clear();

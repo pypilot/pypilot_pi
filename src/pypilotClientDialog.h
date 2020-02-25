@@ -31,11 +31,11 @@
 
 class pypilot_pi;
 
-class SignalKClientDialog : public SignalKClientDialogBase
+class pypilotClientDialog : public pypilotClientDialogBase
 {
 public:
-    SignalKClientDialog( pypilot_pi &_pypilot_pi, wxWindow* parent);
-    ~SignalKClientDialog() {}
+    pypilotClientDialog( pypilot_pi &_pypilot_pi, wxWindow* parent);
+    ~pypilotClientDialog() {}
 
     void Receive(std::string name, Json::Value &value);
     std::list<std::string> &GetWatchlist();

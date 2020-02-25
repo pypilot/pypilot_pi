@@ -26,10 +26,10 @@
 
 #include "pypilotUI.h"
 #include "pypilot_pi.h"
-#include "SignalKClientDialog.h"
+#include "pypilotClientDialog.h"
 
-SignalKClientDialog::SignalKClientDialog( pypilot_pi &_pypilot_pi, wxWindow* parent)
-    : SignalKClientDialogBase(parent),
+pypilotClientDialog::pypilotClientDialog( pypilot_pi &_pypilot_pi, wxWindow* parent)
+    : pypilotClientDialogBase(parent),
       m_pypilot_pi(_pypilot_pi)
 {
 #ifdef __OCPN__ANDROID__
@@ -55,7 +55,7 @@ wxString ValueAsString(Json::Value &value)
     return ret;
 }
 
-void SignalKClientDialog::Receive(std::string name, Json::Value &value)
+void pypilotClientDialog::Receive(std::string name, Json::Value &value)
 {
     if(m_values.find(name) == m_values.end())
         return;
@@ -86,7 +86,7 @@ void SignalKClientDialog::Receive(std::string name, Json::Value &value)
         choice->SetStringSelection(value.asString());
 }
 
-std::list<std::string> &SignalKClientDialog::GetWatchlist()
+std::list<std::string> &pypilotClientDialog::GetWatchlist()
 {
 //    std::list<std::string> watchlist;
     m_watchlist.clear();
@@ -101,11 +101,11 @@ std::list<std::string> &SignalKClientDialog::GetWatchlist()
     return m_watchlist;
 }
 
-bool SignalKClientDialog::Show( bool show )
+bool pypilotClientDialog::Show( bool show )
 {
 #ifdef __OCPN__ANDROID__  // wxqt broken reenumarate
     if(m_values.size())
-        return SignalKClientDialogBase::Show(show);
+        return pypilotClientDialogBase::Show(show);
 #endif
 
     m_fgSizer->DeleteWindows();
@@ -133,7 +133,7 @@ bool SignalKClientDialog::Show( bool show )
                 wxCheckBox *cb = new wxCheckBox(m_scrolledWindow, wxID_ANY, "");
                 m_fgSizer->Add(cb, 0, wxEXPAND);
                 m_controls[name] = cb;
-                cb->Connect(wxEVT_CHECKBOX,  wxCommandEventHandler( SignalKClientDialog::OnCommand ), NULL, this);
+                cb->Connect(wxEVT_CHECKBOX,  wxCommandEventHandler( pypilotClientDialog::OnCommand ), NULL, this);
             } else if(t == "RangeProperty") {
 #ifdef __OCPN__ANDROID__
                 bool useSlider = true;
@@ -144,7 +144,7 @@ bool SignalKClientDialog::Show( bool show )
                     wxSlider *s = new wxSlider(m_scrolledWindow, wxID_ANY, 0, 0, 1000);
                     m_fgSizer->Add( s, 0, wxEXPAND);
                     m_controls[name] = s;
-                    s->Connect( wxEVT_SLIDER, wxCommandEventHandler( SignalKClientDialog::OnCommand ), NULL, this);
+                    s->Connect( wxEVT_SLIDER, wxCommandEventHandler( pypilotClientDialog::OnCommand ), NULL, this);
                 } else {
                     wxSpinCtrlDouble  *s = new wxSpinCtrlDouble(m_scrolledWindow, wxID_ANY);
                     double min = (*val)["min"].asDouble(), max = (*val)["max"].asDouble();
@@ -153,7 +153,7 @@ bool SignalKClientDialog::Show( bool show )
                     s->SetDigits(-log(s->GetIncrement()) / log(10) + 1);
                     m_fgSizer->Add( s, 0, wxEXPAND);
                     m_controls[name] = s;
-                    s->Connect( wxEVT_SPINCTRLDOUBLE, wxSpinDoubleEventHandler( SignalKClientDialog::OnSpin ), NULL, this);
+                    s->Connect( wxEVT_SPINCTRLDOUBLE, wxSpinDoubleEventHandler( pypilotClientDialog::OnSpin ), NULL, this);
                 }
             } else if(t == "EnumProperty") {
                 wxChoice *c = new wxChoice(m_scrolledWindow, wxID_ANY);
@@ -162,12 +162,12 @@ bool SignalKClientDialog::Show( bool show )
                     c->Append(choice->asString());
                 m_fgSizer->Add( c, 0, wxEXPAND);
                 m_controls[name] = c;
-                c->Connect( wxEVT_CHOICE, wxCommandEventHandler( SignalKClientDialog::OnCommand ), NULL, this);
+                c->Connect( wxEVT_CHOICE, wxCommandEventHandler( pypilotClientDialog::OnCommand ), NULL, this);
             } else if(t == "ResettableValue") {
                 wxButton *b = new wxButton(m_scrolledWindow, wxID_ANY, "Reset");
                 m_fgSizer->Add( b, 0, wxEXPAND);
                 m_controls[name] = b;
-                b->Connect( wxEVT_BUTTON, wxCommandEventHandler( SignalKClientDialog::OnCommand ), NULL, this);
+                b->Connect( wxEVT_BUTTON, wxCommandEventHandler( pypilotClientDialog::OnCommand ), NULL, this);
             } else { // really just a spacer since the user cannot modify this
                 m_fgSizer->Add( new wxStaticText(m_scrolledWindow, wxID_ANY, ""), 0, wxEXPAND);
                 if(t == "SensorValue") // sensors aren't in watchlist, too much bandwidth
@@ -178,11 +178,11 @@ bool SignalKClientDialog::Show( bool show )
         m_fgSizer->Fit(m_scrolledWindow);
         Layout();
     }
-    return SignalKClientDialogBase::Show(show);
+    return pypilotClientDialogBase::Show(show);
 }
 
 // unfortunatly GetEventObject is broken on android so we do this
-void SignalKClientDialog::SendValues()
+void pypilotClientDialog::SendValues()
 {
     std::string name;
     wxControl *control;
@@ -231,7 +231,7 @@ void SignalKClientDialog::SendValues()
         m_pypilot_pi.m_client.set(name, 0.0);
 }
 
-void SignalKClientDialog::OnOK( wxCommandEvent& event )
+void pypilotClientDialog::OnOK( wxCommandEvent& event )
 {
     Hide();
     m_pypilot_pi.UpdateWatchlist();

@@ -96,7 +96,7 @@ void ConfigurationDialog::OnAboutForwardNMEA( wxCommandEvent& event )
     wxMessageDialog mdlg(GetOCPNCanvasWindow(), _("\
 Plugin automatically sends and receives nmea data between opencpn and pypilot.\n\
 \n\
-The plugin communicates directly to pypilot using signalk, but nmea0183 is needed\n\
+The plugin communicates directly to pypilot, but nmea0183 is needed\n\
 by other opencpn plugins and for route following.\n\
 \n\
 Eliminates the need to make the tcp connection in opencpn connection settings.\n\

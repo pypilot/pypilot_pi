@@ -19,14 +19,13 @@ INCLUDE("cmake/PluginConfigure.cmake")
 
 SET(SRC_PYPILOT
             src/pypilot_pi.cpp
-            src/signalk_client.cpp
-            src/pypilot_signalk_client.cpp
+            src/pypilot_client.cpp
             src/pypilotDialog.cpp
             src/GainsDialog.cpp
             src/ConfigurationDialog.cpp
             src/StatisticsDialog.cpp
             src/CalibrationDialog.cpp
-            src/SignalKClientDialog.cpp
+            src/pypilotClientDialog.cpp
             src/pypilotUI.cpp
             src/icons.cpp
 	)

@@ -60,7 +60,7 @@
 #include "msvcdefs.h"
 #endif
 
-#include "pypilot_signalk_client.h"
+#include "pypilot_client.h"
 
 //----------------------------------
 //    The PlugIn Class Definition
@@ -74,7 +74,22 @@ class GainsDialog;
 class ConfigurationDialog;
 class StatisticsDialog;
 class CalibrationDialog;
-class SignalKClientDialog;
+class pypilotClientDialog;
+
+
+class pypilot_pi;
+class pypilotClient_pi : public pypilotClient
+{
+public:
+    pypilotClient_pi( pypilot_pi &_pypilot_pi )
+        : pypilotClient(false), m_pypilot_pi(_pypilot_pi) {}
+    virtual void OnConnected();
+    virtual void OnDisconnected();
+
+private:
+    pypilot_pi &m_pypilot_pi;
+};
+
 
 class pypilot_pi : public wxEvtHandler, public opencpn_plugin_111
 {
@@ -118,14 +133,14 @@ public:
       void OnDisconnected();
       void UpdateWatchlist();
 
-      pypilot_SignalKClient m_client;
+      pypilotClient_pi m_client;
 
       pypilotDialog  *m_pypilotDialog;
       GainsDialog    *m_GainsDialog;
       ConfigurationDialog *m_ConfigurationDialog;
       StatisticsDialog   *m_StatisticsDialog;
       CalibrationDialog  *m_CalibrationDialog;
-      SignalKClientDialog *m_SignalKClientDialog;
+      pypilotClientDialog *m_pypilotClientDialog;
 
       double m_declination;
       wxDateTime m_declinationTime;

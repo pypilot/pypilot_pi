@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Mar 28 2019)
+// C++ code generated with wxFormBuilder (version Nov  2 2019)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO *NOT* EDIT THIS FILE!
@@ -179,9 +179,9 @@ class ConfigurationDialogBase : public wxDialog
 };
 
 ///////////////////////////////////////////////////////////////////////////////
-/// Class SignalKClientDialogBase
+/// Class pypilotClientDialogBase
 ///////////////////////////////////////////////////////////////////////////////
-class SignalKClientDialogBase : public wxDialog
+class pypilotClientDialogBase : public wxDialog
 {
 	private:
 
@@ -197,8 +197,8 @@ class SignalKClientDialogBase : public wxDialog
 
 	public:
 
-		SignalKClientDialogBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 600,600 ), long style = wxDEFAULT_DIALOG_STYLE|wxMAXIMIZE_BOX|wxRESIZE_BORDER );
-		~SignalKClientDialogBase();
+		pypilotClientDialogBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 600,600 ), long style = wxDEFAULT_DIALOG_STYLE|wxMAXIMIZE_BOX|wxRESIZE_BORDER );
+		~pypilotClientDialogBase();
 
 };
 
@@ -294,7 +294,7 @@ class CalibrationDialogBase : public wxDialog
 		wxButton* m_button172;
 		wxPanel* m_pSettings;
 		wxFlexGridSizer* m_fgSettings;
-		wxButton* m_bSignalKClient;
+		wxButton* m_bpypilotClient;
 		wxStdDialogButtonSizer* m_sdbSizer3;
 		wxButton* m_sdbSizer3OK;
 
@@ -312,7 +312,7 @@ class CalibrationDialogBase : public wxDialog
 		virtual void OnRudderPortRange( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnRudderRange( wxSpinEvent& event ) { event.Skip(); }
 		virtual void OnAboutRudderCalibration( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnSignalKClient( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnpypilotClient( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnClose( wxCommandEvent& event ) { event.Skip(); }
 
 

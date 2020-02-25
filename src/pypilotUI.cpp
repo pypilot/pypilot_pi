@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Mar 28 2019)
+// C++ code generated with wxFormBuilder (version Nov  2 2019)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO *NOT* EDIT THIS FILE!
@@ -7,7 +7,7 @@
 
 #include "pypilotUI.h"
 
-///////////////////////////////////////////////////////////////////////////
+ ///////////////////////////////////////////////////////////////////////////
 
 pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
 {
@@ -561,7 +561,7 @@ ConfigurationDialogBase::~ConfigurationDialogBase()
 
 }
 
-SignalKClientDialogBase::SignalKClientDialogBase( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+pypilotClientDialogBase::pypilotClientDialogBase( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
 {
 	this->SetSizeHints( wxSize( 240,200 ), wxDefaultSize );
 
@@ -599,13 +599,13 @@ SignalKClientDialogBase::SignalKClientDialogBase( wxWindow* parent, wxWindowID i
 	this->Centre( wxBOTH );
 
 	// Connect Events
-	m_sdbSizer5OK->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( SignalKClientDialogBase::OnOK ), NULL, this );
+	m_sdbSizer5OK->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotClientDialogBase::OnOK ), NULL, this );
 }
 
-SignalKClientDialogBase::~SignalKClientDialogBase()
+pypilotClientDialogBase::~pypilotClientDialogBase()
 {
 	// Disconnect Events
-	m_sdbSizer5OK->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( SignalKClientDialogBase::OnOK ), NULL, this );
+	m_sdbSizer5OK->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotClientDialogBase::OnOK ), NULL, this );
 
 }
 
@@ -1018,8 +1018,8 @@ CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, c
 	fgSizer421->SetFlexibleDirection( wxBOTH );
 	fgSizer421->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
-	m_bSignalKClient = new wxButton( this, wxID_ANY, _("SignalK Client"), wxDefaultPosition, wxDefaultSize, 0 );
-	fgSizer421->Add( m_bSignalKClient, 0, wxALL, 5 );
+	m_bpypilotClient = new wxButton( this, wxID_ANY, _("pypilot Client"), wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer421->Add( m_bpypilotClient, 0, wxALL, 5 );
 
 	m_sdbSizer3 = new wxStdDialogButtonSizer();
 	m_sdbSizer3OK = new wxButton( this, wxID_OK );
@@ -1054,7 +1054,7 @@ CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, c
 	m_bRudderPortRange->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnRudderPortRange ), NULL, this );
 	m_sRudderRange->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( CalibrationDialogBase::OnRudderRange ), NULL, this );
 	m_button172->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnAboutRudderCalibration ), NULL, this );
-	m_bSignalKClient->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnSignalKClient ), NULL, this );
+	m_bpypilotClient->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnpypilotClient ), NULL, this );
 	m_sdbSizer3OK->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnClose ), NULL, this );
 }
 
@@ -1076,7 +1076,7 @@ CalibrationDialogBase::~CalibrationDialogBase()
 	m_bRudderPortRange->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnRudderPortRange ), NULL, this );
 	m_sRudderRange->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( CalibrationDialogBase::OnRudderRange ), NULL, this );
 	m_button172->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnAboutRudderCalibration ), NULL, this );
-	m_bSignalKClient->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnSignalKClient ), NULL, this );
+	m_bpypilotClient->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnpypilotClient ), NULL, this );
 	m_sdbSizer3OK->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnClose ), NULL, this );
 
 }

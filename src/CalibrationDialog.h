@@ -42,7 +42,7 @@ public:
 private:
     void OnCalibrationLocked( wxCommandEvent& event );
     void OnAboutCalibrationLocked( wxCommandEvent& event );
-    void OnSignalKClient( wxCommandEvent& event );
+    void OnpypilotClient( wxCommandEvent& event );
     void OnSpin(wxSpinDoubleEvent& event );
     void OnClose( wxCommandEvent& event );
     void OnLevel( wxCommandEvent& event );

@@ -27,7 +27,7 @@
 #include "pypilotUI.h"
 #include "pypilot_pi.h"
 #include "CalibrationDialog.h"
-#include "SignalKClientDialog.h"
+#include "pypilotClientDialog.h"
 
 CalibrationDialog::CalibrationDialog(pypilot_pi &_pypilot_pi, wxWindow* parent) :
     CalibrationDialogBase(parent),
@@ -115,7 +115,7 @@ std::list<std::string> &CalibrationDialog::GetWatchlist()
 {
     static std::list<std::string> list;
     if(list.size() == 0) {
-        m_pypilot_pi.m_client.GetSettings(list);
+        m_pypilot_pi.m_client.GetSettings(list, "units");
         if(list.size() == 0)
             return list;
 
@@ -225,9 +225,9 @@ void CalibrationDialog::OnAboutCalibrationLocked( wxCommandEvent& event )
     mdlg.ShowModal();
 }
 
-void CalibrationDialog::OnSignalKClient( wxCommandEvent& event )
+void CalibrationDialog::OnpypilotClient( wxCommandEvent& event )
 {
-    m_pypilot_pi.m_SignalKClientDialog->Show(!m_pypilot_pi.m_SignalKClientDialog->IsShown());
+    m_pypilot_pi.m_pypilotClientDialog->Show(!m_pypilot_pi.m_pypilotClientDialog->IsShown());
     m_pypilot_pi.UpdateWatchlist();
 }
 

@@ -29,20 +29,20 @@
 #include <wx/wx.h>
 #include <wx/socket.h>
 
-#include "signalk_client.h"
+#include "pypilot_client.h"
 
 
-BEGIN_EVENT_TABLE(SignalKClient, wxEvtHandler)
-    EVT_SOCKET(-1, SignalKClient::OnSocketEvent)
+BEGIN_EVENT_TABLE(pypilotClient, wxEvtHandler)
+    EVT_SOCKET(-1, pypilotClient::OnSocketEvent)
 END_EVENT_TABLE()
 
 /* queue mode queues up data, where map mode replaces incoming data with most recent
    if receive is not called as often as the incoming data, map mode reduces processing
    but for scopes or loggers, we need queue mode */
-SignalKClient::SignalKClient(bool queue_mode, bool request_list)
+pypilotClient::pypilotClient(bool queue_mode, bool request_list)
 : m_bQueueMode(queue_mode), m_bRequestList(request_list)
 {
-//    m_sock.Connect(wxEVT_SOCKET, wxSocketEventHandler(SignalKClient::OnSocketEvent), NULL, this);
+//    m_sock.Connect(wxEVT_SOCKET, wxSocketEventHandler(pypilotClient::OnSocketEvent), NULL, this);
     
     m_sock.SetEventHandler(*this);
     m_sock.SetNotify(wxSOCKET_CONNECTION_FLAG | wxSOCKET_INPUT_FLAG | wxSOCKET_LOST_FLAG);
@@ -50,7 +50,7 @@ SignalKClient::SignalKClient(bool queue_mode, bool request_list)
     m_sock.SetTimeout(1);
 }
 
-void SignalKClient::connect(wxString host, int port)
+void pypilotClient::connect(wxString host, int port)
 {
     if(host.empty())
         host = "pypilot";
@@ -64,7 +64,7 @@ void SignalKClient::connect(wxString host, int port)
     m_sock.Connect(addr, false);
 }
 
-void SignalKClient::disconnect()
+void pypilotClient::disconnect()
 {
     m_sock.Close();
     m_list = Json::Value();
@@ -73,7 +73,7 @@ void SignalKClient::disconnect()
     OnDisconnected();
 }
 
-bool SignalKClient::receive(std::string &name, Json::Value &value)
+bool pypilotClient::receive(std::string &name, Json::Value &value)
 {
     if(m_bQueueMode) {
         if(m_queue.empty())
@@ -98,7 +98,7 @@ bool SignalKClient::receive(std::string &name, Json::Value &value)
     return true;
 }
 
-void SignalKClient::get(std::string name)
+void pypilotClient::get(std::string name)
 {
     Json::Value request;
     request["method"] = "get";
@@ -106,7 +106,7 @@ void SignalKClient::get(std::string name)
     send(request);
 }
 
-void SignalKClient::set(std::string name, Json::Value &value)
+void pypilotClient::set(std::string name, Json::Value &value)
 {
     Json::Value request;
     request["method"] = "set";
@@ -115,25 +115,25 @@ void SignalKClient::set(std::string name, Json::Value &value)
     send(request);
 }
 
-void SignalKClient::set(std::string name, double value)
+void pypilotClient::set(std::string name, double value)
 {
     Json::Value v(value);
     set(name, v);
 }
 
-void SignalKClient::set(std::string name, std::string &value)
+void pypilotClient::set(std::string name, std::string &value)
 {
     Json::Value v(value);
     set(name, v);
 }
 
-void SignalKClient::set(std::string name, const char *value)
+void pypilotClient::set(std::string name, const char *value)
 {
     Json::Value v(value);
     set(name, v);
 }
 
-void SignalKClient::watch(std::string name, bool on)
+void pypilotClient::watch(std::string name, bool on)
 {
 //    printf("watch %s %d\n", name.c_str(), on);
 //    wxString l = "send watch request" + name;
@@ -147,27 +147,27 @@ void SignalKClient::watch(std::string name, bool on)
     send(request);
 }
 
-bool SignalKClient::info(std::string name, Json::Value &info)
+bool pypilotClient::info(std::string name, Json::Value &info)
 {
     info = m_list[name.c_str()];
     return !info.isNull();
 }
 
-void SignalKClient::request_list_values()
+void pypilotClient::request_list_values()
 {
     Json::Value request;
     request["method"] = "list";
     send(request);
 }
 
-void SignalKClient::send(Json::Value &request)
+void pypilotClient::send(Json::Value &request)
 {
     Json::FastWriter writer;
     std::string str = writer.write(request);
     m_sock.Write(str.c_str(), str.size());
 }
 
-void SignalKClient::update_watchlist(std::map<std::string, bool> &watchlist, bool refresh)
+void pypilotClient::update_watchlist(std::map<std::string, bool> &watchlist, bool refresh)
 {
         // watch new keys we weren't watching
     for(std::map<std::string, bool>::iterator it = watchlist.begin(); it != watchlist.end(); it++)
@@ -184,7 +184,7 @@ void SignalKClient::update_watchlist(std::map<std::string, bool> &watchlist, boo
     m_watchlist = watchlist;
 }
 
-void SignalKClient::OnSocketEvent(wxSocketEvent& event)
+void pypilotClient::OnSocketEvent(wxSocketEvent& event)
 {
     switch(event.GetSocketEvent())
     {
@@ -219,7 +219,7 @@ void SignalKClient::OnSocketEvent(wxSocketEvent& event)
 
                 // overflow and reset connection at 640k in buffer
                 if(m_sock_buffer.size() >= 1024*640) {
-                    wxLogMessage( "signalk client input buffer overflow!\n" );
+                    wxLogMessage( "pypilot client input buffer overflow!\n" );
                     disconnect();
                     break;
                 }
@@ -247,7 +247,7 @@ void SignalKClient::OnSocketEvent(wxSocketEvent& event)
                         for(Json::ValueIterator val = value.begin(); val != value.end(); val++)
                             if(m_bQueueMode) {
                                 if(m_queue.size() >= 4096) {
-                                    wxLogMessage( "SignalK client message overflow" );
+                                    wxLogMessage( "pypilot client message overflow" );
                                     m_queue.clear();
                                 }
                                 std::pair<std::string, Json::Value > p(val.key().asString(), *val);
@@ -267,4 +267,14 @@ void SignalKClient::OnSocketEvent(wxSocketEvent& event)
         } break;
     default:;
     }
+}
+
+void pypilotClient::GetSettings(std::list<std::string> &settings, std::string member)
+{
+    if(m_list.isNull())
+        return;
+
+    for(Json::ValueIterator val = m_list.begin(); val != m_list.end(); val++)
+        if(val->isMember(member))
+            settings.push_back(val.key().asString());
 }

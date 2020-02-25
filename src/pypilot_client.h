@@ -26,16 +26,17 @@
 
 #include <deque>
 #include <map>
+#include <list>
 
 #include <wx/wx.h>
 #include <wx/socket.h>
 
 #include <json/json.h>
 
-class SignalKClient : public wxEvtHandler
+class pypilotClient : public wxEvtHandler
 {
 public:
-    SignalKClient(bool queue_mode = true, bool request_list = true);
+    pypilotClient(bool queue_mode = true, bool request_list = true);
 
     void connect(wxString host, int port=0);
     void disconnect();
@@ -53,6 +54,8 @@ public:
     Json::Value &list() { return m_list; }
     void update_watchlist(std::map<std::string, bool> &watchlist, bool refresh=false);
 
+    void GetSettings(std::list<std::string> &settings, std::string member);
+    
 protected:
     virtual void OnConnected() = 0;
     virtual void OnDisconnected() = 0;
