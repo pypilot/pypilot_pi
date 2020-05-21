@@ -5,7 +5,7 @@
  * Author:   Sean D'Epagnier
  *
  ***************************************************************************
- *   Copyright (C) 2018 by Sean D'Epagnier                                 *
+ *   Copyright (C) 2020 by Sean D'Epagnier                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -43,16 +43,15 @@ public:
     bool connected() { return m_sock.IsConnected(); }
     virtual bool receive(std::string &name, Json::Value &value);
 
-    void get(std::string name);
     void set(std::string name, Json::Value &value);
     void set(std::string name, double value);
     void set(std::string name, std::string &value);
     void set(std::string name, const char *value);
-    void watch(std::string name, bool on=true);
+    void watch(std::string name, bool on=true, double period=0);
 
     bool info(std::string name, Json::Value &info);
     Json::Value &list() { return m_list; }
-    void update_watchlist(std::map<std::string, bool> &watchlist, bool refresh=false);
+    void update_watchlist(std::map<std::string, double> &watchlist);
 
     void GetSettings(std::list<std::string> &settings, std::string member);
     
@@ -62,8 +61,6 @@ protected:
     Json::Value m_list;
 
 private:
-    void request_list_values();
-    void send(Json::Value &request);
     void OnSocketEvent(wxSocketEvent& event);
 
     wxSocketClient      m_sock;
@@ -73,9 +70,9 @@ private:
 
     bool m_bQueueMode;
     
-    bool m_bRequestList, m_bRequestingList;
+    bool m_bRequestList;
 
-    std::map<std::string, bool> m_watchlist;
+    std::map<std::string, double> m_watchlist;
 
 DECLARE_EVENT_TABLE()
 };

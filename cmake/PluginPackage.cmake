@@ -89,7 +89,7 @@ IF(UNIX AND NOT APPLE)
 
     IF (CMAKE_SIZEOF_VOID_P MATCHES "8")
       SET (ARCH "amd64")
-      SET(CPACK_RPM_PACKAGE_ARCHITECTURE "x86_64")
+      #SET(CPACK_RPM_PACKAGE_ARCHITECTURE "x86_64")
     ELSE (CMAKE_SIZEOF_VOID_P MATCHES "8")
       SET (ARCH "i386")
       # note: in a chroot must use "setarch i686 make package"

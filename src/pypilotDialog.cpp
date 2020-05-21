@@ -66,8 +66,6 @@ pypilotDialog::pypilotDialog( pypilot_pi &_pypilot_pi, wxWindow* parent)
 
     m_ManualTimer.Connect(wxEVT_TIMER, wxTimerEventHandler
                           ( pypilotDialog::OnManualTimer ), NULL, this);
-    m_RudderPollTimer.Connect(wxEVT_TIMER, wxTimerEventHandler
-                          ( pypilotDialog::OnRudderPollTimer ), NULL, this);
 
     Disconnected();
 }
@@ -160,10 +158,6 @@ void pypilotDialog::Receive(std::string name, Json::Value &value)
         m_fgControlAnglesPos->Show(enabled);
         m_fgControlAnglesNeg->Show(enabled);
         m_fgControlManual->Show(!enabled);
-        if(enabled)
-            m_RudderPollTimer.Stop();
-        else
-            m_RudderPollTimer.Start(500, false);
 
         SetAPColor(m_cMode->GetStringSelection());
 
@@ -244,14 +238,22 @@ void pypilotDialog::SetAPColor(wxString mode)
     m_bAP->SetForegroundColour(c);
 }
 
-const char **pypilotDialog::GetWatchlist()
+std::map<std::string, double> &pypilotDialog::GetWatchlist()
 {
+    static std::map<std::string, double> list;
+    list.clear();
+    // continuous updates for these
     static const char *watchlist[] =
         {"ap.enabled", "ap.mode", "ap.heading", "ap.heading_command",
          "ap.tack.state", "ap.tack.direction",
          "gps.source", "wind.source",
-         "servo.state", "servo.flags", "servo.controller", 0};
-    return watchlist;
+         "servo.state", "servo.flags", "servo.controller"};
+    for(unsigned int i=0; i<(sizeof watchlist)/(sizeof *watchlist); i++)
+        list[watchlist[i]] = 0;
+    
+    // get updates twice a second
+    list["rudder.angle"] = .5;
+    return list;
 }
 
 void pypilotDialog::RebuildControlAngles()
@@ -430,12 +432,6 @@ void pypilotDialog::OnManualTimer( wxTimerEvent & )
     }
     //printf("manual %f %d\n", m_ManualCommand, (wxDateTime::UNow() - m_ManualTimeout).GetMilliseconds());
     m_pypilot_pi.m_client.set("servo.command", m_ManualCommand);
-}
-
-
-void pypilotDialog::OnRudderPollTimer( wxTimerEvent & )
-{
-    m_pypilot_pi.m_client.get("rudder.angle");
 }
 
 void pypilotDialog::AddButton(int angle, wxSizer *sizer)

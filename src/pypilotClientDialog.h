@@ -38,7 +38,7 @@ public:
     ~pypilotClientDialog() {}
 
     void Receive(std::string name, Json::Value &value);
-    std::list<std::string> &GetWatchlist();
+    std::map<std::string, double> &GetWatchlist();
 
     bool Show( bool show=true );
 
@@ -53,6 +53,5 @@ private:
     std::map<std::string, wxStaticText*> m_values;
     std::map<std::string, wxControl*> m_controls;
 
-    std::list<std::string> m_watchlist;
     pypilot_pi &m_pypilot_pi;
 };

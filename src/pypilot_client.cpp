@@ -56,7 +56,7 @@ void pypilotClient::connect(wxString host, int port)
         host = "pypilot";
             
     if(port == 0)
-        port = 21311; /* default port */
+        port = 23322; /* default port */
 
     wxIPV4address addr;
     addr.Hostname(host);
@@ -67,8 +67,6 @@ void pypilotClient::connect(wxString host, int port)
 void pypilotClient::disconnect()
 {
     m_sock.Close();
-    m_list = Json::Value();
-    m_watchlist.clear();
     m_sock_buffer.clear();
     OnDisconnected();
 }
@@ -84,7 +82,6 @@ bool pypilotClient::receive(std::string &name, Json::Value &value)
     
         name = val.first;
         value = val.second;
-
         return true;
     }
 
@@ -98,21 +95,12 @@ bool pypilotClient::receive(std::string &name, Json::Value &value)
     return true;
 }
 
-void pypilotClient::get(std::string name)
-{
-    Json::Value request;
-    request["method"] = "get";
-    request["name"] = name;
-    send(request);
-}
-
 void pypilotClient::set(std::string name, Json::Value &value)
 {
-    Json::Value request;
-    request["method"] = "set";
-    request["name"] = name;
-    request["value"] = value;
-    send(request);
+    m_sock.Write(name.c_str(), name.size());
+    Json::FastWriter writer;
+    std::string str = writer.write(value);
+    m_sock.Write(str.c_str(), str.size());
 }
 
 void pypilotClient::set(std::string name, double value)
@@ -133,18 +121,14 @@ void pypilotClient::set(std::string name, const char *value)
     set(name, v);
 }
 
-void pypilotClient::watch(std::string name, bool on)
+void pypilotClient::watch(std::string name, bool on, double period)
 {
-//    printf("watch %s %d\n", name.c_str(), on);
-//    wxString l = "send watch request" + name;
-//    wxLogMessage(l);
-    if(on)
-        get(name);
     Json::Value request;
-    request["method"] = "watch";
-    request["name"] = name;
-    request["value"] = on;
-    send(request);
+    if(on)
+        request[name] = period;
+    else
+        request[name] = false;
+    set("watch", request);
 }
 
 bool pypilotClient::info(std::string name, Json::Value &info)
@@ -153,34 +137,20 @@ bool pypilotClient::info(std::string name, Json::Value &info)
     return !info.isNull();
 }
 
-void pypilotClient::request_list_values()
+void pypilotClient::update_watchlist(std::map<std::string, double> &watchlist)
 {
     Json::Value request;
-    request["method"] = "list";
-    send(request);
-}
-
-void pypilotClient::send(Json::Value &request)
-{
-    Json::FastWriter writer;
-    std::string str = writer.write(request);
-    m_sock.Write(str.c_str(), str.size());
-}
-
-void pypilotClient::update_watchlist(std::map<std::string, bool> &watchlist, bool refresh)
-{
-        // watch new keys we weren't watching
-    for(std::map<std::string, bool>::iterator it = watchlist.begin(); it != watchlist.end(); it++)
+    // watch new keys we weren't watching
+    for(std::map<std::string, double>::iterator it = watchlist.begin(); it != watchlist.end(); it++)
         if(m_watchlist.find(it->first) == m_watchlist.end())
-            watch(it->first);
-        else if(refresh)
-            get(it->first); // make sure we get the value again to update dialog here
+            request[it->first] = it->second;
 
     // unwatch old keys we don't need
-    for(std::map<std::string, bool>::iterator it = m_watchlist.begin(); it != m_watchlist.end(); it++)
+    for(std::map<std::string, double>::iterator it = m_watchlist.begin(); it != m_watchlist.end(); it++)
         if(watchlist.find(it->first) == watchlist.end())
-            watch(it->first, false);
+            request[it->first] = false;
 
+    set("watch", request);
     m_watchlist = watchlist;
 }
 
@@ -192,12 +162,22 @@ void pypilotClient::OnSocketEvent(wxSocketEvent& event)
             m_queue.clear();
             m_map.clear();
             m_sock_buffer.clear();
+            m_list = Json::Value();
+
             if(m_bRequestList) {
-                m_list = Json::Value();
-                request_list_values();
-                m_bRequestingList = true;
-            } else
-                OnConnected();
+                Json::Value request;
+                request["values"] = true;
+                set("watch", request);
+            }
+
+            if(m_watchlist.size()) {
+                Json::Value request;
+                for(std::map<std::string, double>::iterator it = m_watchlist.begin(); it != m_watchlist.end(); it++)
+                    request[it->first] = it->second;
+                set("watch", request);
+            }
+            
+            OnConnected();
             break;
 
         case wxSOCKET_LOST:
@@ -229,33 +209,35 @@ void pypilotClient::OnSocketEvent(wxSocketEvent& event)
                 int line_end = m_sock_buffer.find_first_of("\n");
                 if(line_end <= 0)
                     break;
-                std::string json_line = m_sock_buffer.substr(0, line_end);
-
-                Json::Value value;
-                Json::Reader reader;
-                if(!reader.parse(json_line, value)) {
+                std::string line = m_sock_buffer.substr(0, line_end);
+                long unsigned int c = line.find('=');
+                if(c == std::string::npos) {
                     wxString sLogMessage;
-                    sLogMessage.Append(wxT("pypilot_pi: Error parsing Json::Value message - "));
-                    sLogMessage.Append( json_line );
+                    sLogMessage.Append(wxT("pypilot_pi: Error parsing - "));
+                    sLogMessage.Append( line );
                     wxLogMessage( sLogMessage );
                 } else {
-                    if(m_bRequestingList) {
+                    std::string key = line.substr(0, c);
+                    std::string json_line = line.substr(c+1);
+                    Json::Value value;
+                    Json::Reader reader;
+                    if(!reader.parse(json_line, value)) {
+                        wxString sLogMessage;
+                        sLogMessage.Append(wxT("pypilot_pi: Error parsing Json::Value message - "));
+                        sLogMessage.Append( json_line );
+                        wxLogMessage( sLogMessage );
+                    } else if(key == "values") {
                         m_list = value;
-                        m_bRequestingList = false;
-                        OnConnected();
                     } else {
-                        for(Json::ValueIterator val = value.begin(); val != value.end(); val++)
-                            if(m_bQueueMode) {
-                                if(m_queue.size() >= 4096) {
-                                    wxLogMessage( "pypilot client message overflow" );
-                                    m_queue.clear();
-                                }
-                                std::pair<std::string, Json::Value > p(val.key().asString(), *val);
-                                m_queue.push_back(p);
-                            } else {
-                                m_map[val.key().asString()] = *val;
-//                                printf("got %s\n", val.key().asString().c_str());
+                        if(m_bQueueMode) {
+                            if(m_queue.size() >= 4096) {
+                                wxLogMessage( "pypilot client message overflow" );
+                                m_queue.clear();
                             }
+                            std::pair<std::string, Json::Value > p(key, value);
+                            m_queue.push_back(p);
+                        } else
+                            m_map[key] = value;
                     }
                 }
 

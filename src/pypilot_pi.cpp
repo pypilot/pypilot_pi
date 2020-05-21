@@ -259,16 +259,22 @@ void pypilot_pi::SetToolbarIcon()
     SetToolbarToolBitmaps(m_leftclick_tool_id, bitmap, bitmap);
 }
 
-static void MergeWatchlist(std::map<std::string, bool> &watchlist, const char **list)
+static void MergeWatchlist(std::map<std::string, double> &watchlist, const char **list)
 {
     for(const char **w = list; *w; w++)
-        watchlist[*w] = true;
+        watchlist[*w] = 0;
 }
 
-static void MergeWatchlist(std::map<std::string, bool> &watchlist, std::list<std::string> &list)
+static void MergeWatchlist(std::map<std::string, double> &watchlist, std::list<std::string> &list)
 {
     for(std::list<std::string>::iterator i = list.begin(); i != list.end(); i++)
-        watchlist[*i] = true;
+        watchlist[*i] = 0;
+}
+
+static void MergeWatchlist(std::map<std::string, double> &watchlist, std::map<std::string, double> &list)
+{
+    for(std::map<std::string, double>::iterator i = list.begin(); i != list.end(); i++)
+        watchlist[i->first] = i->second;
 }
 
 void pypilot_pi::UpdateWatchlist()
@@ -276,7 +282,7 @@ void pypilot_pi::UpdateWatchlist()
     if(!m_client.connected())
         return;
 
-    std::map<std::string, bool> watchlist;
+    std::map<std::string, double> watchlist;
     if(m_pypilotDialog) {
         // map allows watchlists to overlap if needed
         if(m_pypilotDialog->IsShown())
@@ -306,7 +312,7 @@ void pypilot_pi::UpdateWatchlist()
     static const char *wl[] = {"ap.mode", "ap.enabled", 0};
     MergeWatchlist(watchlist, wl);
 
-    m_client.update_watchlist(watchlist, true);
+    m_client.update_watchlist(watchlist);
 }
 
 void pypilot_pi::OnToolbarToolCallback(int id)

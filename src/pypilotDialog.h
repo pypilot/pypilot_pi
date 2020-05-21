@@ -47,7 +47,7 @@ public:
     void Disconnected();
     void Receive(std::string name, Json::Value &value);
     void SetAPColor(wxString mode);
-    const char **GetWatchlist();
+    std::map<std::string, double> &GetWatchlist();
 
     void RebuildControlAngles();
     void Fit();
@@ -72,7 +72,6 @@ private:
     void UpdateModes();
     void Manual(double amount);
     void OnManualTimer( wxTimerEvent & );
-    void OnRudderPollTimer( wxTimerEvent & );
 
     void AddButton(int angle, wxSizer *sizer);
 

@@ -86,19 +86,20 @@ void pypilotClientDialog::Receive(std::string name, Json::Value &value)
         choice->SetStringSelection(value.asString());
 }
 
-std::list<std::string> &pypilotClientDialog::GetWatchlist()
+std::map<std::string, double> &pypilotClientDialog::GetWatchlist()
 {
-//    std::list<std::string> watchlist;
-    m_watchlist.clear();
+    static std::map<std::string, double> list;
+    list.clear();
+    Json::Value value_list = m_pypilot_pi.m_client.list();
 
-    Json::Value list = m_pypilot_pi.m_client.list();
-
-    if(!list.isNull())
-        for(Json::ValueIterator val = list.begin(); val != list.end(); val++)
-            if((*val)["type"] != "SensorValue")
-                m_watchlist.push_back(val.key().asString());
+    for(Json::ValueIterator val = value_list.begin(); val != value_list.end(); val++) {
+        double period = 0;
+        if((*val)["type"] == "SensorValue")
+            period = 1;
+        list[val.key().asString()] = period;
+    }
     
-    return m_watchlist;
+    return list;
 }
 
 bool pypilotClientDialog::Show( bool show )
@@ -170,8 +171,6 @@ bool pypilotClientDialog::Show( bool show )
                 b->Connect( wxEVT_BUTTON, wxCommandEventHandler( pypilotClientDialog::OnCommand ), NULL, this);
             } else { // really just a spacer since the user cannot modify this
                 m_fgSizer->Add( new wxStaticText(m_scrolledWindow, wxID_ANY, ""), 0, wxEXPAND);
-                if(t == "SensorValue") // sensors aren't in watchlist, too much bandwidth
-                    m_pypilot_pi.m_client.get(val.key().asString());
             }
         }
 
