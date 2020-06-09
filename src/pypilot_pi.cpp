@@ -431,15 +431,14 @@ void pypilot_pi::OnTimer( wxTimerEvent & )
     }
 
     std::string name;
-    Json::Value data;
+    Json::Value val;
     wxDateTime now = wxDateTime::Now();
-     while(m_client.receive(name, data)) {
+     while(m_client.receive(name, val)) {
         //wxString value = data["value"].AsString();
         //printf("msg %s %s\n", name.mb_str().data(), value.mb_str().data());
 
          try
          {
-        Json::Value &val = data["value"];
         if(m_pypilotDialog) {
             m_pypilotDialog->Receive(name, val);
             m_GainsDialog->Receive(name, val);

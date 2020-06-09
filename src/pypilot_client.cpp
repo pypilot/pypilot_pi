@@ -5,7 +5,7 @@
  * Author:   Sean D'Epagnier
  *
  ***************************************************************************
- *   Copyright (C) 2018 by Sean D'Epagnier                                 *
+ *   Copyright (C) 2020 by Sean D'Epagnier                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -98,6 +98,7 @@ bool pypilotClient::receive(std::string &name, Json::Value &value)
 void pypilotClient::set(std::string name, Json::Value &value)
 {
     m_sock.Write(name.c_str(), name.size());
+    m_sock.Write("=", 1);
     Json::FastWriter writer;
     std::string str = writer.write(value);
     m_sock.Write(str.c_str(), str.size());
@@ -164,11 +165,8 @@ void pypilotClient::OnSocketEvent(wxSocketEvent& event)
             m_sock_buffer.clear();
             m_list = Json::Value();
 
-            if(m_bRequestList) {
-                Json::Value request;
-                request["values"] = true;
-                set("watch", request);
-            }
+            if(m_bRequestList)
+                watch("values");
 
             if(m_watchlist.size()) {
                 Json::Value request;
