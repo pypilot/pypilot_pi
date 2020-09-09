@@ -60,7 +60,7 @@
 #include "msvcdefs.h"
 #endif
 
-#include "pypilot_signalk_client.h"
+#include "pypilot_client.h"
 
 //----------------------------------
 //    The PlugIn Class Definition
@@ -74,7 +74,22 @@ class GainsDialog;
 class ConfigurationDialog;
 class StatisticsDialog;
 class CalibrationDialog;
-class SignalKClientDialog;
+class pypilotClientDialog;
+
+
+class pypilot_pi;
+class pypilotClient_pi : public pypilotClient
+{
+public:
+    pypilotClient_pi( pypilot_pi &_pypilot_pi )
+        : pypilotClient(false), m_pypilot_pi(_pypilot_pi) {}
+    virtual void OnConnected();
+    virtual void OnDisconnected();
+
+private:
+    pypilot_pi &m_pypilot_pi;
+};
+
 
 class pypilot_pi : public wxEvtHandler, public opencpn_plugin_111
 {
@@ -118,20 +133,21 @@ public:
       void OnDisconnected();
       void UpdateWatchlist();
 
-      pypilot_SignalKClient m_client;
+      pypilotClient_pi m_client;
 
       pypilotDialog  *m_pypilotDialog;
       GainsDialog    *m_GainsDialog;
       ConfigurationDialog *m_ConfigurationDialog;
       StatisticsDialog   *m_StatisticsDialog;
       CalibrationDialog  *m_CalibrationDialog;
-      SignalKClientDialog *m_SignalKClientDialog;
+      pypilotClientDialog *m_pypilotClientDialog;
 
       double m_declination;
       wxDateTime m_declinationTime;
       
 private:
       void SetNMEASentence(wxString &sentence);
+      void OnNMEASocketEvent(wxSocketEvent& event);
       void SetPositionFixEx(PlugIn_Position_Fix_Ex &pfix);
       void SetPluginMessage(wxString &message_id, wxString &message_body);
       void RearrangeWindow();
@@ -157,6 +173,12 @@ private:
 
       bool m_enabled;
       wxString m_mode;
+
+      
+      wxSocketClient      m_nmeasocket;
+      std::string         m_nmeasock_buffer;
+
+DECLARE_EVENT_TABLE()
 };
 
 double heading_resolve(double degrees);

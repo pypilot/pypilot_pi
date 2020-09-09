@@ -24,6 +24,8 @@
  ***************************************************************************
  */
 
+#include <map>
+
 #include "pypilotUI.h"
 
 class pypilot_pi;
@@ -40,6 +42,8 @@ public:
 private:
     void OnCalibrationLocked( wxCommandEvent& event );
     void OnAboutCalibrationLocked( wxCommandEvent& event );
+    void OnpypilotClient( wxCommandEvent& event );
+    void OnSpin(wxSpinDoubleEvent& event );
     void OnClose( wxCommandEvent& event );
     void OnLevel( wxCommandEvent& event );
     void OnAboutLevel( wxCommandEvent& event );
@@ -50,7 +54,7 @@ private:
     void OnRudderCentered( wxCommandEvent& event ) { RudderCalCommand("centered"); }
     void OnRudderResetCalibration( wxCommandEvent& event ) { RudderCalCommand("reset"); }
     void OnRudderStarboardRange( wxCommandEvent& event ) { RudderCalCommand("starboard range"); }
-    void OnRudderPortRange( wxCommandEvent& event ) { RudderCalCommand("portboard range"); }
+    void OnRudderPortRange( wxCommandEvent& event ) { RudderCalCommand("port range"); }
     void OnRudderRange( wxSpinEvent& event );
     void OnAboutRudderCalibration( wxCommandEvent& event );
 
@@ -59,4 +63,5 @@ private:
     pypilot_pi &m_pypilot_pi;
     wxDateTime m_lastOffsetTime;
 
+    std::map<std::string, wxSpinCtrlDouble*> m_settings;
 };

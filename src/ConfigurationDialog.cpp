@@ -27,23 +27,6 @@
 #include "pypilotUI.h"
 #include "pypilot_pi.h"
 #include "ConfigurationDialog.h"
-#include "SignalKClientDialog.h"
-
-enum ui_place {SERVO, TACKING};
-struct ui_setting {
-    const char *signalk_name;
-    const char *name, *units;
-    double step;
-    enum ui_place placement;
-    wxStaticText *label;
-    wxSpinButton *spin;
-} ui_settings[] = {{"servo.period", "Period", "Seconds", .1, SERVO},
-                   {"servo.max_current", "Max Current", "Amps", .1, SERVO},
-                   {"ap.tack.angle", "Angle", "Degrees", 1, TACKING},
-                   {"ap.tack.rate", "Rate", "Degrees/s", 1, TACKING},
-                   {"ap.tack.threshold", "Complete", "Degrees", 1, TACKING},
-                   {"ap.tack.delay", "Delay", "Seconds", .5, TACKING}
-};
 
 
 ConfigurationDialog::ConfigurationDialog( pypilot_pi &_pypilot_pi, wxWindow* parent)
@@ -53,37 +36,6 @@ ConfigurationDialog::ConfigurationDialog( pypilot_pi &_pypilot_pi, wxWindow* par
 #ifdef __OCPN__ANDROID__
     GetHandle()->setStyleSheet( qtStyleSheet);
 #endif
-
-    for(unsigned int i=0; i<(sizeof ui_settings) / (sizeof *ui_settings); i++) {
-        ui_setting &s = ui_settings[i];
-        wxStaticBoxSizer *sbSizer = s.placement == SERVO ? m_sbSizerServo : m_sbSizerTacking;
-            
-        wxFlexGridSizer* fgSizer = new wxFlexGridSizer( 1, 0, 0, 0 );
-        fgSizer->SetFlexibleDirection( wxBOTH );
-        fgSizer->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
-        
-        wxStaticText *stname = new wxStaticText( sbSizer->GetStaticBox(), wxID_ANY, _(s.name), wxDefaultPosition, wxDefaultSize, 0 );
-        stname->Wrap( -1 );
-        fgSizer->Add( stname, 0, wxALL, 3 );
-        
-        s.label = new wxStaticText( sbSizer->GetStaticBox(), wxID_ANY, "-------", wxDefaultPosition, wxDefaultSize, 0 );
-        s.label->Wrap( -1 );
-        fgSizer->Add( s.label, 0, wxALL, 3 );
-        
-        s.spin = new wxSpinButton( sbSizer->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS|wxSP_VERTICAL );
-        fgSizer->Add( s.spin, 0, wxALL, 3 );
-        s.spin->SetRange(-1, 1);
-
-	s.spin->Connect( wxEVT_SCROLL_THUMBTRACK, wxSpinEventHandler( ConfigurationDialog::OnSpin ), NULL, this );
-        
-        wxStaticText *stUnits = new wxStaticText( sbSizer->GetStaticBox(), wxID_ANY, _(s.units), wxDefaultPosition, wxDefaultSize, 0 );
-        stUnits->Wrap( -1 );
-        fgSizer->Add( stUnits, 0, wxALL, 3 );
-            
-        sbSizer->Add( fgSizer, 1, wxEXPAND, 5 );
-
-        m_watchlist.push_back(s.signalk_name);
-    }
 }
 
 bool ConfigurationDialog::Show( bool show )
@@ -93,7 +45,9 @@ bool ConfigurationDialog::Show( bool show )
         pConf->SetPath ( _T( "/Settings/pypilot" ) );
         m_cHost->Insert(pConf->Read ( _T ( "Host" ), "192.168.14.1" ), 0);
         m_cHost->SetSelection(0);
-        m_cbForwardnmea->SetValue((bool)pConf->Read ( _T ( "Forwardnema" ), 0L ));
+        m_cbTackingButton->SetValue((bool)pConf->Read ( _T ( "TackingButton" ), 1));
+        m_cbCenterButton->SetValue((bool)pConf->Read ( _T ( "CenterButton" ), 1));
+        m_cbForwardNMEA->SetValue((bool)pConf->Read ( _T ( "ForwardNMEA" ), 0L ));
         m_cbEnableGraphicOverlay->SetValue((bool)pConf->Read ( _T ( "EnableGraphicOverlay" ), 0L ));
         m_cbTrueNorthMode->SetValue((bool)pConf->Read ( _T ( "TrueNorthMode" ), 0L ));
 
@@ -107,24 +61,47 @@ bool ConfigurationDialog::Show( bool show )
             ControlAngles = ControlAngles.AfterFirst(';');
         }
         m_sControlColumns->SetValue(pConf->Read ( _T ( "ControlColumns" ), 3 ));
+
+
+        Json::Value list = m_pypilot_pi.m_client.list();
+        if(!list.isNull()) {
+            for(Json::ValueIterator val = list.begin(); val != list.end(); val++) {
+                std::string name = val.key().asString();
+            }
+        }
     }
+
+    
     return ConfigurationDialogBase::Show(show);
 }
 
-void ConfigurationDialog::Receive(std::string name, Json::Value &value)
-{
-    for(unsigned int i=0; i<(sizeof ui_settings) / (sizeof *ui_settings); i++) {
-        ui_setting &s = ui_settings[i];
-   
-        if(name == s.signalk_name)
-            s.label->SetLabel(jsonformat("%.1f", value));
-    }
-}
-
-void ConfigurationDialog::OnAboutForwardnema( wxCommandEvent& event )
+void ConfigurationDialog::OnAboutTacking( wxCommandEvent& event )
 {
     wxMessageDialog mdlg(GetOCPNCanvasWindow(), _("\
-Eliminates the need to make the tcp connection to the autopilot from the OpenCPN connections list"),
+Make the buttons for tacking visible."),
+                         "pypilot", wxOK | wxICON_INFORMATION);
+    mdlg.ShowModal();
+}
+
+void ConfigurationDialog::OnAboutCenter( wxCommandEvent& event )
+{
+    wxMessageDialog mdlg(GetOCPNCanvasWindow(), _("\
+If enabled, and rudder feedback is working, a button to center the rudder in manual mode appears."),
+                         "pypilot", wxOK | wxICON_INFORMATION);
+    mdlg.ShowModal();
+}
+
+void ConfigurationDialog::OnAboutForwardNMEA( wxCommandEvent& event )
+{
+    wxMessageDialog mdlg(GetOCPNCanvasWindow(), _("\
+Plugin automatically sends and receives nmea data between opencpn and pypilot.\n\
+\n\
+The plugin communicates directly to pypilot, but nmea0183 is needed\n\
+by other opencpn plugins and for route following.\n\
+\n\
+Eliminates the need to make the tcp connection in opencpn connection settings.\n\
+If you need specific nmea filtering you should disable this, and instead make a tcp connection\n\
+to the pypilot host tcp port 20220 in the opencpn connections settings.\n"),
                          "pypilot", wxOK | wxICON_INFORMATION);
     mdlg.ShowModal();
 }
@@ -141,7 +118,7 @@ void ConfigurationDialog::OnAboutTrueNorth( wxCommandEvent& event )
 {
     wxMessageDialog mdlg(GetOCPNCanvasWindow(),
                          _("Converts displayed headings to true north rather than magnetic north.\n\
-This affects compass mode only, and requires the wmm plugin to be active.  The conversion is applied only within the plugin, the autopilot is commanded in the correct magnetic heading."),
+This affects compass mode only, and requires the wmm plugin to be active.  The conversion is applied only within the plugin, the autopilot is commanded in the corrected magnetic heading."),
                          "pypilot", wxOK | wxICON_INFORMATION);
     mdlg.ShowModal();
 }
@@ -168,22 +145,6 @@ void ConfigurationDialog::OnRemoveControlAngle( wxCommandEvent& event )
         m_lControlAngles->Delete(selection);
 }
 
-void ConfigurationDialog::OnSpin(wxSpinEvent& event )
-{
-    for(unsigned int i=0; i<(sizeof ui_settings) / (sizeof *ui_settings); i++) {
-        ui_setting &s = ui_settings[i];
-        if(!s.spin->HasFocus())
-            continue;
-    
-        double d;
-        if(s.label->GetLabel().ToDouble(&d)) {
-            d = s.spin->GetValue() * s.step;
-            s.label->SetLabel(wxString::Format("%.1f", d));
-            s.spin->SetValue(0);
-        }
-    }
-}
-
 void ConfigurationDialog::OnInformation( wxCommandEvent& event )
 {
 #ifdef __OCPN__ANDROID__
@@ -195,37 +156,25 @@ Visit http://www.github.com/pypilot/pypilot_pi",
     wxLaunchDefaultBrowser("http://www.github.com/pypilot/pypilot_pi");
 }
 
-void ConfigurationDialog::OnSignalKClient( wxCommandEvent& event )
-{
-    m_pypilot_pi.m_SignalKClientDialog->Show(!m_pypilot_pi.m_SignalKClientDialog->IsShown());
-    m_pypilot_pi.UpdateWatchlist();
-}
-
 
 void ConfigurationDialog::OnOk( wxCommandEvent& event )
 {
     Hide();
-    m_pypilot_pi.UpdateWatchlist();
-
-    for(unsigned int i=0; i<(sizeof ui_settings) / (sizeof *ui_settings); i++) {
-        ui_setting &s = ui_settings[i];
-        double x;
-        if(s.label->GetLabel().ToDouble(&x))
-            m_pypilot_pi.m_client.set(s.signalk_name, x);
-    }
 
     wxFileConfig *pConf = GetOCPNConfigObject();
     pConf->SetPath ( _T( "/Settings/pypilot" ) );
     pConf->Write ( _T ( "Host" ), m_cHost->GetValue().BeforeFirst(' '));
-    pConf->Write ( _T ( "Forwardnema" ), m_cbForwardnmea->GetValue());
-    pConf->Write ( _T ( "EnableGraphicOverlay" ), m_cbEnableGraphicOverlay->GetValue() );
-    pConf->Write ( _T ( "TrueNorthMode" ), m_cbTrueNorthMode->GetValue() );
+    pConf->Write ( _T ( "TackingButton" ), m_cbTackingButton->GetValue());
+    pConf->Write ( _T ( "CenterButton" ), m_cbCenterButton->GetValue());
+    pConf->Write ( _T ( "ForwardNMEA" ), m_cbForwardNMEA->GetValue());
+    pConf->Write ( _T ( "EnableGraphicOverlay" ), m_cbEnableGraphicOverlay->GetValue());
+    pConf->Write ( _T ( "TrueNorthMode" ), m_cbTrueNorthMode->GetValue());
 
     wxString ControlAngles;
     for(unsigned int i=0; i<m_lControlAngles->GetCount(); i++)
         ControlAngles += m_lControlAngles->GetString(i) + ";";
-    pConf->Write ( _T ( "ControlAngles" ), ControlAngles );
-    pConf->Write ( _T ( "ControlColumns" ), m_sControlColumns->GetValue() );
+    pConf->Write ( _T ( "ControlAngles" ), ControlAngles);
+    pConf->Write ( _T ( "ControlColumns" ), m_sControlColumns->GetValue());
     
     m_pypilot_pi.ReadConfig();    
 }
@@ -233,7 +182,6 @@ void ConfigurationDialog::OnOk( wxCommandEvent& event )
 void ConfigurationDialog::OnClose( wxCommandEvent& event )
 {
     Hide();
-    m_pypilot_pi.UpdateWatchlist();
 }
 
 void ConfigurationDialog::OnHost( wxCommandEvent& event )

@@ -32,7 +32,7 @@
 
 class pypilot_pi;
 
-class pypilotDialog: public pypilotDialogBase
+class pypilotDialog : public pypilotDialogBase
 {
 public:
     pypilotDialog( pypilot_pi &_pypilot_pi, wxWindow* parent);
@@ -47,7 +47,7 @@ public:
     void Disconnected();
     void Receive(std::string name, Json::Value &value);
     void SetAPColor(wxString mode);
-    const char **GetWatchlist();
+    std::map<std::string, double> &GetWatchlist();
 
     void RebuildControlAngles();
     void Fit();
@@ -56,9 +56,9 @@ private:
     void OnAP( wxCommandEvent& event );
     void OnMode( wxCommandEvent& event );
     void OnManualPortLong( wxCommandEvent& event ) { Manual(1.8); }
-    void OnManualPortShort( wxCommandEvent& event ) { Manual(.6); }
+    void OnManualPortShort( wxCommandEvent& event ) { Manual(.8); }
     void OnManualCenter( wxCommandEvent& event );
-    void OnManualStarboardShort( wxCommandEvent& event ) { Manual(-.6); }
+    void OnManualStarboardShort( wxCommandEvent& event ) { Manual(-.8); }
     void OnManualStarboardLong( wxCommandEvent& event ) { Manual(-1.8); }
     void OnGains( wxCommandEvent& event );
     void OnConfiguration( wxCommandEvent& event );
@@ -72,7 +72,6 @@ private:
     void UpdateModes();
     void Manual(double amount);
     void OnManualTimer( wxTimerEvent & );
-    void OnRudderPollTimer( wxTimerEvent & );
 
     void AddButton(int angle, wxSizer *sizer);
 

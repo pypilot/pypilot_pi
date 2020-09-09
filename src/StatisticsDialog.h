@@ -24,6 +24,7 @@
  ***************************************************************************
  */
 
+#include <map>
 #include "pypilotUI.h"
 
 class pypilot_pi;
@@ -34,12 +35,14 @@ public:
     StatisticsDialog( pypilot_pi &_pypilot_pi, wxWindow* parent);
     ~StatisticsDialog();
 
+    bool Show( bool show );
     void Receive(std::string name, Json::Value &value);
-    const char **GetWatchlist();
+    std::list<std::string> &GetWatchlist();
 
 private:
     void OnClose( wxCommandEvent& event );
     void OnResetAmpHours( wxCommandEvent& event );
 
+    std::map<std::string, wxStaticText*> m_sources;
     pypilot_pi &m_pypilot_pi;
 };

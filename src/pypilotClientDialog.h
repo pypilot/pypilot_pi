@@ -31,14 +31,14 @@
 
 class pypilot_pi;
 
-class SignalKClientDialog : public SignalKClientDialogBase
+class pypilotClientDialog : public pypilotClientDialogBase
 {
 public:
-    SignalKClientDialog( pypilot_pi &_pypilot_pi, wxWindow* parent);
-    ~SignalKClientDialog() {}
+    pypilotClientDialog( pypilot_pi &_pypilot_pi, wxWindow* parent);
+    ~pypilotClientDialog() {}
 
     void Receive(std::string name, Json::Value &value);
-    std::list<std::string> &GetWatchlist();
+    std::map<std::string, double> &GetWatchlist();
 
     bool Show( bool show=true );
 
@@ -53,6 +53,5 @@ private:
     std::map<std::string, wxStaticText*> m_values;
     std::map<std::string, wxControl*> m_controls;
 
-    std::list<std::string> m_watchlist;
     pypilot_pi &m_pypilot_pi;
 };

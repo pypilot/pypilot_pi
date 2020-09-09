@@ -81,7 +81,11 @@ IF(UNIX AND NOT APPLE)
 
 
   IF (CMAKE_SYSTEM_PROCESSOR MATCHES "arm*")
-    SET (ARCH "armhf")
+    IF (CMAKE_SIZEOF_VOID_P MATCHES "8")
+      SET (ARCH "arm64")
+    ELSE ()
+      SET (ARCH "armhf")
+    ENDIF ()
     # don't bother with rpm on armhf
     SET(CPACK_GENERATOR "DEB;RPM;TBZ2")
   ELSE ()
@@ -89,7 +93,7 @@ IF(UNIX AND NOT APPLE)
 
     IF (CMAKE_SIZEOF_VOID_P MATCHES "8")
       SET (ARCH "amd64")
-      SET(CPACK_RPM_PACKAGE_ARCHITECTURE "x86_64")
+      #SET(CPACK_RPM_PACKAGE_ARCHITECTURE "x86_64")
     ELSE (CMAKE_SIZEOF_VOID_P MATCHES "8")
       SET (ARCH "i386")
       # note: in a chroot must use "setarch i686 make package"

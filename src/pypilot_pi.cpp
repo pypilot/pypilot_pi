@@ -41,7 +41,7 @@
 #include "ConfigurationDialog.h"
 #include "StatisticsDialog.h"
 #include "CalibrationDialog.h"
-#include "SignalKClientDialog.h"
+#include "pypilotClientDialog.h"
 
 #include "icons.h"
 
@@ -64,7 +64,13 @@ extern "C" DECL_EXP void destroy_pi(opencpn_plugin* p)
 //    pypilot PlugIn Implementation
 //
 //-----------------------------------------------------------------------------
-pypilot_pi *g_pypilot_pi = NULL;
+
+BEGIN_EVENT_TABLE(pypilot_pi, wxEvtHandler)
+    EVT_SOCKET(-1, pypilot_pi::OnNMEASocketEvent)
+END_EVENT_TABLE()
+
+void pypilotClient_pi::OnConnected() { m_pypilot_pi.OnConnected(); }
+void pypilotClient_pi::OnDisconnected() { m_pypilot_pi.OnDisconnected(); }
 
 pypilot_pi::pypilot_pi(void *ppimgr)
     : opencpn_plugin_111(ppimgr), m_client(*this)
@@ -75,6 +81,12 @@ pypilot_pi::pypilot_pi(void *ppimgr)
     m_imu_heading = NAN;
     m_lastfix.nSats = 0;
 
+
+    m_nmeasocket.SetEventHandler(*this);
+    m_nmeasocket.SetNotify(wxSOCKET_CONNECTION_FLAG | wxSOCKET_INPUT_FLAG | wxSOCKET_LOST_FLAG);
+    m_nmeasocket.Notify(true);
+    m_nmeasocket.SetTimeout(1);
+    
     m_enabled = false;
     m_mode = "";
 }
@@ -102,7 +114,7 @@ int pypilot_pi::Init(void)
     m_ConfigurationDialog = NULL;
     m_StatisticsDialog = NULL;
     m_CalibrationDialog = NULL;
-    m_SignalKClientDialog = NULL;
+    m_pypilotClientDialog = NULL;
 
     m_status = _("Disconnected");
 
@@ -128,7 +140,7 @@ bool pypilot_pi::DeInit(void)
     delete m_ConfigurationDialog;
     delete m_StatisticsDialog;
     delete m_CalibrationDialog;
-    delete m_SignalKClientDialog;
+    delete m_pypilotClientDialog;
 
     RemovePlugInTool(m_leftclick_tool_id);
 
@@ -174,8 +186,8 @@ wxString pypilot_pi::GetLongDescription()
 {
     return _("Control the free software autopilot pypilot.\n\
 See http://pypilot.org for more details.\n\n\
-The plugin connects to the autopilot server via signalk implementing\n\
-a control interface to configure, calibrate and command the autopilot.\n\n\
+The plugin connects to pypilot directly implementing a control\n\
+interface to configure, calibrate and command pypilot from opencpn.\n\n\
 For more control and tuning route-following logic,\n\
 consider the autopilot route plugin.");
 }
@@ -228,7 +240,7 @@ void pypilot_pi::Receive(std::string name, Json::Value &value)
 void pypilot_pi::UpdateStatus()
 {
     if(m_pypilotDialog)
-        m_pypilotDialog->m_stStatus->SetLabel(m_status);
+        m_pypilotDialog->SetLabel(m_status);
 }
 
 void pypilot_pi::SetToolbarIcon()
@@ -247,16 +259,22 @@ void pypilot_pi::SetToolbarIcon()
     SetToolbarToolBitmaps(m_leftclick_tool_id, bitmap, bitmap);
 }
 
-static void MergeWatchlist(std::map<std::string, bool> &watchlist, const char **list)
+static void MergeWatchlist(std::map<std::string, double> &watchlist, const char **list)
 {
     for(const char **w = list; *w; w++)
-        watchlist[*w] = true;
+        watchlist[*w] = 0;
 }
 
-static void MergeWatchlist(std::map<std::string, bool> &watchlist, std::list<std::string> &list)
+static void MergeWatchlist(std::map<std::string, double> &watchlist, std::list<std::string> &list)
 {
     for(std::list<std::string>::iterator i = list.begin(); i != list.end(); i++)
-        watchlist[*i] = true;
+        watchlist[*i] = 0;
+}
+
+static void MergeWatchlist(std::map<std::string, double> &watchlist, std::map<std::string, double> &list)
+{
+    for(std::map<std::string, double>::iterator i = list.begin(); i != list.end(); i++)
+        watchlist[i->first] = i->second;
 }
 
 void pypilot_pi::UpdateWatchlist()
@@ -264,7 +282,7 @@ void pypilot_pi::UpdateWatchlist()
     if(!m_client.connected())
         return;
 
-    std::map<std::string, bool> watchlist;
+    std::map<std::string, double> watchlist;
     if(m_pypilotDialog) {
         // map allows watchlists to overlap if needed
         if(m_pypilotDialog->IsShown())
@@ -273,17 +291,14 @@ void pypilot_pi::UpdateWatchlist()
         if(m_GainsDialog->IsShown())
             MergeWatchlist(watchlist, m_GainsDialog->GetWatchlist());
         
-        if(m_ConfigurationDialog->IsShown())
-            MergeWatchlist(watchlist, m_ConfigurationDialog->GetWatchlist());
-        
         if(m_StatisticsDialog->IsShown())
             MergeWatchlist(watchlist, m_StatisticsDialog->GetWatchlist());
         
         if(m_CalibrationDialog->IsShown())
             MergeWatchlist(watchlist, m_CalibrationDialog->GetWatchlist());
 
-        if(m_SignalKClientDialog->IsShown())
-            MergeWatchlist(watchlist, m_SignalKClientDialog->GetWatchlist());
+        if(m_pypilotClientDialog->IsShown())
+            MergeWatchlist(watchlist, m_pypilotClientDialog->GetWatchlist());
     }
 
     if(m_bEnableGraphicOverlay) {
@@ -297,21 +312,20 @@ void pypilot_pi::UpdateWatchlist()
     static const char *wl[] = {"ap.mode", "ap.enabled", 0};
     MergeWatchlist(watchlist, wl);
 
-    m_client.update_watchlist(watchlist, true);
+    m_client.update_watchlist(watchlist);
 }
 
 void pypilot_pi::OnToolbarToolCallback(int id)
 {
     if(!m_pypilotDialog)
     {
+        m_ConfigurationDialog = new ConfigurationDialog(*this, GetOCPNCanvasWindow());
         m_pypilotDialog = new pypilotDialog(*this, GetOCPNCanvasWindow());
         UpdateStatus();
         
-        m_ConfigurationDialog = new ConfigurationDialog(*this, GetOCPNCanvasWindow());
-        
         m_StatisticsDialog = new StatisticsDialog(*this, GetOCPNCanvasWindow());
         m_CalibrationDialog = new CalibrationDialog(*this, GetOCPNCanvasWindow());
-        m_SignalKClientDialog = new SignalKClientDialog(*this, GetOCPNCanvasWindow());
+        m_pypilotClientDialog = new pypilotClientDialog(*this, GetOCPNCanvasWindow());
         m_GainsDialog = new GainsDialog(*this, GetOCPNCanvasWindow());
 
         wxIcon icon;
@@ -321,7 +335,7 @@ void pypilot_pi::OnToolbarToolCallback(int id)
         m_ConfigurationDialog->SetIcon(icon);
         m_StatisticsDialog->SetIcon(icon);
         m_CalibrationDialog->SetIcon(icon);
-        m_SignalKClientDialog->SetIcon(icon);
+        m_pypilotClientDialog->SetIcon(icon);
     }
 
     bool show = !m_pypilotDialog->IsShown();
@@ -331,7 +345,7 @@ void pypilot_pi::OnToolbarToolCallback(int id)
         m_ConfigurationDialog->Show(false);
         m_StatisticsDialog->Show(false);
         m_CalibrationDialog->Show(false);
-        m_SignalKClientDialog->Show(false);
+        m_pypilotClientDialog->Show(false);
     }
     UpdateWatchlist();
 
@@ -417,22 +431,20 @@ void pypilot_pi::OnTimer( wxTimerEvent & )
     }
 
     std::string name;
-    Json::Value data;
+    Json::Value val;
     wxDateTime now = wxDateTime::Now();
-     while(m_client.receive(name, data)) {
+     while(m_client.receive(name, val)) {
         //wxString value = data["value"].AsString();
         //printf("msg %s %s\n", name.mb_str().data(), value.mb_str().data());
 
          try
          {
-        Json::Value &val = data["value"];
         if(m_pypilotDialog) {
             m_pypilotDialog->Receive(name, val);
             m_GainsDialog->Receive(name, val);
-            m_ConfigurationDialog->Receive(name, val);
             m_StatisticsDialog->Receive(name, val);
             m_CalibrationDialog->Receive(name, val);
-            m_SignalKClientDialog->Receive(name, val);
+            m_pypilotClientDialog->Receive(name, val);
         }
         Receive(name, val);
          }     catch(std::exception e)
@@ -468,6 +480,79 @@ void pypilot_pi::OnDisconnected()
 
 void pypilot_pi::SetNMEASentence(wxString &sentence)
 {
+    wxFileConfig *pConf = GetOCPNConfigObject();
+    pConf->SetPath ( "/Settings/pypilot" );
+
+    if(!pConf->Read ( "ForwardNMEA" , 0L ))
+        return;
+
+    if(!m_nmeasocket.IsConnected()) {
+        wxString host = pConf->Read ( "Host", "192.168.14.1" );
+        wxIPV4address addr;
+        addr.Hostname(host);
+        addr.Service(20220);
+        m_nmeasocket.Connect(addr, false);
+    }
+        
+    if(m_nmeasocket.IsConnected())
+        m_nmeasocket.Write(sentence.c_str(), sentence.size());
+}
+
+void pypilot_pi::OnNMEASocketEvent(wxSocketEvent& event)
+{
+    wxFileConfig *pConf = GetOCPNConfigObject();
+    pConf->SetPath ( "/Settings/pypilot" );
+
+    if(!pConf->Read ( "ForwardNMEA" , 0L )) {
+        m_nmeasocket.Close();
+        return;
+    }
+        
+    switch(event.GetSocketEvent())
+    {
+        case wxSOCKET_CONNECTION:
+            break;
+
+        case wxSOCKET_LOST:
+            m_nmeasocket.Close();
+            break;
+
+        case wxSOCKET_INPUT:
+        {
+    #define RD_BUF_SIZE    65536
+            std::vector<char> data(RD_BUF_SIZE+1);
+            event.GetSocket()->Read(&data.front(), RD_BUF_SIZE);
+            if(!event.GetSocket()->Error()) {
+                size_t count = event.GetSocket()->LastCount();
+                if(count) {
+                    data[count]=0;
+                    m_nmeasock_buffer += (&data.front());
+                }
+
+                // overflow and reset connection at 640k in buffer
+                if(m_nmeasock_buffer.size() >= 1024*640) {
+                    wxLogMessage( "nmea input buffer overflow!\n" );
+                    m_nmeasocket.Close();
+                    break;
+                }
+            }
+
+            for(;;) {
+                int line_end = m_nmeasock_buffer.find_first_of("\n");
+                if(line_end <= 0)
+                    break;
+                std::string nmea_line = m_nmeasock_buffer.substr(0, line_end);
+                if(line_end < 1024) // discard nmea lines longer than 1024
+                    PushNMEABuffer(nmea_line);
+
+                if(line_end > (int)m_nmeasock_buffer.size())
+                    m_nmeasock_buffer.clear();
+                else
+                    m_nmeasock_buffer = m_nmeasock_buffer.substr(line_end+1);
+            }
+        } break;
+    default:;
+    }
 }
 
 void pypilot_pi::SetPositionFixEx(PlugIn_Position_Fix_Ex &pfix)

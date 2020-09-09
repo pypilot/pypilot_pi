@@ -5,7 +5,7 @@
  * Author:   Sean D'Epagnier
  *
  ***************************************************************************
- *   Copyright (C) 2018 by Sean D'Epagnier                                 *
+ *   Copyright (C) 2020 by Sean D'Epagnier                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -24,21 +24,55 @@
  ***************************************************************************
  */
 
+#include <deque>
+#include <map>
 #include <list>
 
-#include "signalk_client.h"
+#include <wx/wx.h>
+#include <wx/socket.h>
 
-class pypilot_pi;
-class pypilot_SignalKClient : public SignalKClient
+#include <json/json.h>
+
+class pypilotClient : public wxEvtHandler
 {
 public:
-    pypilot_SignalKClient( pypilot_pi &_pypilot_pi );
-    
-    virtual void OnConnected();
-    virtual void OnDisconnected();
+    pypilotClient(bool queue_mode = true, bool request_list = true);
 
-    void GetGains(std::list<std::string> &gains);
+    void connect(wxString host, int port=0);
+    void disconnect();
+    bool connected() { return m_sock.IsConnected(); }
+    virtual bool receive(std::string &name, Json::Value &value);
+
+    void set(std::string name, Json::Value &value);
+    void set(std::string name, double value);
+    void set(std::string name, std::string &value);
+    void set(std::string name, const char *value);
+    void watch(std::string name, bool on=true, double period=0);
+
+    bool info(std::string name, Json::Value &info);
+    Json::Value &list() { return m_list; }
+    void update_watchlist(std::map<std::string, double> &watchlist);
+
+    void GetSettings(std::list<std::string> &settings, std::string member);
+    
+protected:
+    virtual void OnConnected() = 0;
+    virtual void OnDisconnected() = 0;
+    Json::Value m_list;
 
 private:
-    pypilot_pi &m_pypilot_pi;
+    void OnSocketEvent(wxSocketEvent& event);
+
+    wxSocketClient      m_sock;
+    std::string         m_sock_buffer;
+    std::deque<std::pair<std::string, Json::Value> > m_queue;
+    std::map<std::string, Json::Value> m_map;
+
+    bool m_bQueueMode;
+    
+    bool m_bRequestList;
+
+    std::map<std::string, double> m_watchlist;
+
+DECLARE_EVENT_TABLE()
 };
