@@ -52,7 +52,7 @@ bool ConfigurationDialog::Show( bool show )
         m_cbTrueNorthMode->SetValue((bool)pConf->Read ( _T ( "TrueNorthMode" ), 0L ));
 
         m_lControlAngles->Clear();
-        wxString ControlAngles = pConf->Read ( _T ( "ControlAngles" ), "1;10;110;" );
+        wxString ControlAngles = pConf->Read ( _T ( "ControlAngles" ), "1;10;" );
         while(ControlAngles.size()) {
             wxString angle = ControlAngles.BeforeFirst(';');
             long a;
