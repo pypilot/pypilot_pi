@@ -15,7 +15,8 @@ modules:
         - -DOCPN_FLATPAK_BUILD=ON
     build-options:
         cflags: -fPIC
-        cxxflags: -fPIC
+        cxxflags: -fPIC -DFLATPAK
+        strip: true		
     sources:
        - type: git
          url: git://${GIT_REPOSITORY_SERVER}/${GIT_REPOSITORY}
