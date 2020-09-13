@@ -43,7 +43,7 @@ set(LONG_DESCRIPTION "Control the free software autopilot pypilot. See http://py
 set(VERSION_MAJOR "0")
 set(VERSION_MINOR "22")
 set(VERSION_PATCH "3")
-set(VERSION_TWEAK "0")
+set(VERSION_TWEAK "1")
 set(VERSION_DATE "09/13/2020")
 set(OCPN_MIN_VERSION "ov50")
 set(OCPN_API_VERSION_MAJOR "1")
