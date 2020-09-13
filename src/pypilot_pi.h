@@ -35,9 +35,6 @@
 #include "version.h"
 #include "wxWTranslateCatalog.h"
 
-#define     MY_API_VERSION_MAJOR    1
-#define     MY_API_VERSION_MINOR    11
-
 #define ABOUT_AUTHOR_URL "http://seandepagnier.users.sourceforge.net"
 
 #define OPC wxS("opencpn-pypilot_pi")
@@ -91,7 +88,7 @@ private:
 };
 
 
-class pypilot_pi : public wxEvtHandler, public opencpn_plugin_111
+class pypilot_pi : public wxEvtHandler, public opencpn_plugin_116
 {
 public:
 
