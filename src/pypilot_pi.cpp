@@ -73,7 +73,7 @@ void pypilotClient_pi::OnConnected() { m_pypilot_pi.OnConnected(); }
 void pypilotClient_pi::OnDisconnected() { m_pypilot_pi.OnDisconnected(); }
 
 pypilot_pi::pypilot_pi(void *ppimgr)
-    : opencpn_plugin_111(ppimgr), m_client(*this)
+    : opencpn_plugin_116(ppimgr), m_client(*this)
 {
     // Create the PlugIn icons
     initialize_images();
@@ -149,12 +149,12 @@ bool pypilot_pi::DeInit(void)
 
 int pypilot_pi::GetAPIVersionMajor()
 {
-    return MY_API_VERSION_MAJOR;
+    return OCPN_API_VERSION_MAJOR;
 }
 
 int pypilot_pi::GetAPIVersionMinor()
 {
-    return MY_API_VERSION_MINOR;
+    return OCPN_API_VERSION_MINOR;
 }
 
 int pypilot_pi::GetPlugInVersionMajor()
@@ -174,17 +174,21 @@ wxBitmap *pypilot_pi::GetPlugInBitmap()
 
 wxString pypilot_pi::GetCommonName()
 {
-    return _("pypilot");
+//    return _("pypilot");
+    return _T(PLUGIN_COMMON_NAME);
 }
 
 wxString pypilot_pi::GetShortDescription()
 {
-    return _("pypilot PlugIn for OpenCPN");
+//    return _("pypilot PlugIn for OpenCPN");
+    return _T(PLUGIN_COMMON_NAME);	
 }
 
 wxString pypilot_pi::GetLongDescription()
 {
-    return _("Control the free software autopilot pypilot.\n\
+    return _(PLUGIN_LONG_DESCRIPTION);
+
+//    return _("Control the free software autopilot pypilot.\n\
 See http://pypilot.org for more details.\n\n\
 The plugin connects to pypilot directly implementing a control\n\
 interface to configure, calibrate and command pypilot from opencpn.\n\n\
