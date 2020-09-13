@@ -25,6 +25,7 @@ SET(SRC_PYPILOT
             src/ConfigurationDialog.cpp
             src/StatisticsDialog.cpp
             src/CalibrationDialog.cpp
+            src/CalibrationPlot.cpp
             src/pypilotClientDialog.cpp
             src/pypilotUI.cpp
             src/icons.cpp

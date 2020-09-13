@@ -133,8 +133,8 @@ void pypilotDialog::Disconnected()
     m_fgControlAnglesNeg->Show(false);
     m_fgControlManual->Show(false);
 
-    wxSize s(300, 100);
-    SetMinSize(s);
+//    wxSize s(300, 100);
+//    SetMinSize(s);
     Fit();
 }
 
@@ -159,8 +159,8 @@ void pypilotDialog::Receive(std::string name, Json::Value &value)
         SetAPColor(m_cMode->GetStringSelection());
         ShowCenter();
 
-        wxSize s(100, 100);
-        SetMinSize(s);
+//        wxSize s(100, 100);
+//        SetMinSize(s);
         Fit();
     } else if(name == "ap.tack.state") {
         m_stTackState->SetLabel(value.asString());
@@ -305,7 +305,7 @@ void pypilotDialog::Fit()
 {
     GetSizer()->Fit(this);
     pypilotDialogBase::Fit();
-    
+
     // hack to rearrange
     wxSize s = GetSize();
     s.x+=1;

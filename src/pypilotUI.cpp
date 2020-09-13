@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Nov  2 2019)
+// C++ code generated with wxFormBuilder (version 3.9.0 Sep 12 2020)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO *NOT* EDIT THIS FILE!
@@ -7,11 +7,11 @@
 
 #include "pypilotUI.h"
 
- ///////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////
 
 pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
 {
-	this->SetSizeHints( wxSize( 100,100 ), wxSize( -1,-1 ) );
+	this->SetSizeHints( wxSize( -1,-1 ), wxSize( -1,-1 ) );
 
 	wxFlexGridSizer* fgSizer8;
 	fgSizer8 = new wxFlexGridSizer( 0, 1, 0, 0 );
@@ -95,13 +95,13 @@ pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxS
 	fgSizer12->SetFlexibleDirection( wxBOTH );
 	fgSizer12->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
-	m_stCommand = new wxStaticText( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,30 ), 0 );
+	m_stCommand = new wxStaticText( this, wxID_ANY, _("------"), wxDefaultPosition, wxSize( -1,30 ), 0 );
 	m_stCommand->Wrap( -1 );
 	m_stCommand->SetFont( wxFont( 26, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxT("Sawasdee") ) );
 
 	fgSizer12->Add( m_stCommand, 0, wxALL|wxEXPAND, 5 );
 
-	m_stHeading = new wxStaticText( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_stHeading = new wxStaticText( this, wxID_ANY, _("------"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_stHeading->Wrap( -1 );
 	m_stHeading->SetFont( wxFont( 26, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxT("Sawasdee") ) );
 
@@ -754,60 +754,118 @@ CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, c
 	wxStaticBoxSizer* sbSizer6;
 	sbSizer6 = new wxStaticBoxSizer( new wxStaticBox( m_panel1, wxID_ANY, _("Accel") ), wxVERTICAL );
 
-	wxFlexGridSizer* fgSizer35;
-	fgSizer35 = new wxFlexGridSizer( 0, 1, 0, 0 );
-	fgSizer35->AddGrowableCol( 0 );
-	fgSizer35->SetFlexibleDirection( wxBOTH );
-	fgSizer35->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	m_fgSizerAccel = new wxFlexGridSizer( 0, 1, 0, 0 );
+	m_fgSizerAccel->AddGrowableCol( 0 );
+	m_fgSizerAccel->AddGrowableRow( 1 );
+	m_fgSizerAccel->SetFlexibleDirection( wxBOTH );
+	m_fgSizerAccel->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
-	m_stAccelCalibration = new wxStaticText( sbSizer6->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	m_stAccelCalibration->Wrap( 30 );
-	fgSizer35->Add( m_stAccelCalibration, 0, wxALL|wxEXPAND, 5 );
+	m_staticText461 = new wxStaticText( sbSizer6->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText461->Wrap( -1 );
+	m_fgSizerAccel->Add( m_staticText461, 0, wxALL, 5 );
+
+	m_accelCalibrationPlot = new CalibrationPlot(m_panel1, "accel");
+	m_fgSizerAccel->Add( m_accelCalibrationPlot, 0, wxALL|wxEXPAND, 5 );
+
+	wxFlexGridSizer* fgSizer46;
+	fgSizer46 = new wxFlexGridSizer( 0, 2, 0, 0 );
+	fgSizer46->AddGrowableCol( 0 );
+	fgSizer46->AddGrowableCol( 1 );
+	fgSizer46->AddGrowableRow( 0 );
+	fgSizer46->SetFlexibleDirection( wxBOTH );
+	fgSizer46->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+
+	m_tAccelCalibrationLog = new wxTextCtrl( sbSizer6->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_READONLY|wxTE_WORDWRAP );
+	fgSizer46->Add( m_tAccelCalibrationLog, 0, wxALL|wxEXPAND, 5 );
 
 	wxFlexGridSizer* fgSizer36;
-	fgSizer36 = new wxFlexGridSizer( 0, 2, 0, 0 );
+	fgSizer36 = new wxFlexGridSizer( 0, 1, 0, 0 );
+	fgSizer36->AddGrowableCol( 0 );
+	fgSizer36->AddGrowableRow( 0 );
 	fgSizer36->SetFlexibleDirection( wxBOTH );
 	fgSizer36->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
+	m_stAccelCalibration = new wxStaticText( sbSizer6->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_stAccelCalibration->Wrap( 30 );
+	fgSizer36->Add( m_stAccelCalibration, 0, wxALL|wxEXPAND, 5 );
+
+	wxFlexGridSizer* fgSizer48;
+	fgSizer48 = new wxFlexGridSizer( 0, 2, 0, 0 );
+	fgSizer48->SetFlexibleDirection( wxBOTH );
+	fgSizer48->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+
 	m_staticText48 = new wxStaticText( sbSizer6->GetStaticBox(), wxID_ANY, _("Age"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText48->Wrap( -1 );
-	fgSizer36->Add( m_staticText48, 0, wxALL, 5 );
+	fgSizer48->Add( m_staticText48, 0, wxALL, 5 );
 
 	m_stAccelCalibrationAge = new wxStaticText( sbSizer6->GetStaticBox(), wxID_ANY, _("-----"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_stAccelCalibrationAge->Wrap( -1 );
-	fgSizer36->Add( m_stAccelCalibrationAge, 0, wxALL, 5 );
+	fgSizer48->Add( m_stAccelCalibrationAge, 0, wxALL, 5 );
 
 	m_cbAccelCalibrationLocked = new wxCheckBox( sbSizer6->GetStaticBox(), wxID_ANY, _("Calibration Locked"), wxDefaultPosition, wxDefaultSize, 0 );
-	fgSizer36->Add( m_cbAccelCalibrationLocked, 0, wxALL, 5 );
+	fgSizer48->Add( m_cbAccelCalibrationLocked, 0, wxALL, 5 );
 
 	m_button1711 = new wxButton( sbSizer6->GetStaticBox(), wxID_ANY, _("?"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_button1711->SetMaxSize( wxSize( 40,-1 ) );
 
-	fgSizer36->Add( m_button1711, 0, wxALL, 5 );
+	fgSizer48->Add( m_button1711, 0, wxALL, 5 );
 
 
-	fgSizer35->Add( fgSizer36, 1, wxEXPAND, 5 );
+	fgSizer36->Add( fgSizer48, 1, wxEXPAND, 5 );
 
 
-	sbSizer6->Add( fgSizer35, 1, wxEXPAND, 5 );
+	fgSizer46->Add( fgSizer36, 1, wxEXPAND, 5 );
+
+
+	m_fgSizerAccel->Add( fgSizer46, 1, wxEXPAND, 5 );
+
+
+	sbSizer6->Add( m_fgSizerAccel, 1, wxEXPAND, 5 );
 
 
 	m_panel1->SetSizer( sbSizer6 );
 	m_panel1->Layout();
 	sbSizer6->Fit( m_panel1 );
-	m_notebook1->AddPage( m_panel1, _("Accelerometers"), false );
+	m_notebook1->AddPage( m_panel1, _("Accelerometers"), true );
 	m_panel2 = new wxPanel( m_notebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxStaticBoxSizer* sbSizer4;
 	sbSizer4 = new wxStaticBoxSizer( new wxStaticBox( m_panel2, wxID_ANY, _("Compass") ), wxVERTICAL );
 
 	wxFlexGridSizer* fgSizer41;
 	fgSizer41 = new wxFlexGridSizer( 0, 1, 0, 0 );
+	fgSizer41->AddGrowableCol( 0 );
+	fgSizer41->AddGrowableRow( 1 );
 	fgSizer41->SetFlexibleDirection( wxBOTH );
 	fgSizer41->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
+	m_staticText47 = new wxStaticText( sbSizer4->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText47->Wrap( -1 );
+	fgSizer41->Add( m_staticText47, 0, wxALL, 5 );
+
+	m_compassCalibrationPlot = new CalibrationPlot(m_panel2, "compass");
+	fgSizer41->Add( m_compassCalibrationPlot, 0, wxALL|wxEXPAND, 5 );
+
+	wxFlexGridSizer* fgSizer47;
+	fgSizer47 = new wxFlexGridSizer( 0, 2, 0, 0 );
+	fgSizer47->AddGrowableCol( 0 );
+	fgSizer47->AddGrowableCol( 1 );
+	fgSizer47->AddGrowableRow( 0 );
+	fgSizer47->SetFlexibleDirection( wxBOTH );
+	fgSizer47->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+
+	m_tCompassCalibrationLog = new wxTextCtrl( sbSizer4->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_READONLY|wxTE_WORDWRAP );
+	fgSizer47->Add( m_tCompassCalibrationLog, 0, wxALL|wxEXPAND, 5 );
+
+	wxFlexGridSizer* fgSizer49;
+	fgSizer49 = new wxFlexGridSizer( 0, 1, 0, 0 );
+	fgSizer49->AddGrowableCol( 0 );
+	fgSizer49->AddGrowableRow( 0 );
+	fgSizer49->SetFlexibleDirection( wxBOTH );
+	fgSizer49->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+
 	m_stCompassCalibration = new wxStaticText( sbSizer4->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_stCompassCalibration->Wrap( 30 );
-	fgSizer41->Add( m_stCompassCalibration, 0, wxALL|wxEXPAND, 5 );
+	fgSizer49->Add( m_stCompassCalibration, 0, wxALL|wxEXPAND, 5 );
 
 	wxFlexGridSizer* fgSizer22;
 	fgSizer22 = new wxFlexGridSizer( 0, 2, 0, 0 );
@@ -832,7 +890,13 @@ CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, c
 	fgSizer22->Add( m_button171, 0, wxALL, 5 );
 
 
-	fgSizer41->Add( fgSizer22, 1, wxEXPAND, 5 );
+	fgSizer49->Add( fgSizer22, 1, wxEXPAND, 5 );
+
+
+	fgSizer47->Add( fgSizer49, 1, wxEXPAND, 5 );
+
+
+	fgSizer41->Add( fgSizer47, 1, wxEXPAND, 5 );
 
 
 	sbSizer4->Add( fgSizer41, 1, wxEXPAND, 5 );
@@ -900,7 +964,7 @@ CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, c
 	m_panel3->SetSizer( sbSizer3 );
 	m_panel3->Layout();
 	sbSizer3->Fit( m_panel3 );
-	m_notebook1->AddPage( m_panel3, _("Alignment"), true );
+	m_notebook1->AddPage( m_panel3, _("Alignment"), false );
 	m_panel4 = new wxPanel( m_notebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxStaticBoxSizer* sbSizer7;
 	sbSizer7 = new wxStaticBoxSizer( new wxStaticBox( m_panel4, wxID_ANY, _("Rudder") ), wxVERTICAL );
@@ -1034,14 +1098,53 @@ CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, c
 
 	this->SetSizer( fgSizer19 );
 	this->Layout();
-	fgSizer19->Fit( this );
 
 	this->Centre( wxBOTH );
 
 	// Connect Events
 	this->Connect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( CalibrationDialogBase::OnClose ) );
+	m_accelCalibrationPlot->Connect( wxEVT_LEFT_DOWN, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsAccel ), NULL, this );
+	m_accelCalibrationPlot->Connect( wxEVT_LEFT_UP, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsAccel ), NULL, this );
+	m_accelCalibrationPlot->Connect( wxEVT_MIDDLE_DOWN, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsAccel ), NULL, this );
+	m_accelCalibrationPlot->Connect( wxEVT_MIDDLE_UP, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsAccel ), NULL, this );
+	m_accelCalibrationPlot->Connect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsAccel ), NULL, this );
+	m_accelCalibrationPlot->Connect( wxEVT_RIGHT_UP, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsAccel ), NULL, this );
+	m_accelCalibrationPlot->Connect( wxEVT_AUX1_DOWN, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsAccel ), NULL, this );
+	m_accelCalibrationPlot->Connect( wxEVT_AUX1_UP, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsAccel ), NULL, this );
+	m_accelCalibrationPlot->Connect( wxEVT_AUX2_DOWN, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsAccel ), NULL, this );
+	m_accelCalibrationPlot->Connect( wxEVT_AUX1_UP, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsAccel ), NULL, this );
+	m_accelCalibrationPlot->Connect( wxEVT_MOTION, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsAccel ), NULL, this );
+	m_accelCalibrationPlot->Connect( wxEVT_LEFT_DCLICK, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsAccel ), NULL, this );
+	m_accelCalibrationPlot->Connect( wxEVT_MIDDLE_DCLICK, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsAccel ), NULL, this );
+	m_accelCalibrationPlot->Connect( wxEVT_RIGHT_DCLICK, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsAccel ), NULL, this );
+	m_accelCalibrationPlot->Connect( wxEVT_AUX1_DCLICK, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsAccel ), NULL, this );
+	m_accelCalibrationPlot->Connect( wxEVT_AUX2_DCLICK, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsAccel ), NULL, this );
+	m_accelCalibrationPlot->Connect( wxEVT_LEAVE_WINDOW, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsAccel ), NULL, this );
+	m_accelCalibrationPlot->Connect( wxEVT_ENTER_WINDOW, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsAccel ), NULL, this );
+	m_accelCalibrationPlot->Connect( wxEVT_MOUSEWHEEL, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsAccel ), NULL, this );
+	m_accelCalibrationPlot->Connect( wxEVT_PAINT, wxPaintEventHandler( CalibrationDialogBase::OnPaintAccelPlot ), NULL, this );
 	m_cbAccelCalibrationLocked->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnCalibrationLocked ), NULL, this );
 	m_button1711->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnAboutCalibrationLocked ), NULL, this );
+	m_compassCalibrationPlot->Connect( wxEVT_LEFT_DOWN, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsCompass ), NULL, this );
+	m_compassCalibrationPlot->Connect( wxEVT_LEFT_UP, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsCompass ), NULL, this );
+	m_compassCalibrationPlot->Connect( wxEVT_MIDDLE_DOWN, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsCompass ), NULL, this );
+	m_compassCalibrationPlot->Connect( wxEVT_MIDDLE_UP, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsCompass ), NULL, this );
+	m_compassCalibrationPlot->Connect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsCompass ), NULL, this );
+	m_compassCalibrationPlot->Connect( wxEVT_RIGHT_UP, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsCompass ), NULL, this );
+	m_compassCalibrationPlot->Connect( wxEVT_AUX1_DOWN, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsCompass ), NULL, this );
+	m_compassCalibrationPlot->Connect( wxEVT_AUX1_UP, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsCompass ), NULL, this );
+	m_compassCalibrationPlot->Connect( wxEVT_AUX2_DOWN, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsCompass ), NULL, this );
+	m_compassCalibrationPlot->Connect( wxEVT_AUX1_UP, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsCompass ), NULL, this );
+	m_compassCalibrationPlot->Connect( wxEVT_MOTION, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsCompass ), NULL, this );
+	m_compassCalibrationPlot->Connect( wxEVT_LEFT_DCLICK, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsCompass ), NULL, this );
+	m_compassCalibrationPlot->Connect( wxEVT_MIDDLE_DCLICK, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsCompass ), NULL, this );
+	m_compassCalibrationPlot->Connect( wxEVT_RIGHT_DCLICK, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsCompass ), NULL, this );
+	m_compassCalibrationPlot->Connect( wxEVT_AUX1_DCLICK, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsCompass ), NULL, this );
+	m_compassCalibrationPlot->Connect( wxEVT_AUX2_DCLICK, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsCompass ), NULL, this );
+	m_compassCalibrationPlot->Connect( wxEVT_LEAVE_WINDOW, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsCompass ), NULL, this );
+	m_compassCalibrationPlot->Connect( wxEVT_ENTER_WINDOW, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsCompass ), NULL, this );
+	m_compassCalibrationPlot->Connect( wxEVT_MOUSEWHEEL, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsCompass ), NULL, this );
+	m_compassCalibrationPlot->Connect( wxEVT_PAINT, wxPaintEventHandler( CalibrationDialogBase::OnPaintCompassPlot ), NULL, this );
 	m_cbCompassCalibrationLocked->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnCalibrationLocked ), NULL, this );
 	m_button171->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnAboutCalibrationLocked ), NULL, this );
 	m_bLevel->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnLevel ), NULL, this );
@@ -1062,8 +1165,48 @@ CalibrationDialogBase::~CalibrationDialogBase()
 {
 	// Disconnect Events
 	this->Disconnect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( CalibrationDialogBase::OnClose ) );
+	m_accelCalibrationPlot->Disconnect( wxEVT_LEFT_DOWN, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsAccel ), NULL, this );
+	m_accelCalibrationPlot->Disconnect( wxEVT_LEFT_UP, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsAccel ), NULL, this );
+	m_accelCalibrationPlot->Disconnect( wxEVT_MIDDLE_DOWN, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsAccel ), NULL, this );
+	m_accelCalibrationPlot->Disconnect( wxEVT_MIDDLE_UP, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsAccel ), NULL, this );
+	m_accelCalibrationPlot->Disconnect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsAccel ), NULL, this );
+	m_accelCalibrationPlot->Disconnect( wxEVT_RIGHT_UP, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsAccel ), NULL, this );
+	m_accelCalibrationPlot->Disconnect( wxEVT_AUX1_DOWN, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsAccel ), NULL, this );
+	m_accelCalibrationPlot->Disconnect( wxEVT_AUX1_UP, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsAccel ), NULL, this );
+	m_accelCalibrationPlot->Disconnect( wxEVT_AUX2_DOWN, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsAccel ), NULL, this );
+	m_accelCalibrationPlot->Disconnect( wxEVT_AUX1_UP, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsAccel ), NULL, this );
+	m_accelCalibrationPlot->Disconnect( wxEVT_MOTION, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsAccel ), NULL, this );
+	m_accelCalibrationPlot->Disconnect( wxEVT_LEFT_DCLICK, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsAccel ), NULL, this );
+	m_accelCalibrationPlot->Disconnect( wxEVT_MIDDLE_DCLICK, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsAccel ), NULL, this );
+	m_accelCalibrationPlot->Disconnect( wxEVT_RIGHT_DCLICK, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsAccel ), NULL, this );
+	m_accelCalibrationPlot->Disconnect( wxEVT_AUX1_DCLICK, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsAccel ), NULL, this );
+	m_accelCalibrationPlot->Disconnect( wxEVT_AUX2_DCLICK, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsAccel ), NULL, this );
+	m_accelCalibrationPlot->Disconnect( wxEVT_LEAVE_WINDOW, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsAccel ), NULL, this );
+	m_accelCalibrationPlot->Disconnect( wxEVT_ENTER_WINDOW, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsAccel ), NULL, this );
+	m_accelCalibrationPlot->Disconnect( wxEVT_MOUSEWHEEL, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsAccel ), NULL, this );
+	m_accelCalibrationPlot->Disconnect( wxEVT_PAINT, wxPaintEventHandler( CalibrationDialogBase::OnPaintAccelPlot ), NULL, this );
 	m_cbAccelCalibrationLocked->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnCalibrationLocked ), NULL, this );
 	m_button1711->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnAboutCalibrationLocked ), NULL, this );
+	m_compassCalibrationPlot->Disconnect( wxEVT_LEFT_DOWN, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsCompass ), NULL, this );
+	m_compassCalibrationPlot->Disconnect( wxEVT_LEFT_UP, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsCompass ), NULL, this );
+	m_compassCalibrationPlot->Disconnect( wxEVT_MIDDLE_DOWN, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsCompass ), NULL, this );
+	m_compassCalibrationPlot->Disconnect( wxEVT_MIDDLE_UP, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsCompass ), NULL, this );
+	m_compassCalibrationPlot->Disconnect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsCompass ), NULL, this );
+	m_compassCalibrationPlot->Disconnect( wxEVT_RIGHT_UP, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsCompass ), NULL, this );
+	m_compassCalibrationPlot->Disconnect( wxEVT_AUX1_DOWN, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsCompass ), NULL, this );
+	m_compassCalibrationPlot->Disconnect( wxEVT_AUX1_UP, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsCompass ), NULL, this );
+	m_compassCalibrationPlot->Disconnect( wxEVT_AUX2_DOWN, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsCompass ), NULL, this );
+	m_compassCalibrationPlot->Disconnect( wxEVT_AUX1_UP, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsCompass ), NULL, this );
+	m_compassCalibrationPlot->Disconnect( wxEVT_MOTION, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsCompass ), NULL, this );
+	m_compassCalibrationPlot->Disconnect( wxEVT_LEFT_DCLICK, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsCompass ), NULL, this );
+	m_compassCalibrationPlot->Disconnect( wxEVT_MIDDLE_DCLICK, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsCompass ), NULL, this );
+	m_compassCalibrationPlot->Disconnect( wxEVT_RIGHT_DCLICK, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsCompass ), NULL, this );
+	m_compassCalibrationPlot->Disconnect( wxEVT_AUX1_DCLICK, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsCompass ), NULL, this );
+	m_compassCalibrationPlot->Disconnect( wxEVT_AUX2_DCLICK, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsCompass ), NULL, this );
+	m_compassCalibrationPlot->Disconnect( wxEVT_LEAVE_WINDOW, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsCompass ), NULL, this );
+	m_compassCalibrationPlot->Disconnect( wxEVT_ENTER_WINDOW, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsCompass ), NULL, this );
+	m_compassCalibrationPlot->Disconnect( wxEVT_MOUSEWHEEL, wxMouseEventHandler( CalibrationDialogBase::OnMouseEventsCompass ), NULL, this );
+	m_compassCalibrationPlot->Disconnect( wxEVT_PAINT, wxPaintEventHandler( CalibrationDialogBase::OnPaintCompassPlot ), NULL, this );
 	m_cbCompassCalibrationLocked->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnCalibrationLocked ), NULL, this );
 	m_button171->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnAboutCalibrationLocked ), NULL, this );
 	m_bLevel->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnLevel ), NULL, this );

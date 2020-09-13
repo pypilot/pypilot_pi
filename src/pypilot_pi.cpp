@@ -468,7 +468,7 @@ void pypilot_pi::OnConnected()
     UpdateWatchlist();
     SetToolbarIcon();
     m_lastMessage = wxDateTime::Now();
-    m_Timer.Start(400);
+    m_Timer.Start(100); // 400 ?
 }
 
 void pypilot_pi::OnDisconnected()

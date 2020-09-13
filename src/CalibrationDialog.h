@@ -40,6 +40,10 @@ public:
     std::list<std::string> &GetWatchlist();
 
 private:
+    void OnPaintAccelPlot( wxPaintEvent& event ) { m_accelCalibrationPlot->OnPaint(); }
+    void OnPaintCompassPlot( wxPaintEvent& event ) { m_compassCalibrationPlot->OnPaint(); }
+    void OnMouseEventsAccel( wxMouseEvent& event );
+    void OnMouseEventsCompass( wxMouseEvent& event );
     void OnCalibrationLocked( wxCommandEvent& event );
     void OnAboutCalibrationLocked( wxCommandEvent& event );
     void OnpypilotClient( wxCommandEvent& event );
