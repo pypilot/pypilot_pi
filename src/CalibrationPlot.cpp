@@ -73,7 +73,7 @@ void RotateAfter(float ang, float x, float y, float z)
 void rotate_mouse(float dx, float dy)
 {
     if(dx || dy)
-        RotateAfter(powf(dx*dx + dy*dy, .2), dy, dx, 0);
+        RotateAfter(powf(dx*dx + dy*dy, .2f), dy, dx, 0);
 }
 
 int attribs[] =  {WX_GL_RGBA, WX_GL_DOUBLEBUFFER, WX_GL_DEPTH_SIZE, 16, WX_GL_STENCIL_SIZE, 8, 0};
@@ -82,7 +82,7 @@ CalibrationPlot::CalibrationPlot(wxWindow *parent, wxString name)
       m_glContext(this),
       m_name(name),
       m_userscale(.5),
-      m_cal({0, 0, 0, 1, 0})
+      m_cal{0, 0, 0, 1, 0}
 {
 
     std::vector<point> points;
@@ -165,7 +165,7 @@ void CalibrationPlot::OnPaint()
     glLoadIdentity();
 
     float ar = float(w) / float(h);
-    float fac = .05;
+    float fac = .05f;
     glFrustum( -fac*ar, fac*ar, -fac, fac, .1, 15 );
     glMatrixMode(GL_MODELVIEW);
 
@@ -176,7 +176,7 @@ void CalibrationPlot::OnPaint()
 
     float s = m_userscale;
     if(m_name == "compass")
-        s*=.016;
+        s*=.016f;
     glScalef(s, s, s);
     TranslateAfter( 0, 0, -1 );
 
@@ -187,7 +187,7 @@ void CalibrationPlot::OnPaint()
     //down = quaternion.rotvecquat([0, 0, 1], quaternion.conjugate(q))
     //glRotatef(-math.degrees(quaternion.angle(q)), *q[1:])
 
-    glColor3f(0, .3, .8);    
+    glColor3f(0.0f, .3f, .8f);
     glPointSize(1);
     glPushMatrix();
     s = m_cal[3];
@@ -243,11 +243,11 @@ void CalibrationPlot::OnMouseEvents( wxMouseEvent& event )
     float rotation = event.GetWheelRotation() / 60.0;
     if(rotation) {
         while(rotation > 0 && m_userscale < 1) {
-            m_userscale /= .9;
+            m_userscale /= .9f;
             rotation--;
         }
         while(rotation < 0 && m_userscale > .1)  {
-            m_userscale *= .9;
+            m_userscale *= .9f;
             rotation++;
         }
         Refresh();
