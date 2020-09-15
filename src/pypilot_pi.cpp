@@ -188,12 +188,12 @@ wxString pypilot_pi::GetLongDescription()
 {
     return _(PLUGIN_LONG_DESCRIPTION);
 
-//    return _("Control the free software autopilot pypilot.\n\
+/*    return _("Control the free software autopilot pypilot.\n\
 See http://pypilot.org for more details.\n\n\
 The plugin connects to pypilot directly implementing a control\n\
 interface to configure, calibrate and command pypilot from opencpn.\n\n\
 For more control and tuning route-following logic,\n\
-consider the autopilot route plugin.");
+consider the autopilot route plugin."); */
 }
 
 int pypilot_pi::GetToolbarToolCount(void)

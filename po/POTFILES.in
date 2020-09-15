@@ -1,0 +1,11 @@
+src/pypilot_pi.cpp
+src/pypilot_client.cpp
+src/pypilotDialog.cpp
+src/GainsDialog.cpp
+src/ConfigurationDialog.cpp
+src/StatisticsDialog.cpp
+src/CalibrationDialog.cpp
+src/CalibrationPlot.cpp
+src/pypilotClientDialog.cpp
+src/pypilotUI.cpp
+src/icons.cpp
