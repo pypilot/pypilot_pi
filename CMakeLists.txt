@@ -43,7 +43,7 @@ set(LONG_DESCRIPTION "Control the free software autopilot pypilot. See http://py
 set(VERSION_MAJOR "0")
 set(VERSION_MINOR "22")
 set(VERSION_PATCH "4")
-set(VERSION_TWEAK "1")
+set(VERSION_TWEAK "2")
 set(VERSION_DATE "09/15/2020")
 set(OCPN_MIN_VERSION "ov50")
 set(OCPN_API_VERSION_MAJOR "1")
@@ -93,7 +93,7 @@ set(OpenGL_GL_PREFERENCE "LEGACY")
 # Don't use local version of GLU library
 set(USE_LOCAL_GLU FALSE)
 
-option(USE_GL "Enable OpenGL support" OFF)
+option(USE_GL "Enable OpenGL support" ON) #OFF= GL_BLEND errors etc.
 message(STATUS "${CMLOC}USE_GL: ${USE_GL}")
 
 if("${CMAKE_BUILD_TYPE}" STREQUAL "")
@@ -154,22 +154,23 @@ SET(SRCS
             src/pypilotClientDialog.cpp
             src/pypilotUI.cpp
             src/icons.cpp
-			api-116/
+            api-16/ocpn_plugin.h
 	)
 
 
 # set(EXTSRC)
 # set(EXTINCLUDE extinclude/nlohmann/json.hpp extinclude/ODAPI.h)
 #set(LIBSSRC libs/wxJSON/src/jsonreader.cpp libs/wxJSON/src/jsonval.cpp libs/wxJSON/src/jsonwriter.cpp)
-set(LIBHDRS
+set(HDRS
     libs/GL/gl.h
     libs/GL/gl_private.h
     libs/GL/glext.h
     libs/GL/glu.h
-    libs/wx/include/wx/json_defs.h
-    libs/wx/include/wx/jsonreader.h
-    libs/wx/include/wx/jsonval.h
-    libs/wx/include/wx/jsonwriter.h)
+#    libs/wx/include/wx/json_defs.h
+#    libs/wx/include/wx/jsonreader.h
+#    libs/wx/include/wx/jsonval.h
+#    libs/wx/include/wx/jsonwriter.h
+	)
 
 add_definitions(-DPLUGIN_USE_SVG)
 
@@ -198,8 +199,7 @@ add_definitions(-DPLUGIN_USE_SVG)
 # include_directories(BEFORE ${PROJECT_SOURCE_DIR}/extinclude)
 # include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/wx/include)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/)
-include_directories(BEFORE ${PROJECT_SOURCE_DIR}/api-16)
-
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/api-16/)
 
 ## These are NOT used in Testplugin, used for other plugins
 ##=======================================
@@ -209,14 +209,13 @@ include("PluginJSON")
 include("PluginGL")
 ##=======================================
 
+
 ##
 ## Statement below is required to collect all the set( headers and SRCS  - Adjust as required
 ## This add_library  can be used in conditionals below.
-##
-## SET(EXTSRC  ${EXTSRC}   etc   Can be in an if statement as below
-##
+####
 ##==========================================================================
-add_library(${PACKAGE_NAME} SHARED ${SRCS} ${HDRS} ${LIBSSRC}  ${SRC_JSON} ${SRC_PLUGINGL})
+add_library(${PACKAGE_NAME} SHARED ${SRCS} ${HDRS} ${SRC_JSON} ${SRC_PLUGINGL})
 ##==========================================================================
 #add_library(${PACKAGE_NAME} SHARED ${SRCS_PYPILOT} ${HDRS} ${EXTSRC} ${LIBSSRC}  ${SRC_JSON} ${SRC_PLUGINGL})
 # add_library(${PACKAGE_NAME} SHARED ${SRC_PYPILOT} ${SRC_JSON} ${SRC_PLUGINGL})
@@ -245,6 +244,7 @@ add_definitions(-DTIXML_USE_STL)
 #        endif(NOT (${elfedit} STREQUAL "elfedit-NOTFOUND"))
 #    endif(PI_JSON_SCHEMA_VALIDATOR)
 #endif(UNIX AND NOT APPLE AND NOT QT_ANDROID)
+
 
 
 ##
