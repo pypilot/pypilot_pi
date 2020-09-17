@@ -1,0 +1,15 @@
+src/pypilot_pi.cpp
+src/pypilot_client.cpp
+src/pypilotDialog.cpp
+src/GainsDialog.cpp
+src/ConfigurationDialog.cpp
+src/StatisticsDialog.cpp
+src/CalibrationDialog.cpp
+src/pypilotClientDialog.cpp
+src/pypilotUI.cpp
+src/icons.cpp
+api-16/ocpn_plugin.h
+libs/GL/gl.h
+libs/GL/gl_private.h
+libs/GL/glext.h
+libs/GL/glu.h
