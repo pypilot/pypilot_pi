@@ -141,6 +141,7 @@ public:
 
       double m_declination;
       wxDateTime m_declinationTime;
+      wxString m_mode;
       
 private:
       void SetNMEASentence(wxString &sentence);
@@ -169,8 +170,6 @@ private:
       wxDateTime m_lastMessage;
 
       bool m_enabled;
-      wxString m_mode;
-
       
       wxSocketClient      m_nmeasocket;
       std::string         m_nmeasock_buffer;

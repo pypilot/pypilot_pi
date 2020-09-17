@@ -1214,7 +1214,7 @@ void piDC::DrawCircle( wxCoord x, wxCoord y, wxCoord radius )
     coords[4] = x - radius;  coords[5] = y - radius;
     coords[6] = x + radius;  coords[7] = y - radius;
     
-    glUseProgram( pi_circle_filled_shader_program );
+   glUseProgram( pi_circle_filled_shader_program );
         
     // Get pointers to the attributes in the program.
     GLint mPosAttrib = glGetAttribLocation( pi_circle_filled_shader_program, "aPos" );

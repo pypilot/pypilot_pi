@@ -5,7 +5,7 @@
  * Author:   Sean D'Epagnier
  *
  ***************************************************************************
- *   Copyright (C) 2018 by Sean D'Epagnier                                 *
+ *   Copyright (C) 2020 by Sean D'Epagnier                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -39,7 +39,7 @@ wxWindow *g_Window;
 
 pypilotDialog::pypilotDialog( pypilot_pi &_pypilot_pi, wxWindow* parent)
     : pypilotDialogBase( parent ),
-      m_bAPHaveGPS(false), m_bAPHaveWind(false),
+      m_bAPHaveGPS(false), m_bAPHaveWind(false), m_bAPHaveRudder(false),
       m_pypilot_pi(_pypilot_pi)
 {
 #ifdef __OCPN__ANDROID__
@@ -124,7 +124,6 @@ void pypilotDialog::OnEvtPanGesture( wxQT_PanGestureEvent &event)
         default:
             break;
     }
-    
 }
 #endif
 
@@ -134,8 +133,8 @@ void pypilotDialog::Disconnected()
     m_fgControlAnglesNeg->Show(false);
     m_fgControlManual->Show(false);
 
-    wxSize s(100,100);
-    SetMinSize(s);
+//    wxSize s(300, 100);
+//    SetMinSize(s);
     Fit();
 }
 
@@ -146,11 +145,9 @@ void pypilotDialog::Receive(std::string name, Json::Value &value)
     else if(name == "ap.heading")
         m_stHeading->SetLabel(wxString::Format("%.1f", ApplyTrueNorth(value.asDouble())));
     else if(name == "ap.mode") {
-        m_sAPMode = value.asString();
-        m_cMode->SetStringSelection(m_sAPMode);
         RebuildControlAngles();
 
-        SetAPColor(m_sAPMode);
+        SetAPColor(m_pypilot_pi.m_mode);
     } else if(name == "ap.enabled") {
         bool enabled = value.asBool();
         m_bAP->SetValue(enabled);
@@ -160,9 +157,10 @@ void pypilotDialog::Receive(std::string name, Json::Value &value)
         m_fgControlManual->Show(!enabled);
 
         SetAPColor(m_cMode->GetStringSelection());
+        ShowCenter();
 
-        wxSize s(100, 100);
-        SetMinSize(s);
+//        wxSize s(100, 100);
+//        SetMinSize(s);
         Fit();
     } else if(name == "ap.tack.state") {
         m_stTackState->SetLabel(value.asString());
@@ -180,6 +178,7 @@ void pypilotDialog::Receive(std::string name, Json::Value &value)
         UpdateModes();
     } else if(name == "wind.source") {
         m_bAPHaveWind = value.asString() != "none";
+        //m_cMode->SetStringSelection(m_pypilot_pi.m_mode);
         UpdateModes();
     } else if(name == "servo.state") {
         if(m_servoController != "none")
@@ -194,17 +193,9 @@ void pypilotDialog::Receive(std::string name, Json::Value &value)
         m_servoController = value.asString();
     } else if(name == "rudder.angle") {
         wxString str = value.asString();
-        bool show_center=!m_bAP->GetValue();
-
-        if(str == "false" || !m_pypilot_pi.m_ConfigurationDialog->m_cbCenterButton->GetValue()) {
-            str = "";
-            show_center=false;
-        }
-
-        if(m_bCenter->IsShown() != show_center)
-            m_bCenter->Show(show_center);
-        
+        m_bAPHaveRudder = str != "false";        
         m_stRudder->SetLabel(wxString::Format("%.1f", value.asDouble()));
+        ShowCenter();
     }
 
     if(!wxIsNaN(m_HeadingCommand) &&
@@ -212,13 +203,6 @@ void pypilotDialog::Receive(std::string name, Json::Value &value)
         m_stCommand->SetLabel(wxString::Format("%.1f", m_HeadingCommand));
         m_HeadingCommand = NAN;
     }
-
-        wxFileConfig *pConf = GetOCPNConfigObject();
-        pConf->SetPath ( _T( "/Settings/pypilot" ) );
-        bool show_tacking  = (bool)pConf->Read ( _T ( "TackingButton" ), 1);
-    //bool show_tacking = m_pypilot_pi.m_ConfigurationDialog->m_cbTackingButton->GetValue();
-    if(m_bTack->IsShown() != show_tacking)
-        m_fgSizerTacking->Show(show_tacking);
 }
 
 void pypilotDialog::SetAPColor(wxString mode)
@@ -258,6 +242,8 @@ std::map<std::string, double> &pypilotDialog::GetWatchlist()
 
 void pypilotDialog::RebuildControlAngles()
 {
+    m_cMode->SetStringSelection(m_pypilot_pi.m_mode);
+
     bool shown = m_fgControlAnglesPos->AreAnyItemsShown();
 
     wxFileConfig *pConf = GetOCPNConfigObject();
@@ -308,6 +294,10 @@ True North mode not possible without declination.\n\nIs the wmm plugin enabled a
         m_bTrueNorthMode = false;
     }
 
+    bool show_tacking  = (bool)pConf->Read ( _T ( "TackingButton" ), 1);
+    if(m_bTack->IsShown() != show_tacking)
+        m_fgSizerTacking->Show(show_tacking);
+
     Fit();
 }
 
@@ -315,7 +305,7 @@ void pypilotDialog::Fit()
 {
     GetSizer()->Fit(this);
     pypilotDialogBase::Fit();
-    
+
     // hack to rearrange
     wxSize s = GetSize();
     s.x+=1;
@@ -409,7 +399,7 @@ void pypilotDialog::UpdateModes()
         m_cMode->Append("wind");
     if(m_bAPHaveGPS && m_bAPHaveWind)
         m_cMode->Append("true wind");
-    m_cMode->SetStringSelection(m_sAPMode);
+    m_cMode->SetStringSelection(m_pypilot_pi.m_mode);
 }
 
 void pypilotDialog::Manual(double amount)
@@ -434,9 +424,19 @@ void pypilotDialog::OnManualTimer( wxTimerEvent & )
     m_pypilot_pi.m_client.set("servo.command", m_ManualCommand);
 }
 
+void pypilotDialog::ShowCenter()
+{
+    bool show_center=!m_bAP->GetValue();
+    if(!m_bAPHaveRudder || !m_pypilot_pi.m_ConfigurationDialog->m_cbCenterButton->GetValue())
+        show_center=false;
+
+    if(m_bCenter->IsShown() != show_center)
+        m_bCenter->Show(show_center);
+}
+
 void pypilotDialog::AddButton(int angle, wxSizer *sizer)
 {
-    if(m_sAPMode.Contains("wind"))
+    if(m_pypilot_pi.m_mode.Contains("wind"))
         angle = -angle;
 
     wxButton *button = new wxButton( this, wxID_ANY, wxString::Format("%i", angle));

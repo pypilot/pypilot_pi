@@ -188,12 +188,13 @@ wxString pypilot_pi::GetLongDescription()
 {
     return _(PLUGIN_LONG_DESCRIPTION);
 
-/*    return _("Control the free software autopilot pypilot.\n\
+/*    return _("Control the free software autopilot pypilot.\n  \
 See http://pypilot.org for more details.\n\n\
 The plugin connects to pypilot directly implementing a control\n\
 interface to configure, calibrate and command pypilot from opencpn.\n\n\
 For more control and tuning route-following logic,\n\
 consider the autopilot route plugin."); */
+
 }
 
 int pypilot_pi::GetToolbarToolCount(void)
@@ -278,7 +279,10 @@ static void MergeWatchlist(std::map<std::string, double> &watchlist, std::list<s
 static void MergeWatchlist(std::map<std::string, double> &watchlist, std::map<std::string, double> &list)
 {
     for(std::map<std::string, double>::iterator i = list.begin(); i != list.end(); i++)
-        watchlist[i->first] = i->second;
+        if(watchlist.find(i->first) == watchlist.end())
+            watchlist[i->first] = i->second;
+        else
+            watchlist[i->first] = fmin(watchlist[i->first], i->second);
 }
 
 void pypilot_pi::UpdateWatchlist()
@@ -309,7 +313,7 @@ void pypilot_pi::UpdateWatchlist()
         static const char *wl[] = {"ap.heading", "ap.heading_command", 0};
         MergeWatchlist(watchlist, wl);
         if(m_mode == "wind" || m_mode == "true wind")
-            watchlist["imu.heading"] = true;
+            watchlist["imu.heading"] = 0.5;
     } else
         watchlist["imu.uptime"] = true; // use as heartbeat to time out connection
 
@@ -344,6 +348,7 @@ void pypilot_pi::OnToolbarToolCallback(int id)
 
     bool show = !m_pypilotDialog->IsShown();
     m_pypilotDialog->Show(show);
+    
     if(!show) {
         m_GainsDialog->Show(false);
         m_ConfigurationDialog->Show(false);
@@ -441,18 +446,16 @@ void pypilot_pi::OnTimer( wxTimerEvent & )
         //wxString value = data["value"].AsString();
         //printf("msg %s %s\n", name.mb_str().data(), value.mb_str().data());
 
-         try
-         {
-        if(m_pypilotDialog) {
-            m_pypilotDialog->Receive(name, val);
-            m_GainsDialog->Receive(name, val);
-            m_StatisticsDialog->Receive(name, val);
-            m_CalibrationDialog->Receive(name, val);
-            m_pypilotClientDialog->Receive(name, val);
-        }
-        Receive(name, val);
-         }     catch(std::exception e)
-         {
+         try {
+             Receive(name, val);
+             if(m_pypilotDialog) {
+                 m_pypilotDialog->Receive(name, val);
+                 m_GainsDialog->Receive(name, val);
+                 m_StatisticsDialog->Receive(name, val);
+                 m_CalibrationDialog->Receive(name, val);
+                 m_pypilotClientDialog->Receive(name, val);
+             }
+         } catch(std::exception e) {
              printf("exception!!! %s: %s\n", name.c_str(), e.what());
          }
 
@@ -470,7 +473,7 @@ void pypilot_pi::OnConnected()
     UpdateWatchlist();
     SetToolbarIcon();
     m_lastMessage = wxDateTime::Now();
-    m_Timer.Start(400);
+    m_Timer.Start(100); // 400 ?
 }
 
 void pypilot_pi::OnDisconnected()

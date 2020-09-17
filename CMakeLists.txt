@@ -93,7 +93,7 @@ set(OpenGL_GL_PREFERENCE "LEGACY")
 # Don't use local version of GLU library
 set(USE_LOCAL_GLU FALSE)
 
-option(USE_GL "Enable OpenGL support" ON) #OFF= GL_BLEND errors etc.
+option(USE_GL "Enable OpenGL support" ON)
 message(STATUS "${CMLOC}USE_GL: ${USE_GL}")
 
 if("${CMAKE_BUILD_TYPE}" STREQUAL "")
@@ -151,6 +151,7 @@ SET(SRCS
             src/ConfigurationDialog.cpp
             src/StatisticsDialog.cpp
             src/CalibrationDialog.cpp
+            src/CalibrationPlot.cpp
             src/pypilotClientDialog.cpp
             src/pypilotUI.cpp
             src/icons.cpp
@@ -161,92 +162,45 @@ SET(SRCS
 # set(EXTSRC)
 # set(EXTINCLUDE extinclude/nlohmann/json.hpp extinclude/ODAPI.h)
 #set(LIBSSRC libs/wxJSON/src/jsonreader.cpp libs/wxJSON/src/jsonval.cpp libs/wxJSON/src/jsonwriter.cpp)
-set(HDRS
+set(LIBHDRS
     libs/GL/gl.h
     libs/GL/gl_private.h
     libs/GL/glext.h
     libs/GL/glu.h
-#    libs/wx/include/wx/json_defs.h
-#    libs/wx/include/wx/jsonreader.h
-#    libs/wx/include/wx/jsonval.h
-#    libs/wx/include/wx/jsonwriter.h
-	)
+)
 
 add_definitions(-DPLUGIN_USE_SVG)
-
-#if(APPLE)
-#    option(PI_JSON_SCHEMA_VALIDATOR "Use JSON Schema validator" OFF)
-#else(APPLE)
-#    option(PI_JSON_SCHEMA_VALIDATOR "Use JSON Schema validator" ON)
-#endif(APPLE)
-
-#if(PI_JSON_SCHEMA_VALIDATOR)
-#    message(STATUS "${CMLOC}Using JSON Schema validation - warning this changes the 'flavour' of the executable and it may not be compatible with OpenCPN")
-#    add_definitions(-DPI_JSON_SCHEMA_VALIDATOR)
-#    message(STATUS "${CMLOC}Adding JSON Schema validation")
-
-#    set(EXTSRC ${EXTSRC} extsrc/json-schema-validator/json-schema-draft7.json.cpp extsrc/json-schema-validator/json-uri.cpp extsrc/json-schema-validator/json-validator.cpp)
-#    set(EXTINCLUDE ${EXTINCLUDE} extinclude/nlohmann/json.hpp extinclude/json-schema-validator/json-schema.hpp)
-#    include_directories(BEFORE ${PROJECT_SOURCE_DIR}/extinclude/json-schema-validator)
-#else(PI_JSON_SCHEMA_VALIDATOR)
-#    message(STATUS "${CMLOC}Not using JSON Schema validation - warning invalid JSON 'may' cause unexpected crashes")
-#endif(PI_JSON_SCHEMA_VALIDATOR)
 
 ##
 # Modify/configure 'Include' Directories below for the Plugin
 ##
 #include_directories(BEFORE ${PROJECT_SOURCE_DIR}/ocpninclude)
-# include_directories(BEFORE ${PROJECT_SOURCE_DIR}/extinclude)
-# include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/wx/include)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/)
-include_directories(BEFORE ${PROJECT_SOURCE_DIR}/api-16/)
-
-## These are NOT used in Testplugin, used for other plugins
-##=======================================
-#include("PluginXML")
-#include("cmake/PluginNMEA.cmake")
-include("PluginJSON")
-include("PluginGL")
-##=======================================
-
+#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/ocpninclude/wxcurl)
+#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/ocpninclude/wxcurl/include)
+#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/ocpnsrc/lz4)
+#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/ocpnsrc/bitmaps)
 
 ##
 ## Statement below is required to collect all the set( headers and SRCS  - Adjust as required
 ## This add_library  can be used in conditionals below.
 ####
 ##==========================================================================
-add_library(${PACKAGE_NAME} SHARED ${SRCS} ${HDRS} ${SRC_JSON} ${SRC_PLUGINGL})
+
+include("PluginJSON")
+include("PluginGL")
+
+add_library(${PACKAGE_NAME} SHARED ${SRCS} ${HDRS} ${LIBSSRC}  ${SRC_JSON} ${SRC_PLUGINGL})
+
 ##==========================================================================
 #add_library(${PACKAGE_NAME} SHARED ${SRCS_PYPILOT} ${HDRS} ${EXTSRC} ${LIBSSRC}  ${SRC_JSON} ${SRC_PLUGINGL})
 # add_library(${PACKAGE_NAME} SHARED ${SRC_PYPILOT} ${SRC_JSON} ${SRC_PLUGINGL})
 
 add_definitions(-DTIXML_USE_STL)
 
-# Every plugin that uses JSON for passing messages should use a validator. The validator  allows the system to ignore non-conformant messages. 
-
-#if(UNIX AND NOT APPLE AND NOT QT_ANDROID)
-#    if(PI_JSON_SCHEMA_VALIDATOR)
-#        # Change OS/ABI to be UNIX - System V to make it run with OCPN
-#        set(lib_name lib${PACKAGE_NAME}.so)
-#        message(STATUS "${CMLOC}lib-name: ${lib_name}")
-#        find_file(elfedit elfedit)
-#        if(NOT (${elfedit} STREQUAL "elfedit-NOTFOUND"))
-#            message(STATUS "${CMLOC}Will ensure OS/ABI is set to 0 to match OCPN")
-#            add_custom_command(
-#                TARGET ${PACKAGE_NAME}
-#                POST_BUILD
-#                WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-#                DEPENDS ${PACKAGE_NAME}
-#                COMMENT " Running post build action on ${lib_name}."
-#                COMMAND sh -c 'elfedit --input-osabi=Linux --output-osabi=none ${lib_name} || (echo 0) ')
-#        else(NOT (${elfedit} STREQUAL "elfedit-NOTFOUND"))
-#            message(STATUS "${CMLOC}Cannot correct OS/ABI to match OCPN if it is generated incorrectly. Package binutils needed")
-#        endif(NOT (${elfedit} STREQUAL "elfedit-NOTFOUND"))
-#    endif(PI_JSON_SCHEMA_VALIDATOR)
-#endif(UNIX AND NOT APPLE AND NOT QT_ANDROID)
-
-
-
+## These are NOT used in Testplugin, used for other plugins
+##=======================================
+##=======================================
 ##
 ## ----- Change above to match project requirements ----- ##
 ## ----- do not change next section - needed to configure build process ----- ##

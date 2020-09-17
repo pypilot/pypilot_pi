@@ -72,11 +72,11 @@ private:
     void UpdateModes();
     void Manual(double amount);
     void OnManualTimer( wxTimerEvent & );
+    void ShowCenter();
 
     void AddButton(int angle, wxSizer *sizer);
 
-    bool m_bAPHaveGPS, m_bAPHaveWind;
-    wxString m_sAPMode;
+    bool m_bAPHaveGPS, m_bAPHaveWind, m_bAPHaveRudder;
     
     double ApplyTrueNorth(double value);
 

@@ -42,13 +42,20 @@ wxString ValueAsString(Json::Value &value)
     if(value.type() == Json::realValue)
         return wxString::Format("%.8g", value.asDouble());
     
-    if(value.type() != Json::arrayValue)
-        return value.asString();
+    if(value.type() != Json::arrayValue) {
+        std::string ret = value.asString();
+        return ret.substr(0, 32); // truncate to 32 characters
+    }
 
     std::string ret = "[";
     for(unsigned int i = 0; i<value.size(); i++) {
         if(i > 0)
             ret += ", ";
+        if(ret.size() > 28) {
+            ret = ret.substr(0, 28);
+            ret += "...";
+            break;
+        }
         ret += ValueAsString(value[i]);
     }
     ret += "]";

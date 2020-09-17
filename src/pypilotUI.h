@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Nov  2 2019)
+// C++ code generated with wxFormBuilder (version 3.9.0 Sep 12 2020)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO *NOT* EDIT THIS FILE!
@@ -10,8 +10,11 @@
 #include <wx/artprov.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/intl.h>
-#include <wx/string.h>
 #include <wx/tglbtn.h>
+#include <wx/string.h>
+#include <wx/bitmap.h>
+#include <wx/image.h>
+#include <wx/icon.h>
 #include <wx/gdicmn.h>
 #include <wx/font.h>
 #include <wx/colour.h>
@@ -19,9 +22,6 @@
 #include <wx/choice.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
-#include <wx/bitmap.h>
-#include <wx/image.h>
-#include <wx/icon.h>
 #include <wx/button.h>
 #include <wx/dialog.h>
 #include <wx/scrolwin.h>
@@ -30,6 +30,8 @@
 #include <wx/spinctrl.h>
 #include <wx/listbox.h>
 #include <wx/statbox.h>
+#include "CalibrationPlot.h"
+#include <wx/textctrl.h>
 #include <wx/panel.h>
 #include <wx/gauge.h>
 #include <wx/notebook.h>
@@ -92,7 +94,7 @@ class pypilotDialogBase : public wxDialog
 
 	public:
 
-		pypilotDialogBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("pypilot"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxCAPTION|wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxTAB_TRAVERSAL );
+		pypilotDialogBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("pypilot"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxCAPTION|wxDEFAULT_DIALOG_STYLE|wxTAB_TRAVERSAL );
 		~pypilotDialogBase();
 
 };
@@ -252,16 +254,23 @@ class StatisticsDialogBase : public wxDialog
 class CalibrationDialogBase : public wxDialog
 {
 	private:
+		wxFlexGridSizer* m_fgSizerAccel;
 
 	protected:
 		wxNotebook* m_notebook1;
 		wxPanel* m_panel1;
+		wxStaticText* m_staticText461;
+		CalibrationPlot* m_accelCalibrationPlot;
+		wxTextCtrl* m_tAccelCalibrationLog;
 		wxStaticText* m_stAccelCalibration;
 		wxStaticText* m_staticText48;
 		wxStaticText* m_stAccelCalibrationAge;
 		wxCheckBox* m_cbAccelCalibrationLocked;
 		wxButton* m_button1711;
 		wxPanel* m_panel2;
+		wxStaticText* m_staticText47;
+		CalibrationPlot* m_compassCalibrationPlot;
+		wxTextCtrl* m_tCompassCalibrationLog;
 		wxStaticText* m_stCompassCalibration;
 		wxStaticText* m_staticText30;
 		wxStaticText* m_stCompassCalibrationAge;
@@ -300,8 +309,12 @@ class CalibrationDialogBase : public wxDialog
 
 		// Virtual event handlers, overide them in your derived class
 		virtual void OnClose( wxCloseEvent& event ) { event.Skip(); }
+		virtual void OnMouseEventsAccel( wxMouseEvent& event ) { event.Skip(); }
+		virtual void OnPaintAccelPlot( wxPaintEvent& event ) { event.Skip(); }
 		virtual void OnCalibrationLocked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnAboutCalibrationLocked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnMouseEventsCompass( wxMouseEvent& event ) { event.Skip(); }
+		virtual void OnPaintCompassPlot( wxPaintEvent& event ) { event.Skip(); }
 		virtual void OnLevel( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnAboutLevel( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnHeadingOffset( wxSpinEvent& event ) { event.Skip(); }
@@ -318,7 +331,7 @@ class CalibrationDialogBase : public wxDialog
 
 	public:
 
-		CalibrationDialogBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("pypilot Calibration"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE );
+		CalibrationDialogBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("pypilot Calibration"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 800,600 ), long style = wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER );
 		~CalibrationDialogBase();
 
 };
