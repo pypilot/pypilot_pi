@@ -9,3 +9,4 @@ src/CalibrationPlot.cpp
 src/pypilotClientDialog.cpp
 src/pypilotUI.cpp
 src/icons.cpp
+api-16/ocpn_plugin.h
