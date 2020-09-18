@@ -2,8 +2,22 @@
 ## Author:      Sean D'Epagnier
 ## Copyright:   
 ## License:     GPLv3+
-##---------------------------------------------------------------------------
- # ---------------------------------------------------------------------------
+### *   This program is free software; you can redistribute it and/or modify  *
+## *   it under the terms of the GNU General Public License as published by  *
+## *   the Free Software Foundation; either version 2 of the License, or     *
+## *   (at your option) any later version.                                   *
+## *                                                                         *
+## *   This program is distributed in the hope that it will be useful,       *
+## *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+## *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+## *   GNU General Public License for more details.                          *
+## *                                                                         *
+## *   You should have received a copy of the GNU General Public License     *
+## *   along with this program; if not, write to the                         *
+## *   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx,                                       *
+## *   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                                       *
+## ***
+#-----------------------------------------------------------------------------
 # Frontend2 Author: Jon Gough  
 # Frontend2: v1.0.134.0
 # ---------------------------------------------------------------------------
@@ -43,8 +57,8 @@ set(LONG_DESCRIPTION "Control the free software autopilot pypilot. See http://py
 set(VERSION_MAJOR "0")
 set(VERSION_MINOR "22")
 set(VERSION_PATCH "4")
-set(VERSION_TWEAK "6")
-set(VERSION_DATE "09/17/2020")
+set(VERSION_TWEAK "7")
+set(VERSION_DATE "09/18/2020")
 set(OCPN_MIN_VERSION "ov50")
 set(OCPN_API_VERSION_MAJOR "1")
 set(OCPN_API_VERSION_MINOR "16")
@@ -125,8 +139,6 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 option(Plugin_CXX11 "Use c++11" OFF)
 
 #--- For Weatherfax insert Portaudio Section here  
-								 
-							   
 
 ##
 ## ----- Modify section above if there are special requirements for the plugin ----- ##
@@ -155,13 +167,8 @@ SET(SRCS
             src/pypilotClientDialog.cpp
             src/pypilotUI.cpp
             src/icons.cpp
-            api-16/ocpn_plugin.h
+            api-16/ocpn_plugin.h	
 	)
-
-
-# set(EXTSRC)
-# set(EXTINCLUDE extinclude/nlohmann/json.hpp extinclude/ODAPI.h)
-#set(LIBSSRC libs/wxJSON/src/jsonreader.cpp libs/wxJSON/src/jsonval.cpp libs/wxJSON/src/jsonwriter.cpp)
 
 #added for android
 set(LIBHDRS
@@ -176,12 +183,7 @@ add_definitions(-DPLUGIN_USE_SVG)
 ##
 # Modify/configure 'Include' Directories below for the Plugin
 ##
-#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/ocpninclude)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/)
-#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/ocpninclude/wxcurl)
-#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/ocpninclude/wxcurl/include)
-#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/ocpnsrc/lz4)
-#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/ocpnsrc/bitmaps)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/api-16)
 
 #needed only if glshim project is included.
@@ -189,27 +191,26 @@ if(QT_ANDROID)
   target_link_libraries(${PACKAGE_NAME}  GL_static)
 endif(QT_ANDROID)  
 
+## These are NOT used in Testplugin, used for other plugins
+##=======================================
+include("PluginJSON")
+include("PluginGL")
+#include("PluginNMEA") #not for pypilot
+##=======================================
 
 ##
 ## Statement below is required to collect all the set( headers and SRCS  - Adjust as required
 ## This add_library  can be used in conditionals below.
 ####
 ##==========================================================================
-
-include("PluginJSON")
-include("PluginGL")
-
 add_library(${PACKAGE_NAME} SHARED ${SRCS} ${HDRS} ${LIBSSRC}  ${SRC_JSON} ${SRC_PLUGINGL})
-
 ##==========================================================================
 #add_library(${PACKAGE_NAME} SHARED ${SRCS_PYPILOT} ${HDRS} ${EXTSRC} ${LIBSSRC}  ${SRC_JSON} ${SRC_PLUGINGL})
 # add_library(${PACKAGE_NAME} SHARED ${SRC_PYPILOT} ${SRC_JSON} ${SRC_PLUGINGL})
 
 add_definitions(-DTIXML_USE_STL)
 
-## These are NOT used in Testplugin, used for other plugins
-##=======================================
-##=======================================
+
 ##
 ## ----- Change above to match project requirements ----- ##
 ## ----- do not change next section - needed to configure build process ----- ##
