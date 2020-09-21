@@ -186,11 +186,6 @@ add_definitions(-DPLUGIN_USE_SVG)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/api-16)
 
-#needed only if glshim project is included.
-if(QT_ANDROID)
-  target_link_libraries(${PACKAGE_NAME}  GL_static)
-endif(QT_ANDROID)  
-
 ## These are NOT used in Testplugin, used for other plugins
 ##=======================================
 include("PluginJSON")
@@ -207,6 +202,11 @@ add_library(${PACKAGE_NAME} SHARED ${SRCS} ${HDRS} ${LIBSSRC}  ${SRC_JSON} ${SRC
 ##==========================================================================
 #add_library(${PACKAGE_NAME} SHARED ${SRCS_PYPILOT} ${HDRS} ${EXTSRC} ${LIBSSRC}  ${SRC_JSON} ${SRC_PLUGINGL})
 # add_library(${PACKAGE_NAME} SHARED ${SRC_PYPILOT} ${SRC_JSON} ${SRC_PLUGINGL})
+
+#needed only if glshim project is included.
+if(QT_ANDROID)
+  target_link_libraries(${PACKAGE_NAME}  GL_static)
+endif(QT_ANDROID)  
 
 add_definitions(-DTIXML_USE_STL)
 
