@@ -56,9 +56,9 @@ set(LONG_DESCRIPTION "Control the free software autopilot pypilot. See http://py
 
 set(VERSION_MAJOR "0")
 set(VERSION_MINOR "22")
-set(VERSION_PATCH "4")
-set(VERSION_TWEAK "7")
-set(VERSION_DATE "09/18/2020")
+set(VERSION_PATCH "5")
+set(VERSION_TWEAK "0")
+set(VERSION_DATE "09/23/2020")
 set(OCPN_MIN_VERSION "ov50")
 set(OCPN_API_VERSION_MAJOR "1")
 set(OCPN_API_VERSION_MINOR "16")
@@ -162,14 +162,19 @@ SET(SRCS
             src/GainsDialog.cpp
             src/ConfigurationDialog.cpp
             src/StatisticsDialog.cpp
-            src/CalibrationDialog.cpp
-            src/CalibrationPlot.cpp
             src/pypilotClientDialog.cpp
             src/pypilotUI.cpp
             src/icons.cpp
             api-16/ocpn_plugin.h	
 	)
+if(NOT QT_ANDROID)
+  SET(SRCS ${SRCS}
+     src/CalibrationDialog.cpp
+     src/CalibrationPlot.cpp
+     )
+endif(NOT QT_ANDROID)
 
+	
 #added for android
 set(LIBHDRS
     libs/GL/gl.h
@@ -185,11 +190,6 @@ add_definitions(-DPLUGIN_USE_SVG)
 ##
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/api-16)
-
-#needed only if glshim project is included.
-if(QT_ANDROID)
-  target_link_libraries(${PACKAGE_NAME}  GL_static)
-endif(QT_ANDROID)  
 
 ## These are NOT used in Testplugin, used for other plugins
 ##=======================================
@@ -207,6 +207,11 @@ add_library(${PACKAGE_NAME} SHARED ${SRCS} ${HDRS} ${LIBSSRC}  ${SRC_JSON} ${SRC
 ##==========================================================================
 #add_library(${PACKAGE_NAME} SHARED ${SRCS_PYPILOT} ${HDRS} ${EXTSRC} ${LIBSSRC}  ${SRC_JSON} ${SRC_PLUGINGL})
 # add_library(${PACKAGE_NAME} SHARED ${SRC_PYPILOT} ${SRC_JSON} ${SRC_PLUGINGL})
+
+#needed only if glshim project is included.
+if(QT_ANDROID)
+  target_link_libraries(${PACKAGE_NAME}  GL_static)
+endif(QT_ANDROID)  
 
 add_definitions(-DTIXML_USE_STL)
 
