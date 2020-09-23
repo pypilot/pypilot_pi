@@ -162,14 +162,19 @@ SET(SRCS
             src/GainsDialog.cpp
             src/ConfigurationDialog.cpp
             src/StatisticsDialog.cpp
-            src/CalibrationDialog.cpp
-            src/CalibrationPlot.cpp
             src/pypilotClientDialog.cpp
             src/pypilotUI.cpp
             src/icons.cpp
             api-16/ocpn_plugin.h	
 	)
+if(NOT QT_ANDROID)
+  SET(SRCS ${SRCS}
+     src/CalibrationDialog.cpp
+     src/CalibrationPlot.cpp
+     )
+endif(NOT QT_ANDROID)
 
+	
 #added for android
 set(LIBHDRS
     libs/GL/gl.h
