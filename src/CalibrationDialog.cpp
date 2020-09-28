@@ -57,7 +57,7 @@ static wxString StringValue(Json::Value &value)
                 ret += ", ";
             ret += StringValue(value[i]);
         }
-        ret += "]\n";
+        ret += "]";
         return ret;
     }
 
@@ -75,12 +75,16 @@ void CalibrationDialog::Receive(std::string name, Json::Value &value)
         m_gLevel->SetValue(100-jsondouble(value));
     else if(name == "imu.accel.calibration")
         m_stAccelCalibration->SetLabel(StringValue(value)), Fit();
+    else if(name == "imu.accel.calibration.log")
+        m_tAccelCalibrationLog->WriteText(value.asString()+'\n');
     else if(name == "imu.accel.calibration.age")
         m_stAccelCalibrationAge->SetLabel(value.asString());
     else if(name == "imu.accel.calibration.locked")
         m_cbAccelCalibrationLocked->SetValue(value.asBool());
     else if(name == "imu.compass.calibration")
         m_stCompassCalibration->SetLabel(StringValue(value)), Fit();
+    else if(name == "imu.compass.calibration.log")
+        m_tCompassCalibrationLog->WriteText(value.asString()+'\n');
     else if(name == "imu.compass.calibration.age")
         m_stCompassCalibrationAge->SetLabel(value.asString());
     else if(name == "imu.compass.calibration.locked")
@@ -109,6 +113,9 @@ void CalibrationDialog::Receive(std::string name, Json::Value &value)
         m_sRudderRange->SetValue(value.asDouble());
     else if(m_settings.find(name) != m_settings.end())
         m_settings[name]->SetValue(value.asDouble());
+
+    m_accelCalibrationPlot->Receive(name, value);
+    m_compassCalibrationPlot->Receive(name, value);
 }
 
 std::list<std::string> &CalibrationDialog::GetWatchlist()
@@ -137,10 +144,19 @@ std::list<std::string> &CalibrationDialog::GetWatchlist()
         list.push_back("imu.pitch");
         list.push_back("imu.roll");
         list.push_back("imu.alignmentCounter");
+//        list.push_back("imu.fusionQPose");
+        list.push_back("imu.accel");
         list.push_back("imu.accel.calibration");
+        list.push_back("imu.accel.calibration.points");
+        list.push_back("imu.accel.calibration.sigmapoints");
+        list.push_back("imu.accel.calibration.log");
         list.push_back("imu.accel.calibration.age");
         list.push_back("imu.accel.calibration.locked");
+        list.push_back("imu.compass");
         list.push_back("imu.compass.calibration");
+        list.push_back("imu.compass.calibration.points");
+        list.push_back("imu.compass.calibration.sigmapoints");
+        list.push_back("imu.compass.calibration.log");
         list.push_back("imu.compass.calibration.age");
         list.push_back("imu.compass.calibration.locked");
         list.push_back("imu.heading_offset");
@@ -211,12 +227,23 @@ void CalibrationDialog::OnAboutRudderCalibration( wxCommandEvent& event )
     mdlg.ShowModal();
 }
 
+void CalibrationDialog::OnMouseEventsAccel( wxMouseEvent& event )
+{
+    m_accelCalibrationPlot->SetFocus();
+    m_accelCalibrationPlot->OnMouseEvents(event);
+}
+
+void CalibrationDialog::OnMouseEventsCompass( wxMouseEvent& event )
+{
+    m_compassCalibrationPlot->SetFocus();
+    m_compassCalibrationPlot->OnMouseEvents(event);
+}
+
 void CalibrationDialog::OnCalibrationLocked( wxCommandEvent& event )
 {
     m_pypilot_pi.m_client.set("imu.accel.calibration.locked", m_cbAccelCalibrationLocked->GetValue());
     m_pypilot_pi.m_client.set("imu.compass.calibration.locked", m_cbCompassCalibrationLocked->GetValue());
 }
-
 
 void CalibrationDialog::OnAboutCalibrationLocked( wxCommandEvent& event )
 {

@@ -35,9 +35,6 @@
 #include "version.h"
 #include "wxWTranslateCatalog.h"
 
-#define     MY_API_VERSION_MAJOR    1
-#define     MY_API_VERSION_MINOR    11
-
 #define ABOUT_AUTHOR_URL "http://seandepagnier.users.sourceforge.net"
 
 #define OPC wxS("opencpn-pypilot_pi")
@@ -91,7 +88,7 @@ private:
 };
 
 
-class pypilot_pi : public wxEvtHandler, public opencpn_plugin_111
+class pypilot_pi : public wxEvtHandler, public opencpn_plugin_116
 {
 public:
 
@@ -144,6 +141,7 @@ public:
 
       double m_declination;
       wxDateTime m_declinationTime;
+      wxString m_mode;
       
 private:
       void SetNMEASentence(wxString &sentence);
@@ -172,8 +170,6 @@ private:
       wxDateTime m_lastMessage;
 
       bool m_enabled;
-      wxString m_mode;
-
       
       wxSocketClient      m_nmeasocket;
       std::string         m_nmeasock_buffer;
