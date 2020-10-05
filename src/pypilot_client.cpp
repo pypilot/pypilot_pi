@@ -151,7 +151,8 @@ void pypilotClient::update_watchlist(std::map<std::string, double> &watchlist)
         if(watchlist.find(it->first) == watchlist.end())
             request[it->first] = false;
 
-    set("watch", request);
+    if(request.size())
+        set("watch", request);
     m_watchlist = watchlist;
 }
 
@@ -172,7 +173,8 @@ void pypilotClient::OnSocketEvent(wxSocketEvent& event)
                 Json::Value request;
                 for(std::map<std::string, double>::iterator it = m_watchlist.begin(); it != m_watchlist.end(); it++)
                     request[it->first] = it->second;
-                set("watch", request);
+                if(request.size())
+                    set("watch", request);
             }
             
             OnConnected();
