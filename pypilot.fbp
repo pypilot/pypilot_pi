@@ -1686,7 +1686,7 @@
                 </object>
             </object>
         </object>
-        <object class="Dialog" expanded="0">
+        <object class="Dialog" expanded="1">
             <property name="aui_managed">0</property>
             <property name="aui_manager_style">wxAUI_MGR_DEFAULT</property>
             <property name="bg"></property>
@@ -1713,7 +1713,7 @@
             <property name="window_name"></property>
             <property name="window_style"></property>
             <event name="OnClose">OnClose</event>
-            <object class="wxFlexGridSizer" expanded="0">
+            <object class="wxFlexGridSizer" expanded="1">
                 <property name="cols">1</property>
                 <property name="flexible_direction">wxBOTH</property>
                 <property name="growablecols">0</property>
@@ -1762,7 +1762,7 @@
                         <property name="maximum_size"></property>
                         <property name="min_size"></property>
                         <property name="minimize_button">0</property>
-                        <property name="minimum_size">300,200</property>
+                        <property name="minimum_size">400,300</property>
                         <property name="moveable">1</property>
                         <property name="name">m_swGains</property>
                         <property name="pane_border">1</property>
@@ -1775,7 +1775,7 @@
                         <property name="scroll_rate_x">5</property>
                         <property name="scroll_rate_y">5</property>
                         <property name="show">1</property>
-                        <property name="size">300,200</property>
+                        <property name="size">400,300</property>
                         <property name="subclass"></property>
                         <property name="toolbar_pane">0</property>
                         <property name="tooltip"></property>

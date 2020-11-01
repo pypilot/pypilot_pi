@@ -122,6 +122,7 @@ bool GainsDialog::Show( bool show )
         EnumeratePilots();
         EnumerateGains();
     }
+    Fit();
     return GainsDialogBase::Show(show);
 }
 

@@ -41,25 +41,6 @@ StatisticsDialog::~StatisticsDialog()
 {
 }
 
-bool StatisticsDialog::Show( bool show )
-{
-    Json::Value list = m_pypilot_pi.m_client.list();
-    if(show && !list.isNull() && !m_sources.size()) {
-        for(Json::ValueIterator val = list.begin(); val != list.end(); val++) {
-            wxString name = val.key().asString();
-            if(name.EndsWith(".source")) {
-                m_fgStats->Add( new wxStaticText(this, wxID_ANY, name), 0, wxALL, 5);
-                wxStaticText *s = new wxStaticText(this, wxID_ANY, name);
-                m_sources[(std::string)name] = s;
-                m_fgStats->Add( s, 0, wxALL, 5);
-                m_fgStats->Add( 0, 0, 1, wxEXPAND, 5 );
-            }
-        }
-    }
-    Fit();
-    return StatisticsDialogBase::Show(show);
-}
-
 void StatisticsDialog::Receive(std::string name, Json::Value &value)
 {
     if(name == "imu.uptime")
@@ -76,9 +57,16 @@ void StatisticsDialog::Receive(std::string name, Json::Value &value)
         m_stControllerTemp->SetLabel(jsonformat("%.1f", value));
     else if(name == "servo.motor_temp")
         m_stMotorTemp->SetLabel(jsonformat("%.1f", value));
-    else {
-        if(m_sources.find(name) != m_sources.end())
-            m_sources[name]->SetLabel(value.asString());
+    else if(wxString(name).EndsWith(".source")) {
+        if(m_sources.find(name) == m_sources.end()) {
+            m_fgStats->Add( new wxStaticText(this, wxID_ANY, name), 0, wxALL, 5);
+            wxStaticText *s = new wxStaticText(this, wxID_ANY, "N/A");
+            m_sources[name] = s;
+            m_fgStats->Add( s, 0, wxALL, 5);
+            m_fgStats->Add( 0, 0, 1, wxEXPAND, 5 );
+            Fit();
+        }
+        m_sources[name]->SetLabel(value.asString());
     }
 }
 
@@ -93,8 +81,12 @@ std::list<std::string> &StatisticsDialog::GetWatchlist()
     for(unsigned int  i=0; i<(sizeof c_watchlist)/(sizeof *c_watchlist); i++)
         watchlist.push_back(c_watchlist[i]);
 
-    for(std::map<std::string, wxStaticText*>::iterator source = m_sources.begin(); source != m_sources.end(); source++)
-        watchlist.push_back(source->first);
+    Json::Value list = m_pypilot_pi.m_client.list();
+    for(Json::ValueIterator val = list.begin(); val != list.end(); val++) {
+        std::string name = val.key().asString();
+        if(wxString(name).EndsWith(".source"))
+            watchlist.push_back(name);
+    }
 
     return watchlist;
 }

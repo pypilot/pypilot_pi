@@ -280,9 +280,9 @@ GainsDialogBase::GainsDialogBase( wxWindow* parent, wxWindowID id, const wxStrin
 	fgSizer37->SetFlexibleDirection( wxBOTH );
 	fgSizer37->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
-	m_swGains = new wxScrolledWindow( this, wxID_ANY, wxDefaultPosition, wxSize( 300,200 ), wxHSCROLL|wxVSCROLL );
+	m_swGains = new wxScrolledWindow( this, wxID_ANY, wxDefaultPosition, wxSize( -1,-1 ), wxHSCROLL|wxVSCROLL );
 	m_swGains->SetScrollRate( 5, 5 );
-	m_swGains->SetMinSize( wxSize( 300,200 ) );
+	m_swGains->SetMinSize( wxSize( 640,300 ) );
 
 	m_fgGains = new wxFlexGridSizer( 1, 0, 0, 0 );
 	m_fgGains->AddGrowableRow( 0 );
@@ -292,6 +292,7 @@ GainsDialogBase::GainsDialogBase( wxWindow* parent, wxWindowID id, const wxStrin
 
 	m_swGains->SetSizer( m_fgGains );
 	m_swGains->Layout();
+	m_fgGains->Fit( m_swGains );
 	fgSizer37->Add( m_swGains, 1, wxEXPAND | wxALL, 5 );
 
 	wxFlexGridSizer* fgSizer42;

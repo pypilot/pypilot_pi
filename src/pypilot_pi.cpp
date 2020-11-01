@@ -443,8 +443,7 @@ void pypilot_pi::OnTimer( wxTimerEvent & )
     Json::Value val;
     wxDateTime now = wxDateTime::Now();
      while(m_client.receive(name, val)) {
-        //wxString value = data["value"].AsString();
-        //printf("msg %s %s\n", name.mb_str().data(), value.mb_str().data());
+         //printf("msg %s %s\n", name.c_str(), val.asString().c_str());
 
          try {
              Receive(name, val);
