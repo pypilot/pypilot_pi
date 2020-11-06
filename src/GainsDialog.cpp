@@ -248,10 +248,6 @@ void GainsDialog::EnumerateGains()
     wxString inds = m_cPilot->GetString(ind);
     const char *pilot = ind >= 0 ? inds.ToUTF8() : "";
 
-    m_watchlist.clear();
-    m_watchlist.push_back("ap.pilot");
-
-
     while(!m_fgGains->IsEmpty())
         m_fgGains->Detach(0);
 
