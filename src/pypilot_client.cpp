@@ -227,7 +227,11 @@ void pypilotClient::OnSocketEvent(wxSocketEvent& event)
                         sLogMessage.Append( json_line );
                         wxLogMessage( sLogMessage );
                     } else if(key == "values") {
-                        m_list = value;
+                        if(m_list.isNull())
+                            m_list = value;
+                        else
+                            for(Json::ValueIterator val = value.begin(); val != value.end(); val++)
+                                m_list[val.key().asString()] = *val;
                     } else {
                         if(m_bQueueMode) {
                             if(m_queue.size() >= 4096) {
