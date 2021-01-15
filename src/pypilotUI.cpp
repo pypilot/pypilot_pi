@@ -750,8 +750,8 @@ CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, c
 	fgSizer19->SetFlexibleDirection( wxBOTH );
 	fgSizer19->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
-	m_notebook1 = new wxNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNB_MULTILINE );
-	m_panel1 = new wxPanel( m_notebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	m_notebook = new wxNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNB_MULTILINE );
+	m_panel1 = new wxPanel( m_notebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxStaticBoxSizer* sbSizer6;
 	sbSizer6 = new wxStaticBoxSizer( new wxStaticBox( m_panel1, wxID_ANY, _("Accel") ), wxVERTICAL );
 
@@ -827,8 +827,8 @@ CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, c
 	m_panel1->SetSizer( sbSizer6 );
 	m_panel1->Layout();
 	sbSizer6->Fit( m_panel1 );
-	m_notebook1->AddPage( m_panel1, _("Accelerometers"), true );
-	m_panel2 = new wxPanel( m_notebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	m_notebook->AddPage( m_panel1, _("Accelerometers"), false );
+	m_panel2 = new wxPanel( m_notebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxStaticBoxSizer* sbSizer4;
 	sbSizer4 = new wxStaticBoxSizer( new wxStaticBox( m_panel2, wxID_ANY, _("Compass") ), wxVERTICAL );
 
@@ -906,8 +906,8 @@ CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, c
 	m_panel2->SetSizer( sbSizer4 );
 	m_panel2->Layout();
 	sbSizer4->Fit( m_panel2 );
-	m_notebook1->AddPage( m_panel2, _("Compass"), false );
-	m_panel3 = new wxPanel( m_notebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	m_notebook->AddPage( m_panel2, _("Compass"), false );
+	m_panel3 = new wxPanel( m_notebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxStaticBoxSizer* sbSizer3;
 	sbSizer3 = new wxStaticBoxSizer( new wxStaticBox( m_panel3, wxID_ANY, _("Alignment") ), wxVERTICAL );
 
@@ -949,9 +949,7 @@ CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, c
 	fgSizer31->Add( m_staticText34, 0, wxALL, 5 );
 
 	m_sHeadingOffset = new wxSpinCtrl( sbSizer3->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, -180, 180, 0 );
-	m_sHeadingOffset->SetMaxSize( wxSize( 80,-1 ) );
-
-	fgSizer31->Add( m_sHeadingOffset, 0, wxALL, 5 );
+	fgSizer31->Add( m_sHeadingOffset, 0, wxALL|wxEXPAND, 5 );
 
 	m_button17 = new wxButton( sbSizer3->GetStaticBox(), wxID_ANY, _("?"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_button17->SetMaxSize( wxSize( 40,-1 ) );
@@ -965,8 +963,8 @@ CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, c
 	m_panel3->SetSizer( sbSizer3 );
 	m_panel3->Layout();
 	sbSizer3->Fit( m_panel3 );
-	m_notebook1->AddPage( m_panel3, _("Alignment"), false );
-	m_panel4 = new wxPanel( m_notebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	m_notebook->AddPage( m_panel3, _("Alignment"), true );
+	m_panel4 = new wxPanel( m_notebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxStaticBoxSizer* sbSizer7;
 	sbSizer7 = new wxStaticBoxSizer( new wxStaticBox( m_panel4, wxID_ANY, _("Rudder") ), wxVERTICAL );
 
@@ -1062,8 +1060,8 @@ CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, c
 	m_panel4->SetSizer( sbSizer7 );
 	m_panel4->Layout();
 	sbSizer7->Fit( m_panel4 );
-	m_notebook1->AddPage( m_panel4, _("Rudder"), false );
-	m_pSettings = new wxPanel( m_notebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	m_notebook->AddPage( m_panel4, _("Rudder"), false );
+	m_pSettings = new wxPanel( m_notebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	m_fgSettings = new wxFlexGridSizer( 0, 3, 0, 0 );
 	m_fgSettings->AddGrowableCol( 1 );
 	m_fgSettings->SetFlexibleDirection( wxBOTH );
@@ -1073,9 +1071,9 @@ CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, c
 	m_pSettings->SetSizer( m_fgSettings );
 	m_pSettings->Layout();
 	m_fgSettings->Fit( m_pSettings );
-	m_notebook1->AddPage( m_pSettings, _("Settings"), false );
+	m_notebook->AddPage( m_pSettings, _("Settings"), false );
 
-	fgSizer19->Add( m_notebook1, 1, wxEXPAND | wxALL, 5 );
+	fgSizer19->Add( m_notebook, 1, wxEXPAND | wxALL, 5 );
 
 	wxFlexGridSizer* fgSizer421;
 	fgSizer421 = new wxFlexGridSizer( 0, 2, 0, 0 );
@@ -1151,6 +1149,7 @@ CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, c
 	m_bLevel->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnLevel ), NULL, this );
 	m_button16->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnAboutLevel ), NULL, this );
 	m_sHeadingOffset->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( CalibrationDialogBase::OnHeadingOffset ), NULL, this );
+	m_sHeadingOffset->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( CalibrationDialogBase::OnHeadingOffsetText ), NULL, this );
 	m_button17->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnAboutHeadingOffset ), NULL, this );
 	m_bRudderCentered->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnRudderCentered ), NULL, this );
 	m_button29->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnRudderResetCalibration ), NULL, this );
@@ -1213,6 +1212,7 @@ CalibrationDialogBase::~CalibrationDialogBase()
 	m_bLevel->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnLevel ), NULL, this );
 	m_button16->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnAboutLevel ), NULL, this );
 	m_sHeadingOffset->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( CalibrationDialogBase::OnHeadingOffset ), NULL, this );
+	m_sHeadingOffset->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( CalibrationDialogBase::OnHeadingOffsetText ), NULL, this );
 	m_button17->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnAboutHeadingOffset ), NULL, this );
 	m_bRudderCentered->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnRudderCentered ), NULL, this );
 	m_button29->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnRudderResetCalibration ), NULL, this );

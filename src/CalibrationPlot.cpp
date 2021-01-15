@@ -5,7 +5,7 @@
  * Author:   Sean D'Epagnier
  *
  ***************************************************************************
- *   Copyright (C) 2018 by Sean D'Epagnier                                 *
+ *   Copyright (C) 2020 by Sean D'Epagnier                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -113,8 +113,6 @@ CalibrationPlot::CalibrationPlot(wxWindow *parent, wxString name)
         }
     }
     
-    
-
     m_spherepoints = points.size();
     m_sphere = new GLfloat[m_spherepoints*3];
     for(int i=0; i<m_spherepoints; i++)
@@ -177,6 +175,7 @@ void CalibrationPlot::OnPaint()
     float s = m_userscale;
     if(m_name == "compass")
         s*=.016f;
+
     glScalef(s, s, s);
     TranslateAfter( 0, 0, -1 );
 

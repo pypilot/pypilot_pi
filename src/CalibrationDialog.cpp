@@ -36,6 +36,12 @@ CalibrationDialog::CalibrationDialog(pypilot_pi &_pypilot_pi, wxWindow* parent) 
 #ifdef __OCPN__ANDROID__
         GetHandle()->setStyleSheet( qtStyleSheet);
 #endif
+    m_HeadingOffsetTimer.Connect(wxEVT_TIMER, wxTimerEventHandler
+                    ( CalibrationDialog::UpdateHeadingOffset ), NULL, this);
+
+    m_refreshtimer.Connect(wxEVT_TIMER, wxTimerEventHandler
+                    ( CalibrationDialog::RefreshTimer ), NULL, this);
+    m_refreshtimer.Start(1000);
 }
 
 CalibrationDialog::~CalibrationDialog()
@@ -118,54 +124,59 @@ void CalibrationDialog::Receive(std::string name, Json::Value &value)
     m_compassCalibrationPlot->Receive(name, value);
 }
 
-std::list<std::string> &CalibrationDialog::GetWatchlist()
+std::map<std::string, double> &CalibrationDialog::GetWatchlist()
 {
-    static std::list<std::string> list;
-    if(list.size() == 0) {
-        m_pypilot_pi.m_client.GetSettings(list, "units");
-        if(list.size() == 0)
-            return list;
+    static std::map<std::string, double> list;
+    if(list.size())
+        return list;
 
-        for(std::list<std::string>::iterator i = list.begin(); i != list.end(); i++) {
-            Json::Value &list = m_pypilot_pi.m_client.list();
-            Json::Value setting = list[*i];
-            wxSpinCtrlDouble *s = new wxSpinCtrlDouble(m_pSettings, wxID_ANY);
-            double min = setting["min"].asDouble(), max = setting["max"].asDouble();
-            s->SetRange(min, max);
-            s->SetIncrement(wxMin(1, (max - min) / 100.0));
-            s->SetDigits(-log(s->GetIncrement()) / log(10) + 1);
-            m_fgSettings->Add(new wxStaticText(m_pSettings, wxID_ANY, *i), 0, wxALL, 5 );
-            m_fgSettings->Add(s, 0, wxALL | wxEXPAND);
-            m_fgSettings->Add(new wxStaticText(m_pSettings, wxID_ANY, setting["units"].asString()), 0, wxALL, 5 );
-            m_settings[*i] = s;
-            s->Connect( wxEVT_SPINCTRLDOUBLE, wxSpinDoubleEventHandler( CalibrationDialog::OnSpin ), NULL, this);
-        }
-        
-        list.push_back("imu.pitch");
-        list.push_back("imu.roll");
-        list.push_back("imu.alignmentCounter");
-//        list.push_back("imu.fusionQPose");
-        list.push_back("imu.accel");
-        list.push_back("imu.accel.calibration");
-        list.push_back("imu.accel.calibration.points");
-        list.push_back("imu.accel.calibration.sigmapoints");
-        list.push_back("imu.accel.calibration.log");
-        list.push_back("imu.accel.calibration.age");
-        list.push_back("imu.accel.calibration.locked");
-        list.push_back("imu.compass");
-        list.push_back("imu.compass.calibration");
-        list.push_back("imu.compass.calibration.points");
-        list.push_back("imu.compass.calibration.sigmapoints");
-        list.push_back("imu.compass.calibration.log");
-        list.push_back("imu.compass.calibration.age");
-        list.push_back("imu.compass.calibration.locked");
-        list.push_back("imu.heading_offset");
-        list.push_back("rudder.angle");
-        list.push_back("rudder.offset");
-        list.push_back("rudder.scale");
-        list.push_back("rudder.nonlinearity");
-        list.push_back("rudder.range");
+    std::list<std::string> settings;
+    m_pypilot_pi.m_client.GetSettings(settings, "units");
+    if(settings.size() == 0)
+        return list;
+
+    double period = 0.5;
+    for(std::list<std::string>::iterator i = settings.begin(); i != settings.end(); i++) {
+        Json::Value &clist = m_pypilot_pi.m_client.list();
+        Json::Value setting = clist[*i];
+        wxSpinCtrlDouble *s = new wxSpinCtrlDouble(m_pSettings, wxID_ANY);
+        double min = setting["min"].asDouble(), max = setting["max"].asDouble();
+        s->SetRange(min, max);
+        s->SetIncrement(wxMin(1, (max - min) / 100.0));
+        s->SetDigits(-log(s->GetIncrement()) / log(10) + 1);
+        m_fgSettings->Add(new wxStaticText(m_pSettings, wxID_ANY, *i), 0, wxALL, 5 );
+        m_fgSettings->Add(s, 0, wxALL | wxEXPAND);
+        m_fgSettings->Add(new wxStaticText(m_pSettings, wxID_ANY, setting["units"].asString()), 0, wxALL, 5 );
+        m_settings[*i] = s;
+        s->Connect( wxEVT_SPINCTRLDOUBLE, wxSpinDoubleEventHandler( CalibrationDialog::OnSpin ), NULL, this);
+        list[*i] = period;
     }
+
+    list["imu.pitch"] = period;
+    list["imu.roll"] = period;
+    list["imu.alignmentCounter"] = 0;
+//        list["imu.fusionQPose"];
+    list["imu.accel"] = period;
+    list["imu.accel.calibration"] = 0;
+    list["imu.accel.calibration.points"] = 0;
+    list["imu.accel.calibration.sigmapoints"] = 0;
+    list["imu.accel.calibration.log"] = 0;
+    list["imu.accel.calibration.age"] = 0;
+    list["imu.accel.calibration.locked"] = period;
+    list["imu.compass"] = period;
+    list["imu.compass.calibration"] = 0;
+    list["imu.compass.calibration.points"] = 0;
+    list["imu.compass.calibration.sigmapoints"] = 0;
+    list["imu.compass.calibration.log"] = 0;
+    list["imu.compass.calibration.age"] = 0;
+    list["imu.compass.calibration.locked"] = 0;
+    list["imu.heading_offset"] = 0;
+    list["rudder.angle"] = period;
+    list["rudder.offset"] = 0;
+    list["rudder.scale"] = 0;
+    list["rudder.nonlinearity"] = 0;
+    list["rudder.range"] = 0;
+
     return list;
 }
 
@@ -190,10 +201,20 @@ This alignment is critical for the autopilot to work correctly, and also for the
     mdlg.ShowModal();
 }
 
-void CalibrationDialog::OnHeadingOffset( wxSpinEvent& event )
+void CalibrationDialog::UpdateHeadingOffset(wxTimerEvent &)
 {
     m_pypilot_pi.m_client.set("imu.heading_offset", m_sHeadingOffset->GetValue());
     m_lastOffsetTime = wxDateTime::Now();
+}
+
+void CalibrationDialog::OnHeadingOffset( wxSpinEvent& event )
+{
+    m_HeadingOffsetTimer.Start(800, true);
+}
+
+void CalibrationDialog::OnHeadingOffsetText( wxCommandEvent& event )
+{
+    m_HeadingOffsetTimer.Start(2000, true);
 }
 
 void CalibrationDialog::OnAboutHeadingOffset( wxCommandEvent& event )
@@ -202,6 +223,15 @@ void CalibrationDialog::OnAboutHeadingOffset( wxCommandEvent& event )
                          _("You may manually adjust the alignment of the compass. The autopilot may work without the correct alignment, but the reported headings will not be correct.\n\nThe autopilot may also work better depending on control algorithm if the heading is correctly aligned."),
                          "pypilot", wxOK | wxICON_INFORMATION);
     mdlg.ShowModal();
+}
+
+void CalibrationDialog::RefreshTimer(wxTimerEvent &)
+{
+    // unfortunately on specifically windows we need to refresh like this
+    if(m_notebook->GetSelection() == 0)
+        m_accelCalibrationPlot->Refresh();
+    if(m_notebook->GetSelection() == 1)
+        m_compassCalibrationPlot->Refresh();
 }
 
 void CalibrationDialog::RudderCalCommand(const char *command)

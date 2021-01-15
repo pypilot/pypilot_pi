@@ -257,7 +257,7 @@ class CalibrationDialogBase : public wxDialog
 		wxFlexGridSizer* m_fgSizerAccel;
 
 	protected:
-		wxNotebook* m_notebook1;
+		wxNotebook* m_notebook;
 		wxPanel* m_panel1;
 		wxStaticText* m_staticText461;
 		CalibrationPlot* m_accelCalibrationPlot;
@@ -318,6 +318,7 @@ class CalibrationDialogBase : public wxDialog
 		virtual void OnLevel( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnAboutLevel( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnHeadingOffset( wxSpinEvent& event ) { event.Skip(); }
+		virtual void OnHeadingOffsetText( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnAboutHeadingOffset( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnRudderCentered( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnRudderResetCalibration( wxCommandEvent& event ) { event.Skip(); }
