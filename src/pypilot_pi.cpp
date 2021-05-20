@@ -475,6 +475,8 @@ void pypilot_pi::OnConnected()
     SetToolbarIcon();
     m_lastMessage = wxDateTime::Now();
     m_Timer.Start(100); // 400 ?
+
+    SendPluginMessage(wxString("PYPILOT_HOST"), m_host);
 }
 
 void pypilot_pi::OnDisconnected()
@@ -575,8 +577,8 @@ void pypilot_pi::SetPluginMessage(wxString &message_id, wxString &message_body)
     wxString    sLogMessage;
 //    bool        bFail = false;
     
-    if(message_id == wxS("PYPILOT_PI")) {
-        // this message does nothing yet
+    if(message_id == wxS("PYPILOT_HOST_REQUEST")) {
+        SendPluginMessage(wxString("PYPILOT_HOST"), m_host);
     } else if(message_id == _T("WMM_VARIATION_BOAT")) {
         Json::Value root;
         Json::Reader reader;
