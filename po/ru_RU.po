@@ -1,8 +1,9 @@
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: opencpn\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-11 17:23-0300\n"
+"POT-Creation-Date: 2021-05-08 18:52-0400\n"
 "PO-Revision-Date: 2018-05-11 16:52-0400\n"
 "Last-Translator: nohal <pavel@kalian.cz>\n"
 "Language-Team: Russian\n"
@@ -10,278 +11,338 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
-"X-Generator: crowdin.com\n"
-"X-Crowdin-Project: opencpn\n"
-"X-Crowdin-Language: ru\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "X-Crowdin-File: /plugins/pypilot_pi/pypilot_pi.pot\n"
-
-#: src/CalibrationDialog.cpp:81
-msgid "Press the level button when the boat is sitting level in the water to align the inertial sensors used by the autopilot.\n\n"
-"This alignment is critical for the autopilot to work correctly, and also for the compass to calibrate automatically."
-msgstr ""
-
-#: src/CalibrationDialog.cpp:97
-msgid "You may manually adjust the alignment of the compass. The autopilot may work without the correct alignment, but the reported headings will not be correct.\n\n"
-"The autopilot may also work better depending on control algorithm if the heading is correctly aligned."
-msgstr ""
-
-#: src/pypilot_pi.cpp:100 src/pypilot_pi.cpp:169
-msgid "pypilot"
-msgstr ""
-
-#: src/pypilot_pi.cpp:112 src/pypilot_pi.cpp:462
-msgid "Disconnected"
-msgstr ""
-
-#: src/pypilot_pi.cpp:174
-msgid "pypilot PlugIn for OpenCPN"
-msgstr ""
-
-#: src/pypilot_pi.cpp:179
-msgid "pypilot PlugIn for OpenCPN\n"
-"Alarm user of changing conditions."
-msgstr ""
-
-#: src/pypilot_pi.cpp:452
+"X-Crowdin-Language: ru\n"
+"X-Crowdin-Project: opencpn\n"
+"X-Generator: crowdin.com\n"
+#
+msgid "-----"
+msgstr "-----"
+#
+msgid "------"
+msgstr "------"
+#
+msgid "-------"
+msgstr "-------"
+#
+msgid "--> Starboard"
+msgstr "-> Правый борт"
+#
+msgid "10.10.10.1 (openplotter)"
+msgstr "10.10.10.1 (открытый плоттер)"
+#
+msgid "127.0.0.1"
+msgstr "127.0.0.1"
+#
+msgid "127.0.0.1 (localhost)"
+msgstr "127.0.0.1 (локальный)"
+#
+msgid "192.168.14.1 (tinypilot)"
+msgstr "192.168.14.1 (крошечный)"
+#
+msgid "<"
+msgstr "<"
+#
+msgid "<-- Port"
+msgstr "<- Порт"
+#
+msgid "<<"
+msgstr "<<"
+#
+msgid ">"
+msgstr ">"
+#
+msgid ">>"
+msgstr ">>"
+#
+msgid "?"
+msgstr "?"
+#
+msgid "AP"
+msgstr "Ты"
+#
+msgid "Accel"
+msgstr "Accel"
+#
+msgid "Accelerometers"
+msgstr "Акселерометры"
+#
+msgid "Add"
+msgstr "Добавлять"
+#
+msgid "Age"
+msgstr "Возраст"
+#
+msgid "Alignment"
+msgstr "Выравнивание"
+#
+msgid "Angle"
+msgstr "Угол"
+#
+msgid "Angle Buttons"
+msgstr "Угловые кнопки"
+#
+msgid "Average Power Consumption"
+msgstr "Средняя потребляемая мощность"
+#
+msgid "C"
+msgstr "C"
+#
+msgid "Calibration"
+msgstr "Калибровка"
+#
+msgid "Calibration Locked"
+msgstr "Калибровка заблокирована"
+#
+msgid "Cancel"
+msgstr "Отмена"
+#
+msgid "Center Button"
+msgstr "Центральная кнопка"
+#
+msgid "Centered"
+msgstr "По центру"
+#
+msgid "Close"
+msgstr "Закрывать"
+#
+msgid "Columns"
+msgstr "Столбцы"
+#
+msgid "Compass"
+msgstr "Компас"
+#
+msgid "Config"
+msgstr "Конфиг"
+#
 msgid "Connected"
+msgstr "Связанный"
+#
+msgid "Controller Temperature"
+msgstr "Температура контроллера"
+#
+msgid ""
+"Converts displayed headings to true north rather than magnetic north.\n"
+"This affects compass mode only, and requires the wmm plugin to be active.  "
+"The conversion is applied only within the plugin, the autopilot is commanded "
+"in the corrected magnetic heading."
 msgstr ""
-
-#: src/pypilot_pi.cpp:452
-msgid "to"
-msgstr ""
-
-#: src/ConfigurationDialog.cpp:98
-msgid "Eliminates the need to make the tcp connection to the autopilot from the OpenCPN connections list"
-msgstr ""
-
-#: src/ConfigurationDialog.cpp:107
+"Преобразует отображаемые направления в истинный север, а не магнитный север.\n"
+"Это влияет только на режим компаса и требует, чтобы плагин wmm был активен. "
+"Преобразование применяется только внутри плагина, автопилот управляется "
+"скорректированным магнитным курсом."
+#
+msgid "Disconnected"
+msgstr "Отключен"
+#
 msgid "Displays lines on the chart showing the autopilot's configured headings"
 msgstr ""
-
-#: src/ConfigurationDialog.cpp:115
-msgid "Converts displayed headings to true north rather than magnetic north.\n"
-"This affects compass mode only, and requires the wmm plugin to be active.  The conversion is applied only within the plugin, the autopilot is commanded in the correct magnetic heading."
+"Отображает линии на графике, показывающие настроенные заголовки автопилота."
+#
+msgid "Enable Graphical Overlay"
+msgstr "Включить графическое наложение"
+#
+msgid "Forward NMEA"
+msgstr "Переслать NMEA"
+#
+msgid "Gains"
+msgstr "Прибыль"
+#
+msgid "Heading Offset"
+msgstr "Смещение курса"
+#
+msgid ""
+"If enabled, and rudder feedback is working, a button to center the rudder in "
+"manual mode appears."
 msgstr ""
-
-#: src/pypilotDialog.cpp:191
-msgid "True North mode not possible without declination.\n\n"
+"Если этот параметр включен и обратная связь по рулю работает, появляется "
+"кнопка для центрирования руля в ручном режиме."
+#
+msgid "Information"
+msgstr "Информация"
+#
+msgid "Level"
+msgstr "Уровень"
+#
+msgid "Make the buttons for tacking visible."
+msgstr "Сделайте кнопки для закрепки видимыми."
+#
+msgid "Motor Temperature"
+msgstr "Температура двигателя"
+#
+msgid "N/A"
+msgstr "N / A"
+#
+msgid "No Motor Controller"
+msgstr "Нет контроллера мотора"
+#
+msgid "Non Linearity"
+msgstr "Нелинейность"
+#
+msgid "OK"
+msgstr "ОК"
+#
+msgid "Offset"
+msgstr "Компенсировать"
+#
+msgid "Pilot"
+msgstr "Пилот"
+#
+msgid "Pitch / Roll"
+msgstr "Шаг / Крен"
+#
+msgid "Plugin Settings"
+msgstr "Настройки плагина"
+#
+msgid ""
+"Plugin automatically sends and receives nmea data between opencpn and "
+"pypilot.\n"
+"\n"
+"The plugin communicates directly to pypilot, but nmea0183 is needed\n"
+"by other opencpn plugins and for route following.\n"
+"\n"
+"Eliminates the need to make the tcp connection in opencpn connection "
+"settings.\n"
+"If you need specific nmea filtering you should disable this, and instead make "
+"a tcp connection\n"
+"to the pypilot host tcp port 20220 in the opencpn connections settings.\n"
+msgstr ""
+"Плагин автоматически отправляет и принимает данные nmea между opencpn и "
+"pypilot.\n"
+"\n"
+"Плагин напрямую связывается с pypilot, но требуется nmea0183\n"
+"другими плагинами opencpn и для следования по маршруту.\n"
+"\n"
+"Устраняет необходимость устанавливать соединение TCP в настройках соединения "
+"opencpn.\n"
+"Если вам нужна конкретная фильтрация nmea, вы должны отключить это и вместо "
+"этого установить TCP-соединение\n"
+"к TCP-порту хоста pypilot 20220 в настройках подключений opencpn.\n"
+#
+msgid "Port Range"
+msgstr "Диапазон портов"
+#
+msgid ""
+"Press the level button when the boat is sitting level in the water to align "
+"the inertial sensors used by the autopilot.\n"
+"\n"
+"This alignment is critical for the autopilot to work correctly, and also for "
+"the compass to calibrate automatically."
+msgstr ""
+"Нажмите кнопку уровня, когда лодка находится ровно в воде, чтобы выровнять "
+"инерционные датчики, используемые автопилотом.\n"
+"\n"
+"Это выравнивание важно для правильной работы автопилота, а также для "
+"автоматической калибровки компаса."
+#
+msgid "Range"
+msgstr "Диапазон"
+#
+msgid "Remove"
+msgstr "Удалять"
+#
+msgid "Reset"
+msgstr "Сброс настроек"
+#
+msgid "Reset Calibration"
+msgstr "Сбросить калибровку"
+#
+msgid "Rudder"
+msgstr "Руль"
+#
+msgid "Runtime"
+msgstr "Время выполнения"
+#
+msgid "Scale"
+msgstr "Шкала"
+#
+msgid "Settings"
+msgstr "Настройки"
+#
+msgid "Starboard Range"
+msgstr "Диапазон правого борта"
+#
+msgid "Statistics"
+msgstr "Статистика"
+#
+msgid "Tack"
+msgstr "Tack"
+#
+msgid "Tacking Button"
+msgstr "Кнопка прихватывания"
+#
+msgid ""
+"To calibrate rudder feedback:\n"
+"1) set 'Range' to a known angle\n"
+"2) manually center the rudder and press 'Centered'.\n"
+"3) manually turn rudder to starboard this angle and press 'Starboard Range'\n"
+"4) manually turn rudder to port this angle and press 'Port Range'5) set "
+"'Range' to the maximum  allowed autopilot movement"
+msgstr ""
+"Чтобы откалибровать обратную связь руля направления:\n"
+"1) установите \"Диапазон\" на известный угол\n"
+"2) вручную отцентрируйте руль направления и нажмите «По центру».\n"
+"3) вручную поверните руль направления вправо на этот угол и нажмите «Диапазон "
+"правого борта».\n"
+"4) вручную поверните руль направления на этот угол и нажмите «Port Range» 5) "
+"установите «Range» на максимально допустимое движение автопилота."
+#
+msgid "Total amp hours"
+msgstr "Всего ампер-часов"
+#
+msgid "True North Mode"
+msgstr "Режим истинного севера"
+#
+msgid ""
+"True North mode not possible without declination.\n"
+"\n"
 "Is the wmm plugin enabled and a gps fix available?"
 msgstr ""
-
-#: src/pypilotUI.cpp:33
-msgid "AP"
-msgstr ""
-
-#: src/pypilotUI.cpp:61
-msgid "Status"
-msgstr ""
-
-#: src/pypilotUI.cpp:67 src/pypilotUI.cpp:752
-msgid "-----"
-msgstr ""
-
-#: src/pypilotUI.cpp:129
-msgid "<<"
-msgstr ""
-
-#: src/pypilotUI.cpp:134
-msgid "<"
-msgstr ""
-
-#: src/pypilotUI.cpp:139
-msgid ">"
-msgstr ""
-
-#: src/pypilotUI.cpp:144
-msgid ">>"
-msgstr ""
-
-#: src/pypilotUI.cpp:163
-msgid "Gains"
-msgstr ""
-
-#: src/pypilotUI.cpp:168
-msgid "Config"
-msgstr ""
-
-#: src/pypilotUI.cpp:171
-msgid "Calibration"
-msgstr ""
-
-#: src/pypilotUI.cpp:174
-msgid "Statistics"
-msgstr ""
-
-#: src/pypilotUI.cpp:177
-msgid "Close"
-msgstr ""
-
-#: src/pypilotUI.cpp:291
-msgid "pypilot host"
-msgstr ""
-
-#: src/pypilotUI.cpp:313
-msgid "OpenCPN Settings"
-msgstr ""
-
-#: src/pypilotUI.cpp:320
-msgid "Forward nmea"
-msgstr ""
-
-#: src/pypilotUI.cpp:323 src/pypilotUI.cpp:329 src/pypilotUI.cpp:335
-#: src/pypilotUI.cpp:793 src/pypilotUI.cpp:807
-msgid "?"
-msgstr ""
-
-#: src/pypilotUI.cpp:326
-msgid "Enable Graphical Overlay"
-msgstr ""
-
-#: src/pypilotUI.cpp:332
-msgid "True North Mode"
-msgstr ""
-
-#: src/pypilotUI.cpp:345
-msgid "Control Angles"
-msgstr ""
-
-#: src/pypilotUI.cpp:373
-msgid "Add"
-msgstr ""
-
-#: src/pypilotUI.cpp:376
-msgid "Remove"
-msgstr ""
-
-#: src/pypilotUI.cpp:384
-msgid "Columns"
-msgstr ""
-
-#: src/pypilotUI.cpp:409
-msgid "pypilot Servo Settings"
-msgstr ""
-
-#: src/pypilotUI.cpp:421
-msgid "Servo Period"
-msgstr ""
-
-#: src/pypilotUI.cpp:425 src/pypilotUI.cpp:448 src/pypilotUI.cpp:631
-#: src/pypilotUI.cpp:639 src/pypilotUI.cpp:655 src/pypilotUI.cpp:667
-#: src/pypilotUI.cpp:678 src/pypilotUI.cpp:690
-msgid "-------"
-msgstr ""
-
-#: src/pypilotUI.cpp:432
-msgid "Seconds"
-msgstr ""
-
-#: src/pypilotUI.cpp:444
-msgid "Max Current"
-msgstr ""
-
-#: src/pypilotUI.cpp:455
-msgid "Amps"
-msgstr ""
-
-#: src/pypilotUI.cpp:467
-msgid "Min Speed"
-msgstr ""
-
-#: src/pypilotUI.cpp:476 src/pypilotUI.cpp:489
-msgid "%"
-msgstr ""
-
-#: src/pypilotUI.cpp:480
-msgid "Max Speed"
-msgstr ""
-
-#: src/pypilotUI.cpp:493
-msgid "Max Controller Temp"
-msgstr ""
-
-#: src/pypilotUI.cpp:502 src/pypilotUI.cpp:515 src/pypilotUI.cpp:682
-#: src/pypilotUI.cpp:694
-msgid "C"
-msgstr ""
-
-#: src/pypilotUI.cpp:506
-msgid "Max Motor Temp"
-msgstr ""
-
-#: src/pypilotUI.cpp:519
-msgid "Min Rudder Pos"
-msgstr ""
-
-#: src/pypilotUI.cpp:526
-msgid " "
-msgstr ""
-
-#: src/pypilotUI.cpp:530
-msgid "Max Rudder Pos"
-msgstr ""
-
-#: src/pypilotUI.cpp:559
-msgid "Information"
-msgstr ""
-
-#: src/pypilotUI.cpp:627
+"Режим истинного севера невозможен без склонения.\n"
+"\n"
+"Включен ли плагин wmm и доступно ли исправление gps?"
+#
 msgid "Uptime"
-msgstr ""
-
-#: src/pypilotUI.cpp:635
-msgid "Runtime"
-msgstr ""
-
-#: src/pypilotUI.cpp:651
-msgid "Average Power Consumption"
-msgstr ""
-
-#: src/pypilotUI.cpp:659
+msgstr "Время безотказной работы"
+#
+msgid "V"
+msgstr "В"
+#
+msgid "Voltage"
+msgstr "Напряжение"
+#
 msgid "Watts"
+msgstr "Вт"
+#
+msgid ""
+"You may manually adjust the alignment of the compass. The autopilot may work "
+"without the correct alignment, but the reported headings will not be "
+"correct.\n"
+"\n"
+"The autopilot may also work better depending on control algorithm if the "
+"heading is correctly aligned."
 msgstr ""
-
-#: src/pypilotUI.cpp:663
-msgid "Total amp hours"
-msgstr ""
-
-#: src/pypilotUI.cpp:671
-msgid "Reset"
-msgstr ""
-
-#: src/pypilotUI.cpp:674
-msgid "Controller Temperature"
-msgstr ""
-
-#: src/pypilotUI.cpp:686
-msgid "Motor Temperature"
-msgstr ""
-
-#: src/pypilotUI.cpp:740
-msgid "Compass"
-msgstr ""
-
-#: src/pypilotUI.cpp:748
-msgid "Age"
-msgstr ""
-
-#: src/pypilotUI.cpp:763
-msgid "Alignment"
-msgstr ""
-
-#: src/pypilotUI.cpp:770
-msgid "Pitch / Roll"
-msgstr ""
-
-#: src/pypilotUI.cpp:774
-msgid "N/A"
-msgstr ""
-
-#: src/pypilotUI.cpp:790
-msgid "Level"
-msgstr ""
-
-#: src/pypilotUI.cpp:798
-msgid "Heading Offset"
-msgstr ""
-
+"Вы можете вручную отрегулировать положение компаса. Автопилот может работать "
+"без правильного выравнивания, но сообщаемые заголовки будут неправильными.\n"
+"\n"
+"Автопилот также может работать лучше в зависимости от алгоритма управления, "
+"если курс выровнен правильно."
+#
+msgid "You may wish to lock the calibration against automatically updating"
+msgstr "Вы можете заблокировать калибровку от автоматического обновления."
+#
+msgid "host"
+msgstr "хозяин"
+#
+msgid "pypilot"
+msgstr "пилот"
+#
+msgid "pypilot Client"
+msgstr "Клиент pypilot"
+#
+msgid "tack"
+msgstr "прихватить"
+#
+msgid "to"
+msgstr "к"

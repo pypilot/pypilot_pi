@@ -37,7 +37,7 @@ public:
     ~CalibrationDialog();
 
     void Receive(std::string name, Json::Value &value);
-    std::list<std::string> &GetWatchlist();
+    std::map<std::string, double> &GetWatchlist();
 
 private:
     void OnPaintAccelPlot( wxPaintEvent& event ) { m_accelCalibrationPlot->OnPaint(); }
@@ -51,9 +51,13 @@ private:
     void OnClose( wxCommandEvent& event );
     void OnLevel( wxCommandEvent& event );
     void OnAboutLevel( wxCommandEvent& event );
+    void UpdateHeadingOffset(wxTimerEvent &);
     void OnHeadingOffset( wxSpinEvent& event );
+    void OnHeadingOffsetText( wxCommandEvent& event );
     void OnAboutHeadingOffset( wxCommandEvent& event );
 
+    void RefreshTimer(wxTimerEvent &);
+   
     void RudderCalCommand(const char *command);
     void OnRudderCentered( wxCommandEvent& event ) { RudderCalCommand("centered"); }
     void OnRudderResetCalibration( wxCommandEvent& event ) { RudderCalCommand("reset"); }
@@ -68,4 +72,7 @@ private:
     wxDateTime m_lastOffsetTime;
 
     std::map<std::string, wxSpinCtrlDouble*> m_settings;
+
+    wxTimer m_HeadingOffsetTimer;
+    wxTimer m_refreshtimer;
 };
