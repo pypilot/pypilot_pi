@@ -1,6 +1,6 @@
 ##---------------------------------------------------------------------------
 ## Author:      Sean D'Epagnier
-## Copyright:   
+## Copyright:
 ## License:     GPLv3+
 ### *   This program is free software; you can redistribute it and/or modify  *
 ## *   it under the terms of the GNU General Public License as published by  *
@@ -18,7 +18,7 @@
 ## *   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                                       *
 ## ***
 #-----------------------------------------------------------------------------
-# Frontend2 Author: Jon Gough  Frontend2: v1.0.167.0  17/05/2021  
+# Frontend2 Author: Jon Gough  Frontend2: v1.0.167.0  17/05/2021
 # ---------------------------------------------------------------------------
 ## ----- When changing this file do NOT change the order in which sections occur        ----- ##
 ## ----- Changes should only be made between the section blocks that identify where     ----- ##
@@ -56,7 +56,7 @@ set(LONG_DESCRIPTION "Control the free software autopilot pypilot. See http://py
 set(VERSION_MAJOR "0")
 set(VERSION_MINOR "22")
 set(VERSION_PATCH "5")
-set(VERSION_TWEAK "3")
+set(VERSION_TWEAK "5")
 set(VERSION_DATE "08/06/2021")
 set(OCPN_MIN_VERSION "ov50")
 set(OCPN_API_VERSION_MAJOR "1")
@@ -155,8 +155,24 @@ SET(SRCS
             src/pypilotClientDialog.cpp
             src/pypilotUI.cpp
             src/icons.cpp
-#            libs/ocpn-api/ocpn_plugin.h				
 	)
+
+SET(HDRS
+            src/CalibrationPlot.h
+            src/ConfigurationDialog.h
+			src/GainsDialog.h
+            src/icons.h
+            src/msvcdefs.h
+            src/pypilot_client.h
+            src/pypilot_pi.h
+            src/pypilotClientDialog.h
+            src/pypilotDialog.h
+            src/pypilotUI.h
+            src/StatisticsDialog.h
+            src/wxWTranslateCatalog.h
+    )
+
+
 if(NOT QT_ANDROID)
   SET(SRCS ${SRCS}
      src/CalibrationDialog.cpp
@@ -164,14 +180,17 @@ if(NOT QT_ANDROID)
      )
 endif(NOT QT_ANDROID)
 
-	
+
 #added for android
 set(LIBHDRS
     libs/GL/gl.h
     libs/GL/gl_private.h
     libs/GL/glext.h
     libs/GL/glu.h
-)
+    libs/wx/include/json_defs.h
+    libs/wx/include/jsonreader.h
+    libs/wx/include/jsonval.h
+    libs/wx/include/jsonwriter.h)
 
 add_definitions(-DPLUGIN_USE_SVG)
 
@@ -179,8 +198,12 @@ add_definitions(-DPLUGIN_USE_SVG)
 ## Modify/configure 'Include' Directories below for the Plugin
 ##
 
+# include_directories(BEFORE ${PROJECT_SOURCE_DIR}/include)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/ocpn-api)
+# include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/wx/include)
+# include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/wxJSON/include)
+# may need some of these later
 
 ## These are NOT used in Testplugin, used for other plugins
 ##=======================================
@@ -200,19 +223,33 @@ target_sources(${PACKAGE_NAME} PUBLIC ${SRCS} ${HDRS} ${LIBSSRC} ${SRC_JSON} ${S
 #add_library(${PACKAGE_NAME} SHARED ${SRCS_PYPILOT} ${HDRS} ${EXTSRC} ${LIBSSRC}  ${SRC_JSON} ${SRC_PLUGINGL})
 # add_library(${PACKAGE_NAME} SHARED ${SRC_PYPILOT} ${SRC_JSON} ${SRC_PLUGINGL})
 
+
+# Pypilot does not require tinyxml 
+#if(NOT OCPN_FLATPAK_CONFIG)
+#    # Build environment not available when flatpak is being configured so following statements will not work
+#    message(STATUS "${CMLOC}Adding target link libraries to ${PACKAGE_NAME}")
+#
+#    add_subdirectory(libs/tinyxml)
+#
+#    target_link_libraries(${PACKAGE_NAME} ocpn::tinyxml)
+#endif(NOT OCPN_FLATPAK_CONFIG)
+
+
+
+
 add_definitions(-DTIXML_USE_STL)
 
-
+# This may be old, perhaps remove?
 #needed only if glshim project is included.
 if(QT_ANDROID)
   target_link_libraries(${PACKAGE_NAME}  GL_static)
-endif(QT_ANDROID)  
+endif(QT_ANDROID)
 
 
 ##
 ## ----- Change above to match project requirements ----- ##
 
-# Needed for android builds
+# Needed for android builds  - current
 if(QT_ANDROID)
     include_directories(BEFORE ${qt_android_include})
 endif(QT_ANDROID)
@@ -226,7 +263,7 @@ include("PluginPackage")
 ##=======================================
 ## ----- do not change section above - needed to configure build process ----- ##
 
-								  
+
 message(STATUS "${CMLOC}include directories: ")
 get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
 foreach(dir ${dirs})
