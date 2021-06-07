@@ -56,8 +56,8 @@ set(LONG_DESCRIPTION "Control the free software autopilot pypilot. See http://py
 set(VERSION_MAJOR "0")
 set(VERSION_MINOR "22")
 set(VERSION_PATCH "5")
-set(VERSION_TWEAK "2")
-set(VERSION_DATE "07/06/2021")
+set(VERSION_TWEAK "3")
+set(VERSION_DATE "08/06/2021")
 set(OCPN_MIN_VERSION "ov50")
 set(OCPN_API_VERSION_MAJOR "1")
 set(OCPN_API_VERSION_MINOR "16")
@@ -155,7 +155,7 @@ SET(SRCS
             src/pypilotClientDialog.cpp
             src/pypilotUI.cpp
             src/icons.cpp
-            api-16/ocpn_plugin.h	
+#            libs/ocpn-api/ocpn_plugin.h				
 	)
 if(NOT QT_ANDROID)
   SET(SRCS ${SRCS}
@@ -176,12 +176,12 @@ set(LIBHDRS
 add_definitions(-DPLUGIN_USE_SVG)
 
 ##
-# Modify/configure 'Include' Directories below for the Plugin
+## Modify/configure 'Include' Directories below for the Plugin
 ##
-
 
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/ocpn-api)
+
 ## These are NOT used in Testplugin, used for other plugins
 ##=======================================
 include("PluginJSON")
@@ -193,12 +193,10 @@ include("PluginGL")
 ## This add_library  can be used in conditionals below.
 ####
 ##==========================================================================
-
-# target_sources(${PACKAGE_NAME} PUBLIC ${SRCS} ${HDRS} ${LIBSSRC} ${SRC_JSON} ${SRC_PLUGINGL})
-
+# add_library(${PACKAGE_NAME} SHARED ${SRCS} ${LIBSSRC}  ${SRC_JSON} ${SRC_PLUGINGL})
 ##==========================================================================
+target_sources(${PACKAGE_NAME} PUBLIC ${SRCS} ${HDRS} ${LIBSSRC} ${SRC_JSON} ${SRC_PLUGINGL})
 
-add_library(${PACKAGE_NAME} SHARED ${SRCS} ${HDRS} ${LIBSSRC}  ${SRC_JSON} ${SRC_PLUGINGL})
 #add_library(${PACKAGE_NAME} SHARED ${SRCS_PYPILOT} ${HDRS} ${EXTSRC} ${LIBSSRC}  ${SRC_JSON} ${SRC_PLUGINGL})
 # add_library(${PACKAGE_NAME} SHARED ${SRC_PYPILOT} ${SRC_JSON} ${SRC_PLUGINGL})
 
@@ -209,9 +207,6 @@ add_definitions(-DTIXML_USE_STL)
 if(QT_ANDROID)
   target_link_libraries(${PACKAGE_NAME}  GL_static)
 endif(QT_ANDROID)  
-
-
-
 
 
 ##

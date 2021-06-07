@@ -7,6 +7,5 @@ src/StatisticsDialog.cpp
 src/pypilotClientDialog.cpp
 src/pypilotUI.cpp
 src/icons.cpp
-api-16/ocpn_plugin.h
 src/CalibrationDialog.cpp
 src/CalibrationPlot.cpp
