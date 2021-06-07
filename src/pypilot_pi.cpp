@@ -397,18 +397,20 @@ void pypilot_pi::Render(piDC &dc, PlugIn_ViewPort &vp)
     wxPoint boat;
     GetCanvasPixLL(&vp, &boat, m_lastfix.Lat, m_lastfix.Lon);
 
-    double r = wxMin(vp.pix_width, vp.pix_height)/4;
-    wxPoint p1(boat.x + r*sin(deg2rad(m_ap_heading)),
-               boat.y - r*cos(deg2rad(m_ap_heading)));
-    dc.SetPen(wxPen(*wxRED, 3));
-    dc.DrawLine(boat.x, boat.y, p1.x, p1.y);
-    dc.DrawCircle(p1.x, p1.y, 5);
+    double dist = 1; // 1nm
+    double dlat, dlon;
+    wxPoint p;
 
-    wxPoint p2(boat.x + r*sin(deg2rad(m_ap_heading_command)),
-               boat.y - r*cos(deg2rad(m_ap_heading_command)));
+    PositionBearingDistanceMercator_Plugin(m_lastfix.Lat, m_lastfix.Lon, m_ap_heading, dist, &dlat, &dlon);
+    GetCanvasPixLL(&vp, &p, dlat, dlon);
+    dc.SetPen(wxPen(*wxRED, 3));
+    dc.DrawLine(boat.x, boat.y, p.x, p.y);
+    dc.DrawCircle(p.x, p.y, 5);
+
+    PositionBearingDistanceMercator_Plugin(m_lastfix.Lat, m_lastfix.Lon, m_ap_heading_command, dist, &dlat, &dlon);
     dc.SetPen(wxPen(*wxGREEN, 3));
-    dc.DrawLine(boat.x, boat.y, p2.x, p2.y);
-    dc.DrawCircle(p2.x, p2.y, 5);
+    dc.DrawLine(boat.x, boat.y, p.x, p.y);
+    dc.DrawCircle(p.x, p.y, 5);
 }
 
 void pypilot_pi::ReadConfig()
@@ -443,8 +445,7 @@ void pypilot_pi::OnTimer( wxTimerEvent & )
     Json::Value val;
     wxDateTime now = wxDateTime::Now();
      while(m_client.receive(name, val)) {
-        //wxString value = data["value"].AsString();
-        //printf("msg %s %s\n", name.mb_str().data(), value.mb_str().data());
+         //printf("msg %s %s\n", name.c_str(), val.asString().c_str());
 
          try {
              Receive(name, val);
@@ -474,6 +475,8 @@ void pypilot_pi::OnConnected()
     SetToolbarIcon();
     m_lastMessage = wxDateTime::Now();
     m_Timer.Start(100); // 400 ?
+
+    SendPluginMessage(wxString("PYPILOT_HOST"), m_host);
 }
 
 void pypilot_pi::OnDisconnected()
@@ -574,8 +577,8 @@ void pypilot_pi::SetPluginMessage(wxString &message_id, wxString &message_body)
     wxString    sLogMessage;
 //    bool        bFail = false;
     
-    if(message_id == wxS("PYPILOT_PI")) {
-        // this message does nothing yet
+    if(message_id == wxS("PYPILOT_HOST_REQUEST")) {
+        SendPluginMessage(wxString("PYPILOT_HOST"), m_host);
     } else if(message_id == _T("WMM_VARIATION_BOAT")) {
         Json::Value root;
         Json::Reader reader;

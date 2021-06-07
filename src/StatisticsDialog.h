@@ -35,7 +35,6 @@ public:
     StatisticsDialog( pypilot_pi &_pypilot_pi, wxWindow* parent);
     ~StatisticsDialog();
 
-    bool Show( bool show );
     void Receive(std::string name, Json::Value &value);
     std::list<std::string> &GetWatchlist();
 

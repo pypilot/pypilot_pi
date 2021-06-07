@@ -27,6 +27,7 @@
 #include <vector>
 
 #include <wx/glcanvas.h>
+#include <wx/timer.h>
 #include <json/json.h>
 
 struct point {
