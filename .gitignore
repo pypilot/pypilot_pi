@@ -1,2 +1,4 @@
 src/version.h
-build
+build/
+.directory
+po/POTFILES.in.test
