@@ -1,0 +1,108 @@
+== Pypilot Autopilot
+
+
+image::pypilot_icon.png[]
+
+
+The pypilot plugin provides an interface to the free software autopilot
+pypilot. Control, configure and calibrate the autopilot from OpenCPN.
+
+The Pypilot_pi interface plugin will work with any operating system
+running opencpn (Linux, Windows, MacOS, Android are available). The
+Pypilot_pi interface plugin is separate and distinct from the plugin
+“autopilot_route_pi”.
+
+The pypilot server that pypilot_pi connects to, so far typically runs on
+raspberry pi, but it can work on orange pi or potentially other systems
+as well.
+
+Note: OpenCPN can communicate with pypilot server already via nmea to
+receive compass heading, and to autopilot, and this plugin is not
+strictly required. The plugin allows for configuration and tuning of the
+autopilot in ways not possible through basic nmea0183 messaging. The
+plugin also allows for graphical overlays of the autopilot settings
+directly onto the chart.
+
+image::pypilot_plugin_screenshot.png[]
+
+
+OpenCPN Plugin for Pypilot Autopilots An OpenSource Marine Autopilot.
+
+* http://pypilot.org/wiki/doku.php[PyPilot Website (Hardware and
+Software]
+* https://github.com/pypilot/pypilot[Github Repository] (Python & C++)
+* https://github.com/pypilot/pypilot/wiki/Hardware[Hardware]
+* Example: Pypilot is tested and working on a trimaran sailing at 15
+knots.
+* Example: https://youtu.be/KQuBwLSMSxI[Video: Pypilot on Princess Mia]
+The autopilot route plugin capable of steering under sail in harbors
+* Example:
+https://phoenixketch.blogspot.com/2019/01/pypilot-open-source-marine-autopilot.html[Hydraulic
+Installation: S/V Phoenix [Ketch] with Pypilot]
+
+PyPilot Forums
+
+* http://www.cruisersforum.com/forums/f134/pypilot-199337.html[Pypilot
+Cruiser's Forum Thread]
+* http://www.cruisersforum.com/forums/f134/autopilot-open-source-191315.html[Cruiser's
+Forum Autopilot - Open Source]
+* http://www.cruisersforum.com/forums/f13/free-autopilot-186378.html[Cruiser's
+Forum Free Autopilot Discussion]
+* http://forum.openmarine.net/forumdisplay.php?fid=17[PyPilot OpenMarine
+Forum]
+* http://www.cruisersforum.com/forums/f134/opencpn-and-arduboat-199849.html[PyPilot
+with Arduboat Discussion]
+
+Sean D'Epagnier's
+https://github.com/pypilot/pypilot/wiki/autopilot_computer[PyPilot
+AutoPilot] using raspberry zero-W or orange,
+
+* https://github.com/pypilot/pypilot/wiki/controller[Controller],
+* https://github.com/pypilot/pypilot/wiki/imu[IMU] with
+* https://github.com/pypilot/pypilot/wiki/LCD_keypad[Optional user
+interface LCD and keypad], gps and weather sensors.
+
+https://github.com/pypilot/pypilot/wiki/webapp[Pypilot Webapp] if using
+tinypilot, creates a webserver which provides remote autopilot control
+through a browser. Trimaran test used rtlsdr IR remote for control. It
+can use any tv remote, also buttons, or gui program through openplotter.
+
+This Autopilot uses modified and improved versions of SignalK and
+RTMUlib2. More details are available in the
+https://github.com/pypilot/pypilot/wiki[Wiki] and
+https://github.com/pypilot/pypilot/blob/master/README[README]
+
+image::pypilot-menus.png[]
+
+
+=== PyPilot Integrated Hardware Shop
+
+http://pypilot.org/store/[Pypilot Store]
+
+* PyPilot Motor Controller
+* TinyPilot Computer
+* Minimal wind sensor - Wind speed and direction
+* Weather Sensors with Display - Wind and Barometric Pressure
+* The wind sensor uses
+http://www.sailsmarine.com/ItemDetail.aspx?c=196659&l=g[Davis 6410 Wind
+instrument]
+
+https://www.tindie.com/stores/seandepagnier/[Tindie Store]
+
+* Orange pi Zero IMU Hat mpu9255 9DOF inertial sensor
+* Raspberry pi Nokia 5110 LCD Hat
+* Orange pi Nokia 5110 LCD Hat
+* Raspberry pi Zero IMU Hat mpu9255 9DOF inertial sensor
+
+Another favorite rpi from the Tindie Store is
+https://www.tindie.com/products/astuder/daisy-hat-ais-receiver-for-raspberry-pi/[dAISy
+HAT AIS Receiver for Raspberry Pi]
+
+Pypilot is free software like Opencpn and it is fully supported by
+opencpn, and is better supported than any autopilot. It has 2
+specialized opencpn plugins designed for it. For the cost of a raspberry
+pi, some $4 sensors, and a motor controller you can build, or buy for
+$75 and just use a windshield wiper motor and a belt to the wheel, or if
+you have a tiller:
+
+See https://youtu.be/ZaLBRRelT-M

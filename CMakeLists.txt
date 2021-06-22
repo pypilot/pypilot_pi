@@ -1,6 +1,6 @@
 ##---------------------------------------------------------------------------
 ## Author:      Sean D'Epagnier
-## Copyright:   
+## Copyright:
 ## License:     GPLv3+
 ### *   This program is free software; you can redistribute it and/or modify  *
 ## *   it under the terms of the GNU General Public License as published by  *
@@ -18,8 +18,7 @@
 ## *   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                                       *
 ## ***
 #-----------------------------------------------------------------------------
-# Frontend2 Author: Jon Gough  
-# Frontend2: v1.0.134.0
+# Frontend2 Author: Jon Gough  Frontend2: v1.0.167.0  17/05/2021
 # ---------------------------------------------------------------------------
 ## ----- When changing this file do NOT change the order in which sections occur        ----- ##
 ## ----- Changes should only be made between the section blocks that identify where     ----- ##
@@ -56,9 +55,9 @@ set(LONG_DESCRIPTION "Control the free software autopilot pypilot. See http://py
 
 set(VERSION_MAJOR "0")
 set(VERSION_MINOR "22")
-set(VERSION_PATCH "5")
+set(VERSION_PATCH "6")
 set(VERSION_TWEAK "0")
-set(VERSION_DATE "09/23/2020")
+set(VERSION_DATE "08/06/2021")
 set(OCPN_MIN_VERSION "ov50")
 set(OCPN_API_VERSION_MAJOR "1")
 set(OCPN_API_VERSION_MINOR "16")
@@ -81,9 +80,8 @@ set(PROD "prod")    #Standard Repos
 set(BETA "beta")    #Standard Repos
 set(ALPHA "alpha")  #Standard Repos
 
-#set(CLOUDSMITH_USER "sean-depagnier")
-#set(CLOUDSMITH_USER "rick-gleason")
 set(CLOUDSMITH_USER "opencpn")
+#set(CLOUDSMITH_USER "rick-gleason")
 
 # Set if yourCloudsmith Base Repository name does not match your Git Repository name.
 #set(CLOUDSMITH_BASE_REPOSITORY "opencpn-plugins") #Rick's customization
@@ -93,10 +91,8 @@ set(XML_INFO_URL "https://opencpn.org/wiki/dokuwiki/doku.php?id=opencpn:opencpn_
 set(XML_SUMMARY ${SHORT_DESCRIPTION})
 set(XML_DESCRIPTION ${LONG_DESCRIPTION})
 
-##
 ## ----- Modify section above to include all the details for your plugin ----- ##
 ## ----- Modify section below if there are special requirements for the plugin ----- ##
-##
 
 option(PLUGIN_USE_SVG "Use SVG graphics" ON)
 
@@ -124,7 +120,7 @@ message(STATUS "${CMLOC}Build type: ${CMAKE_BUILD_TYPE}")
 
 project(${PACKAGE})
 
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;")
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 ##=======================================
 include("PluginSetup")
@@ -134,26 +130,20 @@ include("PluginSetup")
 ## ----- Modify section below if there are special requirements for the plugin ----- ##
 ##
 
-set(CMAKE_VERBOSE_MAKEFILE ON)
+set(CMAKE_VERBOSE_MAKEFILE "Activate verbose mode for make files" ON)
 
 option(Plugin_CXX11 "Use c++11" OFF)
 
-#--- For Weatherfax insert Portaudio Section here  
 
-##
 ## ----- Modify section above if there are special requirements for the plugin ----- ##
 ## ----- do not change next section - needed to configure build process ----- ##
-##
 ##=======================================
 include("PluginConfigure")
 ##=======================================
-##
 ## ----- do not change section above - needed to configure build process ----- ##
 ## ----- Change below to match project requirements for source, headers, etc. ----- ##
-#
 
-#add_definitions(-DUSE_S57)
-#ADD_DEFINITIONS( "--std=gnu++11" )
+add_definitions(-DUSE_S57)
 
 SET(SRCS
             src/pypilot_pi.cpp
@@ -165,8 +155,24 @@ SET(SRCS
             src/pypilotClientDialog.cpp
             src/pypilotUI.cpp
             src/icons.cpp
-            api-16/ocpn_plugin.h	
 	)
+
+SET(HDRS
+            src/CalibrationPlot.h
+            src/ConfigurationDialog.h
+			src/GainsDialog.h
+            src/icons.h
+            src/msvcdefs.h
+            src/pypilot_client.h
+            src/pypilot_pi.h
+            src/pypilotClientDialog.h
+            src/pypilotDialog.h
+            src/pypilotUI.h
+            src/StatisticsDialog.h
+            src/wxWTranslateCatalog.h
+    )
+
+
 if(NOT QT_ANDROID)
   SET(SRCS ${SRCS}
      src/CalibrationDialog.cpp
@@ -174,28 +180,35 @@ if(NOT QT_ANDROID)
      )
 endif(NOT QT_ANDROID)
 
-	
+
 #added for android
 set(LIBHDRS
     libs/GL/gl.h
     libs/GL/gl_private.h
     libs/GL/glext.h
     libs/GL/glu.h
-)
+    libs/wx/include/json_defs.h
+    libs/wx/include/jsonreader.h
+    libs/wx/include/jsonval.h
+    libs/wx/include/jsonwriter.h)
 
 add_definitions(-DPLUGIN_USE_SVG)
 
 ##
-# Modify/configure 'Include' Directories below for the Plugin
+## Modify/configure 'Include' Directories below for the Plugin
 ##
+
+# include_directories(BEFORE ${PROJECT_SOURCE_DIR}/include)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/)
-include_directories(BEFORE ${PROJECT_SOURCE_DIR}/api-16)
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/ocpn-api)
+# include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/wx/include)
+# include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/wxJSON/include)
+# may need some of these later
 
 ## These are NOT used in Testplugin, used for other plugins
 ##=======================================
 include("PluginJSON")
 include("PluginGL")
-#include("PluginNMEA") #not for pypilot
 ##=======================================
 
 ##
@@ -203,28 +216,56 @@ include("PluginGL")
 ## This add_library  can be used in conditionals below.
 ####
 ##==========================================================================
-add_library(${PACKAGE_NAME} SHARED ${SRCS} ${HDRS} ${LIBSSRC}  ${SRC_JSON} ${SRC_PLUGINGL})
+# add_library(${PACKAGE_NAME} SHARED ${SRCS} ${LIBSSRC}  ${SRC_JSON} ${SRC_PLUGINGL})
 ##==========================================================================
+target_sources(${PACKAGE_NAME} PUBLIC ${SRCS} ${HDRS} ${LIBSSRC} ${SRC_JSON} ${SRC_PLUGINGL})
+
 #add_library(${PACKAGE_NAME} SHARED ${SRCS_PYPILOT} ${HDRS} ${EXTSRC} ${LIBSSRC}  ${SRC_JSON} ${SRC_PLUGINGL})
 # add_library(${PACKAGE_NAME} SHARED ${SRC_PYPILOT} ${SRC_JSON} ${SRC_PLUGINGL})
 
+
+# Pypilot does not require tinyxml 
+#if(NOT OCPN_FLATPAK_CONFIG)
+#    # Build environment not available when flatpak is being configured so following statements will not work
+#    message(STATUS "${CMLOC}Adding target link libraries to ${PACKAGE_NAME}")
+#
+#    add_subdirectory(libs/tinyxml)
+#
+#    target_link_libraries(${PACKAGE_NAME} ocpn::tinyxml)
+#endif(NOT OCPN_FLATPAK_CONFIG)
+
+
+
+
+add_definitions(-DTIXML_USE_STL)
+
+# This may be old, perhaps remove?
 #needed only if glshim project is included.
 if(QT_ANDROID)
   target_link_libraries(${PACKAGE_NAME}  GL_static)
-endif(QT_ANDROID)  
-
-add_definitions(-DTIXML_USE_STL)
+endif(QT_ANDROID)
 
 
 ##
 ## ----- Change above to match project requirements ----- ##
-## ----- do not change next section - needed to configure build process ----- ##
-##
+
+# Needed for android builds  - current
+if(QT_ANDROID)
+    include_directories(BEFORE ${qt_android_include})
+endif(QT_ANDROID)
+
+# Needed for all builds
+## Do not change next section - needed to configure build process ----- ##
 ##=======================================
 include("PluginInstall")
 include("PluginLocalization")
 include("PluginPackage")
 ##=======================================
-##
 ## ----- do not change section above - needed to configure build process ----- ##
-##								  
+
+
+message(STATUS "${CMLOC}include directories: ")
+get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
+foreach(dir ${dirs})
+    message(STATUS "${CMLOC}dir='${dir}'")
+endforeach()
