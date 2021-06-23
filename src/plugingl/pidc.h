@@ -54,6 +54,8 @@
 #endif
 #endif
 
+class GLUtesselator;
+
 void DrawGLThickLine( float x1, float y1, float x2, float y2, wxPen pen, bool b_hiqual );
 
 //----------------------------------------------------------------------------
