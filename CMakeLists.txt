@@ -18,8 +18,9 @@
 ## *   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                                       *
 ## ***
 #-----------------------------------------------------------------------------
-# Frontend2 Author: Jon Gough  Frontend2: v1.0.167.0  17/05/2021
+# Frontend2 Author: Jon Gough  Frontend2: v1.0.169.0  20/06/2021
 # ---------------------------------------------------------------------------
+## buildCI:yes useODAPI:no validateJSON:no
 ## ----- When changing this file do NOT change the order in which sections occur        ----- ##
 ## ----- Changes should only be made between the section blocks that identify where     ----- ##
 ## ----- these changes should be. The whole configuration process relies on this        ----- ##
@@ -55,9 +56,9 @@ set(LONG_DESCRIPTION "Control the free software autopilot pypilot. See http://py
 
 set(VERSION_MAJOR "0")
 set(VERSION_MINOR "22")
-set(VERSION_PATCH "6")
+set(VERSION_PATCH "7")
 set(VERSION_TWEAK "0")
-set(VERSION_DATE "08/06/2021")
+set(VERSION_DATE "22/06/2021")
 set(OCPN_MIN_VERSION "ov50")
 set(OCPN_API_VERSION_MAJOR "1")
 set(OCPN_API_VERSION_MINOR "16")
@@ -107,9 +108,7 @@ option(USE_GL "Enable OpenGL support" ON)
 message(STATUS "${CMLOC}USE_GL: ${USE_GL}")
 
 if("${CMAKE_BUILD_TYPE}" STREQUAL "")
-    set(CMAKE_BUILD_TYPE
-        "Release"
-        CACHE STRING "Choose the type of build" FORCE)
+    set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose the type of build" FORCE)
 endif("${CMAKE_BUILD_TYPE}" STREQUAL "")
 set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "" "Debug" "Release" "RelWithDebInfo" "MinSizeRel")
 message(STATUS "${CMLOC}Build type: ${CMAKE_BUILD_TYPE}")
