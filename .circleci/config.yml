@@ -341,7 +341,7 @@ jobs:
             image: ubuntu-2004:202010-01
         environment:
         - OCPN_TARGET: flatpak
-        - FLATPAK_BRANCH: stable
+        - FLATPAK_BRANCH: beta
         - CLOUDSMITH_PKG_EXT: gz
         - SDK_VER: 20.08
         steps:
