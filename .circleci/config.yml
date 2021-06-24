@@ -335,7 +335,8 @@ jobs:
             - run: ci/cloudsmith-upload.sh
     build-flatpak-arm64:
         machine:
-            image: circleci/classic:201808-01
+            image: ubuntu-2004:202101-01
+        resource_class: arm.medium
         environment:
         - OCPN_TARGET:  flatpak-arm64
         - FLATPAK_BRANCH: beta
