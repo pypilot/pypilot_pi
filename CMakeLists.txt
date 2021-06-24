@@ -55,8 +55,8 @@ set(LONG_DESCRIPTION "Control the free software autopilot pypilot. See http://py
 # SET(PACKAGE_NAME pypilot_pi)
 
 set(VERSION_MAJOR "0")
-set(VERSION_MINOR "22")
-set(VERSION_PATCH "9")
+set(VERSION_MINOR "24")
+set(VERSION_PATCH "0")
 set(VERSION_TWEAK "0")
 set(VERSION_DATE "23/06/2021")
 set(OCPN_MIN_VERSION "ov50")
