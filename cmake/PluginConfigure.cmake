@@ -200,7 +200,7 @@ if(OCPN_FLATPAK_CONFIG)
     if("${SDK_VER}"  STREQUAL "20.08")
         set(RUNTIME_VERSION "beta") 
     else("${SDK_VER}"  STREQUAL "20.08")
-        set(RUNTIME_VERSION "master") 
+        set(RUNTIME_VERSION "stable") 
     endif("${SDK_VER}"  STREQUAL "20.08")
         
     message(STATUS "${CMLOC}Checking OCPN_FLATPAK_CONFIG: ${OCPN_FLATPAK_CONFIG}, SDK_VER: ${SDK_VER}")
