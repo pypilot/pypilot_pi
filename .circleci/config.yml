@@ -57,7 +57,13 @@ parameters:
     run_build_android_armhf:
         type: boolean
         default: true
-
+    run_build_flatpak_x86_2008:
+        type: boolean
+        default: true
+    run_build_flatpak_x86_1808:
+        type: boolean
+        default: true
+    
 orbs:
     cloudsmith: cloudsmith/cloudsmith@1.0.4
 
@@ -306,6 +312,38 @@ jobs:
         - OCPN_TARGET:  flatpak
         - CLOUDSMITH_PKG_EXT: gz
         - SDK_VER: 18.08
+        steps:
+        - checkout
+        - run: chmod a+x ci/*.sh
+        - run: bash ci/circleci-build-flatpak.sh
+        - when:
+            condition: <<pipeline.parameters.run_workflow_deploy>>
+            steps:
+            - run: ci/cloudsmith-upload.sh
+    build-flatpak-x86-1808:
+        machine:
+            image: ubuntu-2004:202010-01
+        environment:
+        - OCPN_TARGET: flatpak
+        - FLATPAK_BRANCH: stable
+        - CLOUDSMITH_PKG_EXT: gz
+        - SDK_VER: 18.08
+        steps:
+        - checkout
+        - run: chmod a+x ci/*.sh
+        - run: bash ci/circleci-build-flatpak.sh
+        - when:
+            condition: <<pipeline.parameters.run_workflow_deploy>>
+            steps:
+            - run: ci/cloudsmith-upload.sh
+    build-flatpak-x86-2008:
+        machine:
+            image: circleci/classic:201808-01
+        environment:
+        - OCPN_TARGET: flatpak
+        - FLATPAK_BRANCH: beta
+        - CLOUDSMITH_PKG_EXT: gz
+        - SDK_VER: 20.08
         steps:
         - checkout
         - run: chmod a+x ci/*.sh
@@ -594,6 +632,28 @@ workflows:
         when: <<pipeline.parameters.run_build_android_armhf>>
         jobs:
         - build-android-armhf:
+            filters:
+                branches:
+                    ignore:
+                    - devel
+                    - tmp
+                tags:
+                    only: /.*/
+    build_17:
+        when: <<pipeline.parameters.run_build_flatpak_x86_2008>>
+        jobs:
+        - build-flatpak-x86-2008:
+            filters:
+                branches:
+                    ignore:
+                    - devel
+                    - tmp
+                tags:
+                    only: /.*/
+    build_18:
+        when: <<pipeline.parameters.run_build_flatpak_x86_1808>>
+        jobs:
+        - build-flatpak-x86-1808:
             filters:
                 branches:
                     ignore:
