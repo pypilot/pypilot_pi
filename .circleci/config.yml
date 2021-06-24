@@ -338,7 +338,7 @@ jobs:
             - run: ci/cloudsmith-upload.sh
     build-flatpak-x86-2008:
         machine:
-            image: ubuntu-2004:202010-01
+            image: circleci/classic:201808-01
         environment:
         - OCPN_TARGET: flatpak
         - FLATPAK_BRANCH: beta
