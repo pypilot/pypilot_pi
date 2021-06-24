@@ -194,7 +194,7 @@ configure_file(${PROJECT_SOURCE_DIR}/cmake/in-files/cloudsmith-upload.sh.in ${CM
 configure_file(${PROJECT_SOURCE_DIR}/cmake/in-files/PluginCPackOptions.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/PluginCPackOptions.cmake @ONLY)
 
 if(OCPN_FLATPAK_CONFIG)
-    set(SDK_VER $ENV{SDK_VER})
+    #set(SDK_VER $ENV{SDK_VER})
 #  Hack for temporary "beta" status of 20.08 runtime
 #  See new substitution variable in cmake/in-files/org.opencpn.OpenCPN.Plugin.yaml.in
     if("${SDK_VER}"  STREQUAL "20.08")
