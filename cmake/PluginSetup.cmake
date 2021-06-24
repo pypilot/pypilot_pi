@@ -63,7 +63,8 @@ message(STATUS "${CMLOC}OCPN_FLATPAK_CONFIG: ${OCPN_FLATPAK_CONFIG}, UNIX: ${UNI
 if(OCPN_FLATPAK_CONFIG OR OCPN_FLATPAK_BUILD)
     set(PKG_TARGET "flatpak")
     set(SDK_VER $ENV{SDK_VER})
-    set(PKG_TARGET_VERSION "${SDK_VER}") # As of flatpak/*yaml
+    set(PKG_TARGET_VERSION ${SDK_VER}) # As of flatpak/*yaml
+    message(STATUS "${CMLOC}PKG_TARGET_VERSION: ${PKG_TARGET_VERSION}")
 elseif(MINGW)
     set(PKG_TARGET "mingw")
     if(CMAKE_SYSTEM_VERSION)
