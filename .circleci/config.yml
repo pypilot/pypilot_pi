@@ -38,7 +38,7 @@ parameters:
         default: true
     run_build_flatpack:
         type: boolean
-        default: true
+        default: false
     run_build_flatpack-arm64:
         type: boolean
         default: true
@@ -320,22 +320,6 @@ jobs:
             condition: <<pipeline.parameters.run_workflow_deploy>>
             steps:
             - run: ci/cloudsmith-upload.sh
-    build-flatpak-x86-1808:
-        machine:
-            image: ubuntu-2004:202010-01
-        environment:
-        - OCPN_TARGET: flatpak
-        - FLATPAK_BRANCH: stable
-        - CLOUDSMITH_PKG_EXT: gz
-        - SDK_VER: 18.08
-        steps:
-        - checkout
-        - run: chmod a+x ci/*.sh
-        - run: bash ci/circleci-build-flatpak.sh
-        - when:
-            condition: <<pipeline.parameters.run_workflow_deploy>>
-            steps:
-            - run: ci/cloudsmith-upload.sh
     build-flatpak-x86-2008:
         machine:
             image: circleci/classic:201808-01
@@ -352,9 +336,26 @@ jobs:
             condition: <<pipeline.parameters.run_workflow_deploy>>
             steps:
             - run: ci/cloudsmith-upload.sh
-    build-flatpak-arm64:
+    build-flatpak-x86-1808:
         machine:
             image: circleci/classic:201808-01
+        environment:
+        - OCPN_TARGET: flatpak
+        - FLATPAK_BRANCH: stable
+        - CLOUDSMITH_PKG_EXT: gz
+        - SDK_VER: 18.08
+        steps:
+        - checkout
+        - run: chmod a+x ci/*.sh
+        - run: bash ci/circleci-build-flatpak.sh
+        - when:
+            condition: <<pipeline.parameters.run_workflow_deploy>>
+            steps:
+            - run: ci/cloudsmith-upload.sh
+    build-flatpak-arm64:
+        machine:
+            image: ubuntu-2004:202101-01
+        resource_class: arm.medium
         environment:
         - OCPN_TARGET:  flatpak-arm64
         - FLATPAK_BRANCH: beta

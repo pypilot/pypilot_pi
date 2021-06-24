@@ -158,8 +158,8 @@ if(UNIX AND NOT APPLE)
     string(TOLOWER "${PKG_TARGET}" PKG_TARGET)
 
     # Generate architecturally uniques names for linux output packages
-    if(ARCH MATCHES "arm64")
-        set(PKG_TARGET_ARCH "-arm64")
+    if(ARCH MATCHES "aarch64")
+        set(PKG_TARGET_ARCH "-aarch64")
     elseif(ARCH MATCHES "armhf")
         set(PKG_TARGET_ARCH "-armhf")
     elseif(ARCH MATCHES "i386")
@@ -194,7 +194,15 @@ configure_file(${PROJECT_SOURCE_DIR}/cmake/in-files/cloudsmith-upload.sh.in ${CM
 configure_file(${PROJECT_SOURCE_DIR}/cmake/in-files/PluginCPackOptions.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/PluginCPackOptions.cmake @ONLY)
 
 if(OCPN_FLATPAK_CONFIG)
-    set(SDK_VER $ENV{SDK_VER})
+    #set(SDK_VER $ENV{SDK_VER})
+#  Hack for temporary "beta" status of 20.08 runtime
+#  See new substitution variable in cmake/in-files/org.opencpn.OpenCPN.Plugin.yaml.in
+    if("${SDK_VER}"  STREQUAL "20.08")
+        set(RUNTIME_VERSION "beta") 
+    else("${SDK_VER}"  STREQUAL "20.08")
+        set(RUNTIME_VERSION "stable") 
+    endif("${SDK_VER}"  STREQUAL "20.08")
+        
     message(STATUS "${CMLOC}Checking OCPN_FLATPAK_CONFIG: ${OCPN_FLATPAK_CONFIG}, SDK_VER: ${SDK_VER}")
     configure_file(${PROJECT_SOURCE_DIR}/cmake/in-files/org.opencpn.OpenCPN.Plugin.yaml.in ${CMAKE_CURRENT_BINARY_DIR}/flatpak/org.opencpn.OpenCPN.Plugin.${PACKAGE}.yaml)
 
