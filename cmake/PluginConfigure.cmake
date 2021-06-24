@@ -158,8 +158,8 @@ if(UNIX AND NOT APPLE)
     string(TOLOWER "${PKG_TARGET}" PKG_TARGET)
 
     # Generate architecturally uniques names for linux output packages
-    if(ARCH MATCHES "arm64")
-        set(PKG_TARGET_ARCH "-arm64")
+    if(ARCH MATCHES "aarch64")
+        set(PKG_TARGET_ARCH "-aarch64")
     elseif(ARCH MATCHES "armhf")
         set(PKG_TARGET_ARCH "-armhf")
     elseif(ARCH MATCHES "i386")
