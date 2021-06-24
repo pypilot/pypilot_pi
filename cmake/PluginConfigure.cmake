@@ -195,6 +195,9 @@ configure_file(${PROJECT_SOURCE_DIR}/cmake/in-files/PluginCPackOptions.cmake.in 
 
 if(OCPN_FLATPAK_CONFIG)
     set(SDK_VER $ENV{SDK_VER})
+#  Hack for temporary "beta" status of 20.08 runtime
+#  See new substitution variable in cmake/in-files/org.opencpn.OpenCPN.Plugin.yaml.in
+    set(RUNTIME_VERSION "beta") 
     message(STATUS "${CMLOC}Checking OCPN_FLATPAK_CONFIG: ${OCPN_FLATPAK_CONFIG}, SDK_VER: ${SDK_VER}")
     configure_file(${PROJECT_SOURCE_DIR}/cmake/in-files/org.opencpn.OpenCPN.Plugin.yaml.in ${CMAKE_CURRENT_BINARY_DIR}/flatpak/org.opencpn.OpenCPN.Plugin.${PACKAGE}.yaml)
 
