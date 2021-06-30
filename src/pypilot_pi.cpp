@@ -23,6 +23,12 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,  USA.         *
  ***************************************************************************
  */
+#include "wx/wxprec.h"
+
+#ifndef  WX_PRECOMP
+  #include "wx/wx.h"
+#endif //precompiled headers
+
 
 #include <wx/wx.h>
 #include <wx/socket.h>
@@ -101,9 +107,22 @@ int pypilot_pi::Init(void)
 {
     AddLocaleCatalog( PLUGIN_CATALOG_NAME );
 
+/*   OLD _img code
     m_leftclick_tool_id  = InsertPlugInTool
         (_T(""), _img_pypilot_grey, _img_pypilot_grey, wxITEM_NORMAL,
          _("pypilot"), _T(""), NULL, PYPILOT_TOOL_POSITION, 0, this);
+*/
+
+// See line 265 for various colored icons for Mode - sail, compass, etc.
+#ifdef PLUGIN_USE_SVG
+    m_leftclick_tool_id = InsertPlugInToolSVG( _T( "Pypilot" ), _svg_pypilot, _svg_pypilot_rollover, _svg_pypilot_toggled, wxITEM_CHECK, _( "Pypilot" ), _T( "" ), NULL, PYPILOT_TOOL_POSITION, 0, this);
+#else
+    m_leftclick_tool_id  = InsertPlugInTool
+        (_T(""), _img_plots, _img_plots, wxITEM_NORMAL,
+         _("Plots"), _T(""), NULL, PYPILOT_TOOL_POSITION, 0, this);
+#endif
+
+
     
     m_Timer.Connect(wxEVT_TIMER, wxTimerEventHandler
                     ( pypilot_pi::OnTimer ), NULL, this);
