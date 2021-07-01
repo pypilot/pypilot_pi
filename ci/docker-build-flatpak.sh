@@ -13,14 +13,7 @@ su -c "dnf install -y sudo cmake gcc-c++ flatpak-builder flatpak make tar"
 flatpak remote-add --user --if-not-exists flathub \
     https://flathub.org/repo/flathub.flatpakrepo
 
-#  Removed, duckdns.org is deprecated
-#ocpnfound=$(flatpak list | grep org.opencpn.OpenCPN | awk '{print $1}')
-#if [ "" = "$ocpnfound" ]; then
-#   flatpak install --user  -y \
-#       http://opencpn.duckdns.org/opencpn/opencpn.flatpakref
-#fi
-
-if [ "$FLATPAK_BRANCH" = 'beta' ]; then
+if [ "$FLATPAK_BRANCH" = "beta" ]; then
         flatpak install --user -y flathub org.freedesktop.Sdk//20.08 >/dev/null
         flatpak remote-add --user --if-not-exists flathub-beta \
             https://flathub.org/beta-repo/flathub-beta.flatpakrepo
@@ -34,7 +27,6 @@ else
             org.opencpn.OpenCPN >/dev/null
         FLATPAK_BRANCH='stable'
 fi
-
 
 #rm -rf flatpak/.flatpak-builder && rm -rf build && mkdir build && cd build
 rm -rf build && mkdir build && cd build
