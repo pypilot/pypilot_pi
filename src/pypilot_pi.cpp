@@ -623,7 +623,7 @@ wxString pypilot_pi::StandardPath()
 #ifdef __WXOSX__
     // Compatibility with pre-OCPN-4.2; move config dir to
     // ~/Library/Preferences/opencpn if it exists
-    wxString oldPath = (stdpath.GetUserConfigDir() + s + _T("plugins") + s + _T("weatherfax"));
+    wxString oldPath = (stdPath.GetUserConfigDir() + s + _T("plugins") + s + _T("weatherfax"));
     if (wxDirExists(oldPath) && !wxDirExists(stdPath)) {
 	wxLogMessage("weatherfax_pi: moving config dir %s to %s", oldPath, stdPath);
 	wxRenameFile(oldPath, stdPath);
