@@ -49,16 +49,19 @@ set(TITLE_NAME "PYPILOT")
 set(PACKAGE_CONTACT "Sean D'Epagnier")
 set(PACKAGE "pypilot")
 set(SHORT_DESCRIPTION "Pypilot PlugIn for OpenCPN")
-set(LONG_DESCRIPTION "Control the free software autopilot pypilot. See http://pypilot.org for more details. The plugin connects to pypilot directly implementing a control interface to configure, calibrate and command pypilot from opencpn. For more control and tuning route-following logic, consider the autopilot route plugin.")
+set(LONG_DESCRIPTION "Control the free software autopilot pypilot. See http://pypilot.org for more details. /n / "
+"The plugin connects to pypilot directly implementing a control interface to configure, /n / "
+"calibrate and command pypilot from opencpn. For more control and tuning route-following /n / "
+"logic, consider the autopilot route plugin. /n / ")
 
 # PROJECT(pypilot_pi)
 # SET(PACKAGE_NAME pypilot_pi)
 
 set(VERSION_MAJOR "0")
 set(VERSION_MINOR "24")
-set(VERSION_PATCH "2")
+set(VERSION_PATCH "3")
 set(VERSION_TWEAK "0")
-set(VERSION_DATE "30/06/2021")
+set(VERSION_DATE "01/07/2021")
 set(OCPN_MIN_VERSION "ov50")
 set(OCPN_API_VERSION_MAJOR "1")
 set(OCPN_API_VERSION_MINOR "16")
@@ -200,8 +203,7 @@ add_definitions(-DPLUGIN_USE_SVG)
 # include_directories(BEFORE ${PROJECT_SOURCE_DIR}/include)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/ocpn-api)
-# include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/wx/include)
-# include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/wxJSON/include)
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/wxJSON/include)
 # may need some of these later
 
 ## These are NOT used in Testplugin, used for other plugins
@@ -215,10 +217,9 @@ include("PluginGL")
 ## This add_library  can be used in conditionals below.
 ####
 ##==========================================================================
-# add_library(${PACKAGE_NAME} SHARED ${SRCS} ${LIBSSRC}  ${SRC_JSON} ${SRC_PLUGINGL})
-##==========================================================================
 target_sources(${PACKAGE_NAME} PUBLIC ${SRCS} ${HDRS} ${LIBSSRC} ${SRC_JSON} ${SRC_PLUGINGL})
-
+##==========================================================================
+# add_library(${PACKAGE_NAME} SHARED ${SRCS} ${LIBSSRC}  ${SRC_JSON} ${SRC_PLUGINGL})
 #add_library(${PACKAGE_NAME} SHARED ${SRCS_PYPILOT} ${HDRS} ${EXTSRC} ${LIBSSRC}  ${SRC_JSON} ${SRC_PLUGINGL})
 # add_library(${PACKAGE_NAME} SHARED ${SRC_PYPILOT} ${SRC_JSON} ${SRC_PLUGINGL})
 
@@ -232,8 +233,6 @@ target_sources(${PACKAGE_NAME} PUBLIC ${SRCS} ${HDRS} ${LIBSSRC} ${SRC_JSON} ${S
 #
 #    target_link_libraries(${PACKAGE_NAME} ocpn::tinyxml)
 #endif(NOT OCPN_FLATPAK_CONFIG)
-
-
 
 
 add_definitions(-DTIXML_USE_STL)

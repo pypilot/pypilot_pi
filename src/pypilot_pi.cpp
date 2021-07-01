@@ -610,6 +610,33 @@ void pypilot_pi::SetPluginMessage(wxString &message_id, wxString &message_body)
 
 wxString pypilot_pi::StandardPath()
 {
+    wxString s = wxFileName::GetPathSeparator();
+    wxString stdPath  = *GetpPrivateApplicationDataLocation();
+
+    stdPath += s + _T("plugins");
+	
+    if (!wxDirExists(stdPath))
+      wxMkdir(stdPath);
+
+    stdPath += s + _T("pypilot");
+
+#ifdef __WXOSX__
+    // Compatibility with pre-OCPN-4.2; move config dir to
+    // ~/Library/Preferences/opencpn if it exists
+    wxString oldPath = (std_path.GetUserConfigDir() + s + _T("plugins") + s + _T("weatherfax"));
+    if (wxDirExists(oldPath) && !wxDirExists(stdPath)) {
+	wxLogMessage("weatherfax_pi: moving config dir %s to %s", oldPath, stdPath);
+	wxRenameFile(oldPath, stdPath);
+    }
+#endif
+
+	if (!wxDirExists(stdPath))
+		wxMkdir(stdPath);
+
+    return stdPath;
+}
+
+/*   OLD code
     wxStandardPathsBase& std_path = wxStandardPathsBase::Get();
     wxString s = wxFileName::GetPathSeparator();
 
@@ -643,6 +670,8 @@ wxString pypilot_pi::StandardPath()
     stdPath += s;
     return stdPath;
 }
+*/
+
 
 double pypilot_pi::Declination()
 {
