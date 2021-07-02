@@ -620,6 +620,7 @@ wxString pypilot_pi::StandardPath()
 
     stdPath += s + _T("pypilot");
 
+/*
 #ifdef __WXOSX__
     // Compatibility with pre-OCPN-4.2; move config dir to
     // ~/Library/Preferences/opencpn if it exists
@@ -629,7 +630,7 @@ wxString pypilot_pi::StandardPath()
 	wxRenameFile(oldPath, stdPath);
     }
 #endif
-
+*/
 	if (!wxDirExists(stdPath))
 		wxMkdir(stdPath);
 
