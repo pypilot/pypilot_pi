@@ -23,6 +23,12 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,  USA.         *
  ***************************************************************************
  */
+#include "wx/wxprec.h"
+
+#ifndef  WX_PRECOMP
+  #include "wx/wx.h"
+#endif //precompiled headers
+
 
 #include <wx/wx.h>
 #include <wx/socket.h>
@@ -101,9 +107,22 @@ int pypilot_pi::Init(void)
 {
     AddLocaleCatalog( PLUGIN_CATALOG_NAME );
 
+/*   OLD _img code
     m_leftclick_tool_id  = InsertPlugInTool
         (_T(""), _img_pypilot_grey, _img_pypilot_grey, wxITEM_NORMAL,
          _("pypilot"), _T(""), NULL, PYPILOT_TOOL_POSITION, 0, this);
+*/
+
+// See line 265 for various colored icons for Mode - sail, compass, etc.
+#ifdef PLUGIN_USE_SVG
+    m_leftclick_tool_id = InsertPlugInToolSVG( _T( "Pypilot" ), _svg_pypilot, _svg_pypilot_rollover, _svg_pypilot_toggled, wxITEM_CHECK, _( "Pypilot" ), _T( "" ), NULL, PYPILOT_TOOL_POSITION, 0, this);
+#else
+    m_leftclick_tool_id  = InsertPlugInTool
+        (_T(""), _img_plots, _img_plots, wxITEM_NORMAL,
+         _("Plots"), _T(""), NULL, PYPILOT_TOOL_POSITION, 0, this);
+#endif
+
+
     
     m_Timer.Connect(wxEVT_TIMER, wxTimerEventHandler
                     ( pypilot_pi::OnTimer ), NULL, this);
@@ -591,6 +610,34 @@ void pypilot_pi::SetPluginMessage(wxString &message_id, wxString &message_body)
 
 wxString pypilot_pi::StandardPath()
 {
+    wxString s = wxFileName::GetPathSeparator();
+    wxString stdPath  = *GetpPrivateApplicationDataLocation();
+
+    stdPath += s + _T("plugins");
+	
+    if (!wxDirExists(stdPath))
+      wxMkdir(stdPath);
+
+    stdPath += s + _T("pypilot");
+
+/*
+#ifdef __WXOSX__
+    // Compatibility with pre-OCPN-4.2; move config dir to
+    // ~/Library/Preferences/opencpn if it exists
+    wxString oldPath = (stdPath.GetUserConfigDir() + s + _T("plugins") + s + _T("weatherfax"));
+    if (wxDirExists(oldPath) && !wxDirExists(stdPath)) {
+	wxLogMessage("weatherfax_pi: moving config dir %s to %s", oldPath, stdPath);
+	wxRenameFile(oldPath, stdPath);
+    }
+#endif
+*/
+	if (!wxDirExists(stdPath))
+		wxMkdir(stdPath);
+
+    return stdPath;
+}
+
+/*   OLD code
     wxStandardPathsBase& std_path = wxStandardPathsBase::Get();
     wxString s = wxFileName::GetPathSeparator();
 
@@ -624,6 +671,8 @@ wxString pypilot_pi::StandardPath()
     stdPath += s;
     return stdPath;
 }
+*/
+
 
 double pypilot_pi::Declination()
 {

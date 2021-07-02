@@ -18,8 +18,9 @@
 ## *   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                                       *
 ## ***
 #-----------------------------------------------------------------------------
-# Frontend2 Author: Jon Gough  Frontend2: v1.0.167.0  17/05/2021
+# Frontend2 Author: Jon Gough  Frontend2: v1.0.173.0  02/07/2021
 # ---------------------------------------------------------------------------
+## buildCI:yes useODAPI:no validateJSON:no
 ## ----- When changing this file do NOT change the order in which sections occur        ----- ##
 ## ----- Changes should only be made between the section blocks that identify where     ----- ##
 ## ----- these changes should be. The whole configuration process relies on this        ----- ##
@@ -48,16 +49,19 @@ set(TITLE_NAME "PYPILOT")
 set(PACKAGE_CONTACT "Sean D'Epagnier")
 set(PACKAGE "pypilot")
 set(SHORT_DESCRIPTION "Pypilot PlugIn for OpenCPN")
-set(LONG_DESCRIPTION "Control the free software autopilot pypilot. See http://pypilot.org for more details. The plugin connects to pypilot directly implementing a control interface to configure, calibrate and command pypilot from opencpn. For more control and tuning route-following logic, consider the autopilot route plugin.")
+set(LONG_DESCRIPTION "Control the free software autopilot pypilot. See http://pypilot.org for more details. /n / "
+"The plugin connects to pypilot directly implementing a control interface to configure, /n / "
+"calibrate and command pypilot from opencpn. For more control and tuning route-following /n / "
+"logic, consider the autopilot route plugin. /n / ")
 
 # PROJECT(pypilot_pi)
 # SET(PACKAGE_NAME pypilot_pi)
 
 set(VERSION_MAJOR "0")
-set(VERSION_MINOR "22")
-set(VERSION_PATCH "6")
-set(VERSION_TWEAK "0")
-set(VERSION_DATE "08/06/2021")
+set(VERSION_MINOR "24")
+set(VERSION_PATCH "3")
+set(VERSION_TWEAK "7")
+set(VERSION_DATE "01/07/2021")
 set(OCPN_MIN_VERSION "ov50")
 set(OCPN_API_VERSION_MAJOR "1")
 set(OCPN_API_VERSION_MINOR "16")
@@ -80,12 +84,13 @@ set(PROD "prod")    #Standard Repos
 set(BETA "beta")    #Standard Repos
 set(ALPHA "alpha")  #Standard Repos
 
-set(CLOUDSMITH_USER "opencpn")
-#set(CLOUDSMITH_USER "rick-gleason")
 
 # Set if yourCloudsmith Base Repository name does not match your Git Repository name.
 #set(CLOUDSMITH_BASE_REPOSITORY "opencpn-plugins") #Rick's customization
 set (CLOUDSMITH_BASE_REPOSITORY "pypilot")  #without the pi
+# Set the following to use OpenCPN cloudsmith repositories instead of own repositories	  
+set(CLOUDSMITH_USER "opencpn")
+#set(CLOUDSMITH_USER "rick-gleason")
 
 set(XML_INFO_URL "https://opencpn.org/wiki/dokuwiki/doku.php?id=opencpn:opencpn_user_manual:plugins:safety:odraw1.6_pi")
 set(XML_SUMMARY ${SHORT_DESCRIPTION})
@@ -98,6 +103,8 @@ option(PLUGIN_USE_SVG "Use SVG graphics" ON)
 
 set(CMAKE_CXX_STANDARD 11)
 
+# Use local version of GLU library
+# set(USE_LOCAL_GLU TRUE)
 # Prefer libGL.so to libOpenGL.so, see CMP0072
 set(OpenGL_GL_PREFERENCE "LEGACY")
 # Don't use local version of GLU library
@@ -107,9 +114,7 @@ option(USE_GL "Enable OpenGL support" ON)
 message(STATUS "${CMLOC}USE_GL: ${USE_GL}")
 
 if("${CMAKE_BUILD_TYPE}" STREQUAL "")
-    set(CMAKE_BUILD_TYPE
-        "Release"
-        CACHE STRING "Choose the type of build" FORCE)
+    set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose the type of build" FORCE)
 endif("${CMAKE_BUILD_TYPE}" STREQUAL "")
 set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "" "Debug" "Release" "RelWithDebInfo" "MinSizeRel")
 message(STATUS "${CMLOC}Build type: ${CMAKE_BUILD_TYPE}")
@@ -176,10 +181,11 @@ SET(HDRS
 if(NOT QT_ANDROID)
   SET(SRCS ${SRCS}
      src/CalibrationDialog.cpp
-     src/CalibrationPlot.cpp
+     src/CalibrationPlot.cpp						   
      )
 endif(NOT QT_ANDROID)
 
+set(LIBSSRC libs/wxJSON/src/jsonreader.cpp libs/wxJSON/src/jsonval.cpp libs/wxJSON/src/jsonwriter.cpp)
 
 #added for android
 set(LIBHDRS
@@ -187,22 +193,31 @@ set(LIBHDRS
     libs/GL/gl_private.h
     libs/GL/glext.h
     libs/GL/glu.h
-    libs/wx/include/json_defs.h
-    libs/wx/include/jsonreader.h
-    libs/wx/include/jsonval.h
-    libs/wx/include/jsonwriter.h)
+    libs/wxJSON/include/json_defs.h
+    libs/wxJSON/include/jsonreader.h
+    libs/wxJSON/include/jsonval.h
+    libs/wxJSON/include/jsonwriter.h)
 
 add_definitions(-DPLUGIN_USE_SVG)
+
+set(EXTINCLUDE_DIR ${EXTINCLUDE_DIR} extinclude libs/ocpn-api/)
 
 ##
 ## Modify/configure 'Include' Directories below for the Plugin
 ##
 
-# include_directories(BEFORE ${PROJECT_SOURCE_DIR}/include)
+# Not doing json validator		 
+
+
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/include)
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/ocpninclude)
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/ocpnsrc/glu/include)
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/${EXTINCLUDE_DIR})
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/)
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/glshim)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/ocpn-api)
-# include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/wx/include)
-# include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/wxJSON/include)
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/wxJSON/include)
+
 # may need some of these later
 
 ## These are NOT used in Testplugin, used for other plugins
@@ -216,10 +231,9 @@ include("PluginGL")
 ## This add_library  can be used in conditionals below.
 ####
 ##==========================================================================
-# add_library(${PACKAGE_NAME} SHARED ${SRCS} ${LIBSSRC}  ${SRC_JSON} ${SRC_PLUGINGL})
+target_sources(${PACKAGE_NAME} PUBLIC ${SRCS} ${HDRS} ${OCPNSRC} ${EXTSRC} ${LIBSSRC}  ${SRC_JSON} ${SRC_PLUGINGL})
 ##==========================================================================
-target_sources(${PACKAGE_NAME} PUBLIC ${SRCS} ${HDRS} ${LIBSSRC} ${SRC_JSON} ${SRC_PLUGINGL})
-
+# add_library(${PACKAGE_NAME} SHARED ${SRCS} ${LIBSSRC}  ${SRC_JSON} ${SRC_PLUGINGL})
 #add_library(${PACKAGE_NAME} SHARED ${SRCS_PYPILOT} ${HDRS} ${EXTSRC} ${LIBSSRC}  ${SRC_JSON} ${SRC_PLUGINGL})
 # add_library(${PACKAGE_NAME} SHARED ${SRC_PYPILOT} ${SRC_JSON} ${SRC_PLUGINGL})
 
@@ -235,16 +249,10 @@ target_sources(${PACKAGE_NAME} PUBLIC ${SRCS} ${HDRS} ${LIBSSRC} ${SRC_JSON} ${S
 #endif(NOT OCPN_FLATPAK_CONFIG)
 
 
-
-
 add_definitions(-DTIXML_USE_STL)
 
-# This may be old, perhaps remove?
-#needed only if glshim project is included.
-if(QT_ANDROID)
-  target_link_libraries(${PACKAGE_NAME}  GL_static)
-endif(QT_ANDROID)
 
+# Not doing JSOn Schema Validator								
 
 ##
 ## ----- Change above to match project requirements ----- ##

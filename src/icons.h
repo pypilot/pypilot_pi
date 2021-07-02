@@ -7,6 +7,12 @@
 #	include <wx/wx.h>
 #endif
 
+#include "ocpn_plugin.h"
+
+#include <wx/filename.h>
+#include <wx/mstream.h>
+
+
 extern void initialize_images(void);
 
 extern wxBitmap *_img_pypilot_blue;
@@ -15,5 +21,13 @@ extern wxBitmap *_img_pypilot_green;
 extern wxBitmap *_img_pypilot_grey;
 extern wxBitmap *_img_pypilot_red;
 extern wxBitmap *_img_pypilot_yellow;
+
+
+#ifdef PLUGIN_USE_SVG
+extern wxString _svg_pypilot;
+extern wxString _svg_pypilot_rollover;
+extern wxString _svg_pypilot_toggled;
+#endif
+
 
 #endif /* ICONS_H */
