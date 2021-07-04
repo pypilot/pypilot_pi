@@ -49,19 +49,21 @@ set(TITLE_NAME "PYPILOT")
 set(PACKAGE_CONTACT "Sean D'Epagnier")
 set(PACKAGE "pypilot")
 set(SHORT_DESCRIPTION "Pypilot PlugIn for OpenCPN")
-set(LONG_DESCRIPTION "Control the free software autopilot pypilot. See http://pypilot.org for more details. /n / "
-"The plugin connects to pypilot directly implementing a control interface to configure, /n / "
-"calibrate and command pypilot from opencpn. For more control and tuning route-following /n / "
-"logic, consider the autopilot route plugin. /n / ")
+set(LONG_DESCRIPTION 
+"Control the free software autopilot pypilot. See http://pypilot.org for more details. /n /"
+"The plugin connects to pypilot directly implementing a control interface to configure, /n /"
+"calibrate and command pypilot from opencpn. For more control and tuning route-following /n /"
+"logic, consider the autopilot route plugin. /n /"
+)
 
 # PROJECT(pypilot_pi)
 # SET(PACKAGE_NAME pypilot_pi)
 
 set(VERSION_MAJOR "0")
 set(VERSION_MINOR "24")
-set(VERSION_PATCH "3")
-set(VERSION_TWEAK "7")
-set(VERSION_DATE "01/07/2021")
+set(VERSION_PATCH "4")
+set(VERSION_TWEAK "0")
+set(VERSION_DATE "02/07/2021")
 set(OCPN_MIN_VERSION "ov50")
 set(OCPN_API_VERSION_MAJOR "1")
 set(OCPN_API_VERSION_MINOR "16")
