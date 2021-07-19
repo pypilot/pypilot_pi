@@ -47,9 +47,17 @@ pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxS
 	fgSizer37->Add( fgSizer13, 1, wxEXPAND, 5 );
 
 	wxFlexGridSizer* fgSizer44;
-	fgSizer44 = new wxFlexGridSizer( 0, 1, 0, 0 );
+	fgSizer44 = new wxFlexGridSizer( 0, 2, 0, 0 );
+	fgSizer44->AddGrowableCol( 1 );
 	fgSizer44->SetFlexibleDirection( wxBOTH );
 	fgSizer44->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+
+	wxFlexGridSizer* fgSizer50;
+	fgSizer50 = new wxFlexGridSizer( 0, 1, 0, 0 );
+	fgSizer50->AddGrowableCol( 0 );
+	fgSizer50->AddGrowableRow( 0 );
+	fgSizer50->SetFlexibleDirection( wxBOTH );
+	fgSizer50->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
 	wxFlexGridSizer* fgSizer39;
 	fgSizer39 = new wxFlexGridSizer( 1, 0, 0, 0 );
@@ -75,7 +83,7 @@ pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxS
 	fgSizer39->Add( m_stServoFlags, 0, wxALL|wxEXPAND, 5 );
 
 
-	fgSizer44->Add( fgSizer39, 1, wxEXPAND, 5 );
+	fgSizer50->Add( fgSizer39, 1, wxEXPAND, 5 );
 
 	wxFlexGridSizer* fgSizer45;
 	fgSizer45 = new wxFlexGridSizer( 0, 2, 0, 0 );
@@ -169,6 +177,12 @@ pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxS
 
 	fgSizer45->Add( fgSizer38, 1, wxEXPAND, 5 );
 
+
+	fgSizer50->Add( fgSizer45, 1, wxEXPAND, 5 );
+
+
+	fgSizer44->Add( fgSizer50, 1, wxEXPAND, 5 );
+
 	m_fgSizerTacking = new wxFlexGridSizer( 0, 1, 0, 0 );
 	m_fgSizerTacking->SetFlexibleDirection( wxBOTH );
 	m_fgSizerTacking->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
@@ -177,20 +191,30 @@ pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxS
 	m_stTackState->Wrap( -1 );
 	m_fgSizerTacking->Add( m_stTackState, 0, wxALL|wxEXPAND, 5 );
 
+	wxFlexGridSizer* fgSizer51;
+	fgSizer51 = new wxFlexGridSizer( 0, 2, 0, 0 );
+	fgSizer51->AddGrowableCol( 1 );
+	fgSizer51->SetFlexibleDirection( wxBOTH );
+	fgSizer51->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+
 	m_bTack = new wxButton( this, wxID_ANY, _("Tack"), wxDefaultPosition, wxSize( -1,-1 ), 0 );
-	m_fgSizerTacking->Add( m_bTack, 0, wxALL, 5 );
+	fgSizer51->Add( m_bTack, 0, wxALL, 5 );
+
+	m_stTackTimeout = new wxStaticText( this, wxID_ANY, _("   "), wxDefaultPosition, wxDefaultSize, 0 );
+	m_stTackTimeout->Wrap( -1 );
+	fgSizer51->Add( m_stTackTimeout, 0, wxALL|wxEXPAND, 5 );
+
+
+	m_fgSizerTacking->Add( fgSizer51, 1, wxEXPAND, 5 );
 
 	wxString m_cTackDirectionChoices[] = { _("--> Starboard"), _("<-- Port") };
 	int m_cTackDirectionNChoices = sizeof( m_cTackDirectionChoices ) / sizeof( wxString );
-	m_cTackDirection = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxSize( 80,-1 ), m_cTackDirectionNChoices, m_cTackDirectionChoices, 0 );
+	m_cTackDirection = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxSize( -1,-1 ), m_cTackDirectionNChoices, m_cTackDirectionChoices, 0 );
 	m_cTackDirection->SetSelection( 0 );
 	m_fgSizerTacking->Add( m_cTackDirection, 0, wxALL, 5 );
 
 
-	fgSizer45->Add( m_fgSizerTacking, 1, wxEXPAND, 5 );
-
-
-	fgSizer44->Add( fgSizer45, 1, wxEXPAND, 5 );
+	fgSizer44->Add( m_fgSizerTacking, 1, wxEXPAND, 5 );
 
 
 	fgSizer37->Add( fgSizer44, 1, wxEXPAND, 5 );

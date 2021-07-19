@@ -50,6 +50,7 @@ public:
     std::map<std::string, double> &GetWatchlist();
 
     void RebuildControlAngles();
+    void ShowTacking();
     void Fit();
     
 private:

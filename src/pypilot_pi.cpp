@@ -424,8 +424,10 @@ void pypilot_pi::ReadConfig()
     }
     m_bForwardnmea = (bool)pConf->Read ( _T ( "Forwardnema" ), 0L);
     m_bEnableGraphicOverlay = (bool)pConf->Read ( _T ( "EnableGraphicOverlay" ), 0L);
-    if(m_pypilotDialog)
+    if(m_pypilotDialog) {
         m_pypilotDialog->RebuildControlAngles();
+        m_pypilotDialog->ShowTacking();
+    }
             
     UpdateWatchlist();
 }
