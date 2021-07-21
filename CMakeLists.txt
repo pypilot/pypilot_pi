@@ -61,9 +61,9 @@ set(LONG_DESCRIPTION
 
 set(VERSION_MAJOR "0")
 set(VERSION_MINOR "24")
-set(VERSION_PATCH "4")
+set(VERSION_PATCH "5")
 set(VERSION_TWEAK "0")
-set(VERSION_DATE "02/07/2021")
+set(VERSION_DATE "06/21/2021")
 set(OCPN_MIN_VERSION "ov50")
 set(OCPN_API_VERSION_MAJOR "1")
 set(OCPN_API_VERSION_MINOR "16")
@@ -208,7 +208,6 @@ set(EXTINCLUDE_DIR ${EXTINCLUDE_DIR} extinclude libs/ocpn-api/)
 
 # Not doing json validator		 
 
-
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/include)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/ocpninclude)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/ocpnsrc/glu/include)
@@ -233,9 +232,6 @@ include("PluginGL")
 ##==========================================================================
 target_sources(${PACKAGE_NAME} PUBLIC ${SRCS} ${HDRS} ${OCPNSRC} ${EXTSRC} ${LIBSSRC}  ${SRC_JSON} ${SRC_PLUGINGL})
 ##==========================================================================
-# add_library(${PACKAGE_NAME} SHARED ${SRCS} ${LIBSSRC}  ${SRC_JSON} ${SRC_PLUGINGL})
-#add_library(${PACKAGE_NAME} SHARED ${SRCS_PYPILOT} ${HDRS} ${EXTSRC} ${LIBSSRC}  ${SRC_JSON} ${SRC_PLUGINGL})
-# add_library(${PACKAGE_NAME} SHARED ${SRC_PYPILOT} ${SRC_JSON} ${SRC_PLUGINGL})
 
 
 # Pypilot does not require tinyxml 
