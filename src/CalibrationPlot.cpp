@@ -54,20 +54,24 @@ void json_to_float_3_array(Json::Value &value, std::vector<point> &points)
 
 void TranslateAfter(float x, float y, float z)
 {
+#ifndef __OCPN__ANDROID__    
     GLfloat m[16];
     glGetFloatv(GL_MODELVIEW_MATRIX, m);
     glLoadIdentity();
     glTranslatef(x, y, z);
     glMultMatrixf(m);
+#endif    
 }
 
 void RotateAfter(float ang, float x, float y, float z)
 {
+#ifndef __OCPN__ANDROID__    
     GLfloat m[16];
     glGetFloatv(GL_MODELVIEW_MATRIX, m);
     glLoadIdentity();
     glRotatef(ang, x, y, z);
     glMultMatrixf(m);
+#endif    
 }
 
 void rotate_mouse(float dx, float dy)
@@ -152,6 +156,7 @@ void CalibrationPlot::Receive(std::string name, Json::Value &value)
 
 void CalibrationPlot::OnPaint()
 {
+#ifndef __OCPN__ANDROID__    
     SetCurrent( m_glContext );
     wxPaintDC dc( this );
 
@@ -224,6 +229,7 @@ void CalibrationPlot::OnPaint()
     
     glPopMatrix();
     SwapBuffers();
+#endif    
 }
 
 void CalibrationPlot::OnMouseEvents( wxMouseEvent& event )

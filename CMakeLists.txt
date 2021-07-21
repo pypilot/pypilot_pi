@@ -180,12 +180,10 @@ SET(HDRS
     )
 
 
-if(NOT QT_ANDROID)
   SET(SRCS ${SRCS}
      src/CalibrationDialog.cpp
      src/CalibrationPlot.cpp						   
      )
-endif(NOT QT_ANDROID)
 
 set(LIBSSRC libs/wxJSON/src/jsonreader.cpp libs/wxJSON/src/jsonval.cpp libs/wxJSON/src/jsonwriter.cpp)
 
