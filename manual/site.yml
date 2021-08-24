@@ -1,12 +1,12 @@
 site:
-  title: Two Can Plugin Manual
+  title: PyPilot Plugin Manual
   url:  https://nowhere.net
   start_page: pypilot:ROOT:pypilot.adoc
 
 content:
   sources:
-    - url: ../..
-      start_path: manual/pypilot
+    - url: ..
+      start_path: manual
       branches: HEAD
       edit_url: https://github.com/opencpn-manuals/pypilot_pi/edit/master/{path}
 
