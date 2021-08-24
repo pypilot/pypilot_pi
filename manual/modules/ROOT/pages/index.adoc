@@ -28,7 +28,7 @@ image::pypilot_plugin_screenshot.png[]
 
 OpenCPN Plugin for Pypilot Autopilots An OpenSource Marine Autopilot.
 
-* http://pypilot.org/wiki/doku.php[PyPilot Website (Hardware and
+* https://pypilot.org/wiki/doku.php[PyPilot Website (Hardware and
 Software]
 * https://github.com/pypilot/pypilot[Github Repository] (Python & C++)
 * https://github.com/pypilot/pypilot/wiki/Hardware[Hardware]
@@ -42,15 +42,15 @@ Installation: S/V Phoenix [Ketch] with Pypilot]
 
 PyPilot Forums
 
-* http://www.cruisersforum.com/forums/f134/pypilot-199337.html[Pypilot
+* https://www.cruisersforum.com/forums/f134/pypilot-199337.html[Pypilot
 Cruiser's Forum Thread]
-* http://www.cruisersforum.com/forums/f134/autopilot-open-source-191315.html[Cruiser's
+* https://www.cruisersforum.com/forums/f134/autopilot-open-source-191315.html[Cruiser's
 Forum Autopilot - Open Source]
-* http://www.cruisersforum.com/forums/f13/free-autopilot-186378.html[Cruiser's
+* https://www.cruisersforum.com/forums/f13/free-autopilot-186378.html[Cruiser's
 Forum Free Autopilot Discussion]
-* http://forum.openmarine.net/forumdisplay.php?fid=17[PyPilot OpenMarine
+* https://forum.openmarine.net/forumdisplay.php?fid=17[PyPilot OpenMarine
 Forum]
-* http://www.cruisersforum.com/forums/f134/opencpn-and-arduboat-199849.html[PyPilot
+* https://www.cruisersforum.com/forums/f134/opencpn-and-arduboat-199849.html[PyPilot
 with Arduboat Discussion]
 
 Sean D'Epagnier's
@@ -77,7 +77,7 @@ image::pypilot-menus.png[]
 
 === PyPilot Integrated Hardware Shop
 
-http://pypilot.org/store/[Pypilot Store]
+https://pypilot.org/store/[Pypilot Store]
 
 * PyPilot Motor Controller
 * TinyPilot Computer
