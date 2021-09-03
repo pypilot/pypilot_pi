@@ -1,4 +1,4 @@
-== Pypilot Autopilot
+= Pypilot Autopilot
 
 
 image::pypilot_icon.png[]
@@ -75,7 +75,7 @@ https://github.com/pypilot/pypilot/blob/master/README[README]
 image::pypilot-menus.png[]
 
 
-=== PyPilot Integrated Hardware Shop
+== PyPilot Integrated Hardware Shop
 
 https://pypilot.org/store/[Pypilot Store]
 
