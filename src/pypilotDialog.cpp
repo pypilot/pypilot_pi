@@ -140,6 +140,23 @@ void pypilotDialog::Disconnected()
     Fit();
 }
 
+void pypilotDialog::SetEnabled(bool enabled)
+{
+    m_bAP->SetValue(enabled);
+
+    m_fgControlAnglesPos->Show(enabled);
+    m_fgControlAnglesNeg->Show(enabled);
+    m_fgControlManual->Show(!enabled);
+
+    SetAPColor();
+    ShowCenter();
+    ShowTacking();
+
+//        wxSize s(100, 100);
+//        SetMinSize(s);
+    Fit();
+}
+
 void pypilotDialog::Receive(std::string name, Json::Value &value)
 {
     if(name == "ap.heading_command")
@@ -148,24 +165,10 @@ void pypilotDialog::Receive(std::string name, Json::Value &value)
         m_stHeading->SetLabel(wxString::Format("%.1f", ApplyTrueNorth(value.asDouble())));
     else if(name == "ap.mode") {
         RebuildControlAngles();
-
-        SetAPColor(m_pypilot_pi.m_mode);
-    } else if(name == "ap.enabled") {
-        bool enabled = value.asBool();
-        m_bAP->SetValue(enabled);
-
-        m_fgControlAnglesPos->Show(enabled);
-        m_fgControlAnglesNeg->Show(enabled);
-        m_fgControlManual->Show(!enabled);
-
-        SetAPColor(m_cMode->GetStringSelection());
-        ShowCenter();
-        ShowTacking();
-
-//        wxSize s(100, 100);
-//        SetMinSize(s);
-        Fit();
-    } else if(name == "ap.tack.state") {
+        SetAPColor();
+    } else if(name == "ap.enabled")
+        SetEnabled(value.asBool());
+    else if(name == "ap.tack.state") {
         m_stTackState->SetLabel(value.asString());
         if(value.asString() == "none")
             m_bTack->SetLabel(_("Tack"));
@@ -210,8 +213,9 @@ void pypilotDialog::Receive(std::string name, Json::Value &value)
     }
 }
 
-void pypilotDialog::SetAPColor(wxString mode)
+void pypilotDialog::SetAPColor()
 {
+    wxString mode = m_pypilot_pi.m_mode;
     wxColour c = *wxBLACK;
     wxString sel = m_cMode->GetStringSelection();
     if(m_bAP->GetValue()) {

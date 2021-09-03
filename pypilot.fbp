@@ -132,7 +132,7 @@
                                         <property name="fg"></property>
                                         <property name="floatable">1</property>
                                         <property name="focus"></property>
-                                        <property name="font">Sawasdee,90,92,36,70,0</property>
+                                        <property name="font">Sans,90,92,36,74,0</property>
                                         <property name="gripper">0</property>
                                         <property name="hidden">0</property>
                                         <property name="id">wxID_ANY</property>
@@ -1291,7 +1291,7 @@
                                                         <property name="gripper">0</property>
                                                         <property name="hidden">0</property>
                                                         <property name="id">wxID_ANY</property>
-                                                        <property name="label">   </property>
+                                                        <property name="label"></property>
                                                         <property name="markup">0</property>
                                                         <property name="max_size"></property>
                                                         <property name="maximize_button">0</property>

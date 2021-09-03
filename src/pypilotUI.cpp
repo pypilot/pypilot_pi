@@ -31,7 +31,7 @@ pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxS
 	fgSizer13->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
 	m_bAP = new wxToggleButton( this, wxID_ANY, _("AP"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_bAP->SetFont( wxFont( 36, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, wxT("Sawasdee") ) );
+	m_bAP->SetFont( wxFont( 36, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, wxT("Sans") ) );
 
 	fgSizer13->Add( m_bAP, 0, wxALL, 5 );
 
@@ -200,7 +200,7 @@ pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxS
 	m_bTack = new wxButton( this, wxID_ANY, _("Tack"), wxDefaultPosition, wxSize( -1,-1 ), 0 );
 	fgSizer51->Add( m_bTack, 0, wxALL, 5 );
 
-	m_stTackTimeout = new wxStaticText( this, wxID_ANY, _("   "), wxDefaultPosition, wxDefaultSize, 0 );
+	m_stTackTimeout = new wxStaticText( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_stTackTimeout->Wrap( -1 );
 	fgSizer51->Add( m_stTackTimeout, 0, wxALL|wxEXPAND, 5 );
 
