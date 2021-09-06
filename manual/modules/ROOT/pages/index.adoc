@@ -1,8 +1,15 @@
 = Pypilot Autopilot
 
-
 image::pypilot_icon.png[]
 
+== Links
+
+* Source: https://github.com/seandepagnier/pypilot_pi +
+* Maintenance Source: https://github.com/rgleason/pypilot_pi +
+* Download:https://opencpn.org/OpenCPN/plugins/pypilot.html +
+* Forum: https://www.cruisersforum.com/forums/f134/pypilot-199337.html[Pypilot Cruiser's Forum Thread]
+
+== 1. What and Why
 
 The pypilot plugin provides an interface to the free software autopilot
 pypilot. Control, configure and calibrate the autopilot from OpenCPN.
@@ -17,45 +24,48 @@ raspberry pi, but it can work on orange pi or potentially other systems
 as well.
 
 Note: OpenCPN can communicate with pypilot server already via nmea to
-receive compass heading, and to autopilot, and this plugin is not
-strictly required. The plugin allows for configuration and tuning of the
+receive compass heading, and to autopilot, so this plugin is not
+strictly required. 
+
+This plugin allows for configuration and tuning of the
 autopilot in ways not possible through basic nmea0183 messaging. The
 plugin also allows for graphical overlays of the autopilot settings
 directly onto the chart.
 
 image::pypilot_plugin_screenshot.png[]
 
+== 2. Installation
+
+The OpenCPN Manual has general information in xref:opencpn-plugins:misc:plugin-install.adoc[Plugin Download, Install and Enable] for installing this plugin.
+
+== 3. Other Information
 
 OpenCPN Plugin for Pypilot Autopilots An OpenSource Marine Autopilot.
 
-* https://pypilot.org/wiki/doku.php[PyPilot Website (Hardware and
-Software]
+* https://pypilot.org/wiki/doku.php[PyPilot Website (Hardware and Software]
 * https://github.com/pypilot/pypilot[Github Repository] (Python & C++)
 * https://github.com/pypilot/pypilot/wiki/Hardware[Hardware]
-* Example: Pypilot is tested and working on a trimaran sailing at 15
-knots.
+* Example: Pypilot is tested and working on a trimaran sailing at 15 knots.
 * Example: https://youtu.be/KQuBwLSMSxI[Video: Pypilot on Princess Mia]
+
+
+== 4. Capable of steering under sail in harbors.
+
 The autopilot route plugin capable of steering under sail in harbors
+
 * Example:
 https://phoenixketch.blogspot.com/2019/01/pypilot-open-source-marine-autopilot.html[Hydraulic
 Installation: S/V Phoenix [Ketch] with Pypilot]
 
-PyPilot Forums
+== 5. PyPilot Forums
 
-* https://www.cruisersforum.com/forums/f134/pypilot-199337.html[Pypilot
-Cruiser's Forum Thread]
-* https://www.cruisersforum.com/forums/f134/autopilot-open-source-191315.html[Cruiser's
-Forum Autopilot - Open Source]
-* https://www.cruisersforum.com/forums/f13/free-autopilot-186378.html[Cruiser's
-Forum Free Autopilot Discussion]
-* https://forum.openmarine.net/forumdisplay.php?fid=17[PyPilot OpenMarine
-Forum]
-* https://www.cruisersforum.com/forums/f134/opencpn-and-arduboat-199849.html[PyPilot
-with Arduboat Discussion]
+* https://www.cruisersforum.com/forums/f134/pypilot-199337.html[Pypilot Cruiser's Forum Thread]
+* https://www.cruisersforum.com/forums/f134/autopilot-open-source-191315.html[Cruiser's Forum Autopilot - Open Source]
+* https://www.cruisersforum.com/forums/f13/free-autopilot-186378.html[Cruiser's Forum Free Autopilot Discussion]
+* https://forum.openmarine.net/forumdisplay.php?fid=17[PyPilot OpenMarine Forum]
+* https://www.cruisersforum.com/forums/f134/opencpn-and-arduboat-199849.html[PyPilot with Arduboat Discussion]
 
-Sean D'Epagnier's
-https://github.com/pypilot/pypilot/wiki/autopilot_computer[PyPilot
-AutoPilot] using raspberry zero-W or orange,
+Sean D'Epagnier's https://github.com/pypilot/pypilot/wiki/autopilot_computer[PyPilot AutoPilot] using raspberry zero-W or orange,
 
 * https://github.com/pypilot/pypilot/wiki/controller[Controller],
 * https://github.com/pypilot/pypilot/wiki/imu[IMU] with
@@ -69,13 +79,13 @@ can use any tv remote, also buttons, or gui program through openplotter.
 
 This Autopilot uses modified and improved versions of SignalK and
 RTMUlib2. More details are available in the
-https://github.com/pypilot/pypilot/wiki[Wiki] and
-https://github.com/pypilot/pypilot/blob/master/README[README]
+
+* https://github.com/pypilot/pypilot/wiki[Wiki]
+* https://github.com/pypilot/pypilot/blob/master/README[README]
 
 image::pypilot-menus.png[]
 
-
-== PyPilot Integrated Hardware Shop
+== 6. PyPilot Integrated Hardware Shop
 
 https://pypilot.org/store/[Pypilot Store]
 
@@ -83,8 +93,7 @@ https://pypilot.org/store/[Pypilot Store]
 * TinyPilot Computer
 * Minimal wind sensor - Wind speed and direction
 * Weather Sensors with Display - Wind and Barometric Pressure
-* The wind sensor uses
-http://www.sailsmarine.com/ItemDetail.aspx?c=196659&l=g[Davis 6410 Wind
+* The wind sensor uses http://www.sailsmarine.com/ItemDetail.aspx?c=196659&l=g[Davis 6410 Wind
 instrument]
 
 https://www.tindie.com/stores/seandepagnier/[Tindie Store]
