@@ -4,7 +4,7 @@ image::pypilot_icon.png[]
 
 == Links
 
-* Source: https://github.com/seandepagnier/pypilot_pi +
+* Source: https://github.com/pypilot/pypilot_pi +
 * Maintenance Source: https://github.com/rgleason/pypilot_pi +
 * Download:https://opencpn.org/OpenCPN/plugins/pypilot.html +
 * Forum: https://www.cruisersforum.com/forums/f134/pypilot-199337.html[Pypilot Cruiser's Forum Thread]
