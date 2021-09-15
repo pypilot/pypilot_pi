@@ -1,5 +1,5 @@
 site:
-  title: PyPilot Plugin Manual
+  title: PyPilot
   url:  https://nowhere.net
   start_page: pypilot:ROOT:index.adoc
 
