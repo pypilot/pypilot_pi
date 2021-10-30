@@ -58,8 +58,10 @@ pypilotDialog::pypilotDialog( pypilot_pi &_pypilot_pi, wxWindow* parent)
 
     m_HeadingCommandUpdate = wxDateTime::UNow() - wxTimeSpan::Seconds(5);
     m_HeadingCommand = NAN;
-    
+
+    ShowTacking();
     RebuildControlAngles();
+
     this->GetSizer()->Fit( this );
     this->Layout();
     this->SetSizeHints( GetSize().x, GetSize().y );
@@ -138,6 +140,23 @@ void pypilotDialog::Disconnected()
     Fit();
 }
 
+void pypilotDialog::SetEnabled(bool enabled)
+{
+    m_bAP->SetValue(enabled);
+
+    m_fgControlAnglesPos->Show(enabled);
+    m_fgControlAnglesNeg->Show(enabled);
+    m_fgControlManual->Show(!enabled);
+
+    SetAPColor();
+    ShowCenter();
+    ShowTacking();
+
+//        wxSize s(100, 100);
+//        SetMinSize(s);
+    Fit();
+}
+
 void pypilotDialog::Receive(std::string name, Json::Value &value)
 {
     if(name == "ap.heading_command")
@@ -146,23 +165,10 @@ void pypilotDialog::Receive(std::string name, Json::Value &value)
         m_stHeading->SetLabel(wxString::Format("%.1f", ApplyTrueNorth(value.asDouble())));
     else if(name == "ap.mode") {
         RebuildControlAngles();
-
-        SetAPColor(m_pypilot_pi.m_mode);
-    } else if(name == "ap.enabled") {
-        bool enabled = value.asBool();
-        m_bAP->SetValue(enabled);
-
-        m_fgControlAnglesPos->Show(enabled);
-        m_fgControlAnglesNeg->Show(enabled);
-        m_fgControlManual->Show(!enabled);
-
-        SetAPColor(m_cMode->GetStringSelection());
-        ShowCenter();
-
-//        wxSize s(100, 100);
-//        SetMinSize(s);
-        Fit();
-    } else if(name == "ap.tack.state") {
+        SetAPColor();
+    } else if(name == "ap.enabled")
+        SetEnabled(value.asBool());
+    else if(name == "ap.tack.state") {
         m_stTackState->SetLabel(value.asString());
         if(value.asString() == "none")
             m_bTack->SetLabel(_("Tack"));
@@ -170,9 +176,11 @@ void pypilotDialog::Receive(std::string name, Json::Value &value)
             m_bTack->SetLabel(_("Cancel"));
     } else if(name == "ap.tack.direction") {
         if(value.asString() == "port")
-            m_cTackDirection->SetSelection(0);
-        else
             m_cTackDirection->SetSelection(1);
+        else
+            m_cTackDirection->SetSelection(0);
+    } else if(name == "ap.tack.timeout") {
+        m_stTackTimeout->SetLabel(wxString::Format("%.1f", value.asDouble()));
     } else if(name == "gps.source") {
         m_bAPHaveGPS = value.asString() != "none";
         UpdateModes();
@@ -205,8 +213,9 @@ void pypilotDialog::Receive(std::string name, Json::Value &value)
     }
 }
 
-void pypilotDialog::SetAPColor(wxString mode)
+void pypilotDialog::SetAPColor()
 {
+    wxString mode = m_pypilot_pi.m_mode;
     wxColour c = *wxBLACK;
     wxString sel = m_cMode->GetStringSelection();
     if(m_bAP->GetValue()) {
@@ -229,7 +238,7 @@ std::map<std::string, double> &pypilotDialog::GetWatchlist()
     // continuous updates for these
     static const char *watchlist[] =
         {"ap.enabled", "ap.mode", "ap.heading", "ap.heading_command",
-         "ap.tack.state", "ap.tack.direction",
+         "ap.tack.state", "ap.tack.direction", "ap.tack.timeout",
          "gps.source", "wind.source",
          "servo.state", "servo.flags", "servo.controller"};
     for(unsigned int i=0; i<(sizeof watchlist)/(sizeof *watchlist); i++)
@@ -293,10 +302,6 @@ True North mode not possible without declination.\n\nIs the wmm plugin enabled a
         mdlg.ShowModal();
         m_bTrueNorthMode = false;
     }
-
-    bool show_tacking  = (bool)pConf->Read ( _T ( "TackingButton" ), 1);
-    if(m_bTack->IsShown() != show_tacking)
-        m_fgSizerTacking->Show(show_tacking);
 
     Fit();
 }
@@ -381,7 +386,7 @@ void pypilotDialog::OnControlAngle( wxCommandEvent& event )
 
 void pypilotDialog::OnTack( wxCommandEvent& event )
 {
-    m_pypilot_pi.m_client.set("ap.tack.state", m_bTack->GetLabel() == _("Tack") ? "begin": "");
+    m_pypilot_pi.m_client.set("ap.tack.state", m_bTack->GetLabel() == _("Tack") ? "begin": "none");
 }
 
 void pypilotDialog::OnTackDirection( wxCommandEvent& event )
@@ -432,6 +437,19 @@ void pypilotDialog::ShowCenter()
 
     if(m_bCenter->IsShown() != show_center)
         m_bCenter->Show(show_center);
+}
+
+void pypilotDialog::ShowTacking()
+{
+    bool show_tacking = false;
+    if(m_bAP->GetValue()) {
+        wxFileConfig *pConf = GetOCPNConfigObject();
+        pConf->SetPath ( _T( "/Settings/pypilot" ) );
+        show_tacking  = (bool)pConf->Read ( _T ( "TackingButton" ), 1);
+    }
+
+    if(m_bTack->IsShown() != show_tacking)
+        m_fgSizerTacking->Show(show_tacking);
 }
 
 void pypilotDialog::AddButton(int angle, wxSizer *sizer)

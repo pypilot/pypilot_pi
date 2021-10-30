@@ -84,6 +84,8 @@ pypilot_pi::pypilot_pi(void *ppimgr)
     // Create the PlugIn icons
     initialize_images();
     m_declination = NAN;
+    m_ap_heading = NAN;
+    m_ap_heading_command = NAN;
     m_imu_heading = NAN;
     m_lastfix.nSats = 0;
 
@@ -348,6 +350,8 @@ void pypilot_pi::OnToolbarToolCallback(int id)
     {
         m_ConfigurationDialog = new ConfigurationDialog(*this, GetOCPNCanvasWindow());
         m_pypilotDialog = new pypilotDialog(*this, GetOCPNCanvasWindow());
+        m_pypilotDialog->SetEnabled(m_enabled);
+
         UpdateStatus();
         
         m_StatisticsDialog = new StatisticsDialog(*this, GetOCPNCanvasWindow());
@@ -416,20 +420,29 @@ void pypilot_pi::Render(piDC &dc, PlugIn_ViewPort &vp)
     wxPoint boat;
     GetCanvasPixLL(&vp, &boat, m_lastfix.Lat, m_lastfix.Lon);
 
-    double dist = 1; // 1nm
+    double dist = wxMin(vp.pix_width, vp.pix_height) / 5;
     double dlat, dlon;
     wxPoint p;
 
-    PositionBearingDistanceMercator_Plugin(m_lastfix.Lat, m_lastfix.Lon, m_ap_heading, dist, &dlat, &dlon);
-    GetCanvasPixLL(&vp, &p, dlat, dlon);
-    dc.SetPen(wxPen(*wxRED, 3));
-    dc.DrawLine(boat.x, boat.y, p.x, p.y);
-    dc.DrawCircle(p.x, p.y, 5);
+    if(!wxIsNaN(m_ap_heading)) {
+        //PositionBearingDistanceMercator_Plugin(m_lastfix.Lat, m_lastfix.Lon, m_ap_heading, dist, &dlat, &dlon);
+        //GetCanvasPixLL(&vp, &p, dlat, dlon);
+        p.x = dist*sin(deg2rad(m_ap_heading) + vp.rotation) + boat.x;
+        p.y = -dist*cos(deg2rad(m_ap_heading) + vp.rotation) + boat.y;
+            
+        dc.SetPen(wxPen(*wxRED, 3));
+        dc.DrawLine(boat.x, boat.y, p.x, p.y);
+        dc.DrawCircle(p.x, p.y, 5);
+    }
 
-    PositionBearingDistanceMercator_Plugin(m_lastfix.Lat, m_lastfix.Lon, m_ap_heading_command, dist, &dlat, &dlon);
-    dc.SetPen(wxPen(*wxGREEN, 3));
-    dc.DrawLine(boat.x, boat.y, p.x, p.y);
-    dc.DrawCircle(p.x, p.y, 5);
+    if(!wxIsNaN(m_ap_heading_command)) {
+        p.x = dist*sin(deg2rad(m_ap_heading_command) + vp.rotation) + boat.x;
+        p.y = -dist*cos(deg2rad(m_ap_heading_command) + vp.rotation) + boat.y;
+
+        dc.SetPen(wxPen(*wxGREEN, 3));
+        dc.DrawLine(boat.x, boat.y, p.x, p.y);
+        dc.DrawCircle(p.x, p.y, 5);
+    }
 }
 
 void pypilot_pi::ReadConfig()
@@ -443,8 +456,10 @@ void pypilot_pi::ReadConfig()
     }
     m_bForwardnmea = (bool)pConf->Read ( _T ( "Forwardnema" ), 0L);
     m_bEnableGraphicOverlay = (bool)pConf->Read ( _T ( "EnableGraphicOverlay" ), 0L);
-    if(m_pypilotDialog)
+    if(m_pypilotDialog) {
         m_pypilotDialog->RebuildControlAngles();
+        m_pypilotDialog->ShowTacking();
+    }
             
     UpdateWatchlist();
 }

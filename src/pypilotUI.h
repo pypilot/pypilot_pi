@@ -67,6 +67,7 @@ class pypilotDialogBase : public wxDialog
 		wxFlexGridSizer* m_fgSizerTacking;
 		wxStaticText* m_stTackState;
 		wxButton* m_bTack;
+		wxStaticText* m_stTackTimeout;
 		wxChoice* m_cTackDirection;
 		wxButton* m_bGains;
 		wxButton* m_bConfiguration;

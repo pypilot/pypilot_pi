@@ -1,3 +1,4 @@
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: opencpn\n"
@@ -10,300 +11,318 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: crowdin.com\n"
-"X-Crowdin-Project: opencpn\n"
-"X-Crowdin-Language: pt-PT\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "X-Crowdin-File: /plugins/pypilot_pi/pypilot_pi.pot\n"
-#
+"X-Crowdin-Language: pt-PT\n"
+"X-Crowdin-Project: opencpn\n"
+"X-Generator: crowdin.com\n"
+
 msgid "-----"
-msgstr ""
-#
+msgstr "-----"
+
 msgid "------"
-msgstr ""
-#
+msgstr "------"
+
 msgid "-------"
-msgstr ""
-#
+msgstr "-------"
+
 msgid "--> Starboard"
-msgstr ""
-#
+msgstr "-> Estibordo"
+
 msgid "10.10.10.1 (openplotter)"
-msgstr ""
-#
+msgstr "10.10.10.1 (plotter aberto)"
+
 msgid "127.0.0.1"
-msgstr ""
-#
+msgstr "127.0.0.1"
+
 msgid "127.0.0.1 (localhost)"
-msgstr ""
-#
+msgstr "127.0.0.1 (localhost)"
+
 msgid "192.168.14.1 (tinypilot)"
-msgstr ""
-#
+msgstr "192.168.14.1 (tinypilot)"
+
 msgid "<"
-msgstr ""
-#
+msgstr "<"
+
 msgid "<-- Port"
-msgstr ""
-#
+msgstr "<- Porto"
+
 msgid "<<"
-msgstr ""
-#
+msgstr "<<"
+
 msgid ">"
-msgstr ""
-#
+msgstr ">"
+
 msgid ">>"
-msgstr ""
-#
+msgstr ">>"
+
 msgid "?"
-msgstr ""
-#
+msgstr "?"
+
 msgid "AP"
-msgstr ""
-#
+msgstr "Vocês"
+
 msgid "Accel"
-msgstr ""
-#
+msgstr "Accel"
+
 msgid "Accelerometers"
-msgstr ""
-#
+msgstr "Acelerômetros"
+
 msgid "Add"
-msgstr ""
-#
+msgstr "Adicionar"
+
 msgid "Age"
-msgstr ""
-#
+msgstr "Era"
+
 msgid "Alignment"
-msgstr ""
-#
+msgstr "Alinhamento"
+
 msgid "Angle"
-msgstr ""
-#
+msgstr "Ângulo"
+
 msgid "Angle Buttons"
-msgstr ""
-#
+msgstr "Botões de Ângulo"
+
 msgid "Average Power Consumption"
-msgstr ""
-#
+msgstr "Consumo Médio de Energia"
+
 msgid "C"
-msgstr ""
-#
+msgstr "C"
+
 msgid "Calibration"
-msgstr ""
-#
+msgstr "Calibration"
+
 msgid "Calibration Locked"
-msgstr ""
-#
+msgstr "Calibração bloqueada"
+
 msgid "Cancel"
-msgstr ""
-#
+msgstr "Cancelar"
+
 msgid "Center Button"
-msgstr ""
-#
+msgstr "Botão Central"
+
 msgid "Centered"
-msgstr ""
-#
+msgstr "Centrado"
+
 msgid "Close"
-msgstr ""
-#
+msgstr "Fechar"
+
 msgid "Columns"
-msgstr ""
-#
+msgstr "Colunas"
+
 msgid "Compass"
-msgstr ""
-#
+msgstr "Bússola"
+
 msgid "Config"
-msgstr ""
-#
+msgstr "Config"
+
 msgid "Connected"
-msgstr ""
-#
+msgstr "Conectado"
+
 msgid "Controller Temperature"
-msgstr ""
-#
+msgstr "Temperatura do controlador"
+
 msgid ""
 "Converts displayed headings to true north rather than magnetic north.\n"
-"This affects compass mode only, and requires the wmm plugin to be active.  "
-"The conversion is applied only within the plugin, the autopilot is commanded "
-"in the corrected magnetic heading."
+"This affects compass mode only, and requires the wmm plugin to be active.  The conversion is applied only within the plugin, the autopilot is commanded in the corrected magnetic heading."
 msgstr ""
-#
+"Converte os rumos exibidos para o norte verdadeiro, em vez do norte magnético.\n"
+"Isso afeta apenas o modo de bússola e requer que o plug-in wmm esteja ativo. A conversão é aplicada apenas dentro do plugin, o piloto automático é comandado no rumo magnético corrigido."
+
 msgid "Disconnected"
+msgstr "Desconectado"
+
+msgid ""
+"Displays lines on the chart showing the autopilot's configured headings"
 msgstr ""
-#
-msgid "Displays lines on the chart showing the autopilot's configured headings"
-msgstr ""
-#
+"Exibe linhas no gráfico mostrando os títulos configurados do piloto "
+"automático"
+
 msgid "Enable Graphical Overlay"
-msgstr ""
-#
+msgstr "Habilitar sobreposição gráfica"
+
 msgid "Forward NMEA"
-msgstr ""
-#
+msgstr "NMEA avançado"
+
 msgid "Gains"
-msgstr ""
-#
+msgstr "Ganhos"
+
 msgid "Heading Offset"
-msgstr ""
-#
+msgstr "Desvio de rumo"
+
 msgid ""
-"If enabled, and rudder feedback is working, a button to center the rudder in "
-"manual mode appears."
+"If enabled, and rudder feedback is working, a button to center the rudder in"
+" manual mode appears."
 msgstr ""
-#
+"Se ativado, e o feedback do leme está funcionando, um botão para centralizar"
+" o leme no modo manual é exibido."
+
 msgid "Information"
-msgstr ""
-#
+msgstr "Em formação"
+
 msgid "Level"
-msgstr ""
-#
+msgstr "Nível"
+
 msgid "Make the buttons for tacking visible."
-msgstr ""
-#
+msgstr "Torne os botões para travamento visíveis."
+
 msgid "Motor Temperature"
-msgstr ""
-#
+msgstr "Temperatura do motor"
+
 msgid "N/A"
-msgstr ""
-#
+msgstr "N / D"
+
 msgid "No Motor Controller"
-msgstr ""
-#
+msgstr "Sem controlador de motor"
+
 msgid "Non Linearity"
-msgstr ""
-#
+msgstr "Não-linearidade"
+
 msgid "OK"
-msgstr ""
-#
+msgstr "OK"
+
 msgid "Offset"
-msgstr ""
-#
+msgstr "Desvio"
+
 msgid "Pilot"
-msgstr ""
-#
+msgstr "Piloto"
+
 msgid "Pitch / Roll"
-msgstr ""
-#
+msgstr "Pitch / Roll"
+
 msgid "Plugin Settings"
-msgstr ""
-#
+msgstr "Configurações de plug-in"
+
 msgid ""
-"Plugin automatically sends and receives nmea data between opencpn and "
-"pypilot.\n"
+"Plugin automatically sends and receives nmea data between opencpn and pypilot.\n"
 "\n"
 "The plugin communicates directly to pypilot, but nmea0183 is needed\n"
 "by other opencpn plugins and for route following.\n"
 "\n"
-"Eliminates the need to make the tcp connection in opencpn connection "
-"settings.\n"
-"If you need specific nmea filtering you should disable this, and instead make "
-"a tcp connection\n"
+"Eliminates the need to make the tcp connection in opencpn connection settings.\n"
+"If you need specific nmea filtering you should disable this, and instead make a tcp connection\n"
 "to the pypilot host tcp port 20220 in the opencpn connections settings.\n"
 msgstr ""
-#
-msgid "Port Range"
-msgstr ""
-#
-msgid ""
-"Press the level button when the boat is sitting level in the water to align "
-"the inertial sensors used by the autopilot.\n"
+"O plug-in envia e recebe automaticamente dados nmea entre opencpn e pypilot.\n"
 "\n"
-"This alignment is critical for the autopilot to work correctly, and also for "
-"the compass to calibrate automatically."
+"O plugin se comunica diretamente com o pypilot, mas nmea0183 é necessário\n"
+"por outros plug-ins opencpn e para seguir a rota.\n"
+"\n"
+"Elimina a necessidade de fazer a conexão tcp nas configurações de conexão opencpn.\n"
+"\n"
+"\n"
+
+msgid "Port Range"
+msgstr "Faixa Portuária"
+
+msgid ""
+"Press the level button when the boat is sitting level in the water to align the inertial sensors used by the autopilot.\n"
+"\n"
+"This alignment is critical for the autopilot to work correctly, and also for the compass to calibrate automatically."
 msgstr ""
-#
+"Pressione o botão de nível quando o barco estiver nivelado na água para alinhar os sensores inerciais usados u200bu200bpelo piloto automático.\n"
+"\n"
+"Esse alinhamento é crítico para o piloto automático funcionar corretamente e também para a calibração automática da bússola."
+
 msgid "Range"
-msgstr ""
-#
+msgstr "Faixa"
+
 msgid "Remove"
-msgstr ""
-#
+msgstr "Retirar"
+
 msgid "Reset"
-msgstr ""
-#
+msgstr "Redefinir"
+
 msgid "Reset Calibration"
-msgstr ""
-#
+msgstr "Reiniciar calibração"
+
 msgid "Rudder"
-msgstr ""
-#
+msgstr "Leme"
+
 msgid "Runtime"
-msgstr ""
-#
+msgstr "Tempo de execução"
+
 msgid "Scale"
-msgstr ""
-#
+msgstr "Escala"
+
 msgid "Settings"
-msgstr ""
-#
+msgstr "Definições"
+
 msgid "Starboard Range"
-msgstr ""
-#
+msgstr "Cordilheira de estibordo"
+
 msgid "Statistics"
-msgstr ""
-#
+msgstr "Estatisticas"
+
 msgid "Tack"
-msgstr ""
-#
+msgstr "Tack"
+
 msgid "Tacking Button"
-msgstr ""
-#
+msgstr "Botão de aderência"
+
 msgid ""
 "To calibrate rudder feedback:\n"
 "1) set 'Range' to a known angle\n"
 "2) manually center the rudder and press 'Centered'.\n"
 "3) manually turn rudder to starboard this angle and press 'Starboard Range'\n"
-"4) manually turn rudder to port this angle and press 'Port Range'5) set "
-"'Range' to the maximum  allowed autopilot movement"
+"4) manually turn rudder to port this angle and press 'Port Range'5) set 'Range' to the maximum  allowed autopilot movement"
 msgstr ""
-#
+"Para calibrar o feedback do leme:\n"
+"1) definir 'Alcance' para um ângulo conhecido\n"
+"2) centralize manualmente o leme e pressione 'Centralizado'.\n"
+"3) gire manualmente o leme para estibordo neste ângulo e pressione 'Alcance de estibordo'\n"
+"4) gire manualmente o leme para bombear este ângulo e pressione 'Port Range'5) defina' Range 'para o movimento máximo permitido do piloto automático"
+
 msgid "Total amp hours"
-msgstr ""
-#
+msgstr "Total de horas de amp"
+
 msgid "True North Mode"
-msgstr ""
-#
+msgstr "Modo Norte Verdadeiro"
+
 msgid ""
 "True North mode not possible without declination.\n"
 "\n"
 "Is the wmm plugin enabled and a gps fix available?"
 msgstr ""
-#
-msgid "Uptime"
-msgstr ""
-#
-msgid "V"
-msgstr ""
-#
-msgid "Voltage"
-msgstr ""
-#
-msgid "Watts"
-msgstr ""
-#
-msgid ""
-"You may manually adjust the alignment of the compass. The autopilot may work "
-"without the correct alignment, but the reported headings will not be "
-"correct.\n"
+"O modo Norte verdadeiro não é possível sem declinação.\n"
 "\n"
-"The autopilot may also work better depending on control algorithm if the "
-"heading is correctly aligned."
+"O plugin wmm está habilitado e uma correção GPS disponível?"
+
+msgid "Uptime"
+msgstr "Tempo de atividade"
+
+msgid "V"
+msgstr "V"
+
+msgid "Voltage"
+msgstr "Voltagem"
+
+msgid "Watts"
+msgstr "Watts"
+
+msgid ""
+"You may manually adjust the alignment of the compass. The autopilot may work without the correct alignment, but the reported headings will not be correct.\n"
+"\n"
+"The autopilot may also work better depending on control algorithm if the heading is correctly aligned."
 msgstr ""
-#
+"Você pode ajustar manualmente o alinhamento da bússola. O piloto automático pode funcionar sem o alinhamento correto, mas os títulos relatados não estarão corretos.\n"
+"\n"
+"O piloto automático também pode funcionar melhor dependendo do algoritmo de controle se o rumo estiver alinhado corretamente."
+
 msgid "You may wish to lock the calibration against automatically updating"
-msgstr ""
-#
+msgstr "Você pode querer bloquear a calibração contra atualização automática"
+
 msgid "host"
-msgstr ""
-#
+msgstr "hospedeiro"
+
 msgid "pypilot"
-msgstr ""
-#
+msgstr "pipiloto"
+
 msgid "pypilot Client"
-msgstr ""
-#
+msgstr "cliente pypilot"
+
 msgid "tack"
-msgstr ""
-#
+msgstr "tacha"
+
 msgid "to"
-msgstr ""
+msgstr "para"
