@@ -45,11 +45,14 @@ public:
 #endif
 
     void Disconnected();
+
+    void SetEnabled(bool enabled);
     void Receive(std::string name, Json::Value &value);
-    void SetAPColor(wxString mode);
+    void SetAPColor();
     std::map<std::string, double> &GetWatchlist();
 
     void RebuildControlAngles();
+    void ShowTacking();
     void Fit();
     
 private:
