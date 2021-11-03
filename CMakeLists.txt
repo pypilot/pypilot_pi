@@ -18,7 +18,7 @@
 ## *   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                                       *
 ## ***
 #-----------------------------------------------------------------------------
-# Frontend2 Author: Jon Gough  Frontend2: v1.0.173.0  02/07/2021
+# Frontend2 Author: Jon Gough  Frontend2: v1.0.179.0  
 # ---------------------------------------------------------------------------
 ## buildCI:yes useODAPI:no validateJSON:no
 ## ----- When changing this file do NOT change the order in which sections occur        ----- ##
@@ -60,10 +60,10 @@ set(LONG_DESCRIPTION
 # SET(PACKAGE_NAME pypilot_pi)
 
 set(VERSION_MAJOR "0")
-set(VERSION_MINOR "29")
+set(VERSION_MINOR "30")
 set(VERSION_PATCH "0")
 set(VERSION_TWEAK "0")
-set(VERSION_DATE "19/07/2021")
+set(VERSION_DATE "4/11/2021") # DD/MM/YYYY format
 set(OCPN_MIN_VERSION "ov50")
 set(OCPN_API_VERSION_MAJOR "1")
 set(OCPN_API_VERSION_MINOR "16")
@@ -202,24 +202,34 @@ add_definitions(-DPLUGIN_USE_SVG)
 
 set(EXTINCLUDE_DIR ${EXTINCLUDE_DIR} extinclude libs/ocpn-api/)
 
-##
-## Modify/configure 'Include' Directories below for the Plugin
-##
+#
+# ----- If using JSON validation in plugin section below is needed ----- ##
+#
 
 # Not doing json validator		 
+
+#
+# ----- If using JSON validation in plugin section above is needed ----- ##
+#
 
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/include)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/ocpninclude)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/ocpnsrc/glu/include)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/${EXTINCLUDE_DIR})
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/)
-include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/glshim)
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/GL)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/ocpn-api)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/wxJSON/include)
 
-# may need some of these later
+#
+# ----- Change below to match project requirements for android build ----- ##
+#
 
-## These are NOT used in Testplugin, used for other plugins
+if(QT_ANDROID)
+    include_directories( ${PROJECT_SOURCE_DIR}/extinclude/GLES2)
+endif(QT_ANDROID)
+
+## These are used in Pypilot NOT used in Testplugin
 ##=======================================
 include("PluginJSON")
 include("PluginGL")
@@ -247,11 +257,24 @@ target_sources(${PACKAGE_NAME} PUBLIC ${SRCS} ${HDRS} ${OCPNSRC} ${EXTSRC} ${LIB
 
 add_definitions(-DTIXML_USE_STL)
 
+#
+# ----- If using JSON validation in plugin section below is needed ----- ##
+#
 
 # Not doing JSOn Schema Validator								
 
+
+#
+# ----- If using JSON validation in plugin section above is needed ----- ##
+#
+
 ##
 ## ----- Change above to match project requirements ----- ##
+##
+
+##
+## ----- do not change next section - needed to configure build process ----- ##
+##
 
 # Needed for android builds  - current
 if(QT_ANDROID)
