@@ -6,50 +6,6 @@ parameters:
         type: boolean
         default: true
 
-std-filters: &std-filters
-    filters:
-        branches:
-            ignore:
-            - devel
-            - tmp
-        tags:
-            only: /.*/
-
-workflows:
-    build_all:
-        jobs:
-        - build-armhf-stretch:
-            <<: *std-filters
-        - build-armhf-buster:
-            <<: *std-filters
-## Currently circleci does not build armf64 correctly due to no suitable docker image
-##        - build-armhf-bionic-64:
-##            <<: *std-filters
-        - build-xenial:
-            <<: *std-filters
-        - build-bionic:
-            <<: *std-filters
-        - build-bionic-gtk3:
-            <<: *std-filters
-        - build-focal-gtk3:
-            <<: *std-filters
-        - build-buster:
-            <<: *std-filters
-        - build-flatpak-arm64:
-            <<: *std-filters
-        - build-flatpak-x86-2008:
-            <<: *std-filters
-        - build-flatpak-x86-1808:
-            <<: *std-filters
-        - build-macos:
-            <<: *std-filters
-        - build-macos-wx315:
-            <<: *std-filters
-        - build-android-arm64:
-            <<: *std-filters
-        - build-android-armhf:
-            <<: *std-filters
-
 orbs:
     cloudsmith: cloudsmith/cloudsmith@1.0.4
 
@@ -83,8 +39,7 @@ commands:
                     - cloudsmith/ensure-api-key
                     - cloudsmith/install-cli
                 - run: ci/cloudsmith-upload.sh
-    # add - use-apt-proxy before the '- run: ci/circleci-build*.sh' if building locally and there is an apt proxy available. It will speed up the build considerably if on a slow connection.
-    use-apt-proxy:
+    use-apt-proxy: # add - use-apt-proxy before the '- run: ci/circleci-build*.sh' if building locally and there is an apt proxy available. It will speed up the build considerably if on a slow connection.
         parameters:
             use-proxy:
                 type: boolean
@@ -352,4 +307,48 @@ jobs:
             condition: <<pipeline.parameters.run_workflow_deploy>>
             steps:
             - run: ci/cloudsmith-upload.sh
+
+std-filters: &std-filters
+    filters:
+        branches:
+            ignore:
+            - devel
+            - tmp
+        tags:
+            only: /.*/
+
+workflows:
+    build_all:
+        jobs:
+        - build-armhf-stretch:
+            <<: *std-filters
+        - build-armhf-buster:
+            <<: *std-filters
+## Currently circleci does not build armf64 correctly due to no suitable docker image
+##        - build-armhf-bionic-64:
+##            <<: *std-filters
+        - build-xenial:
+            <<: *std-filters
+        - build-bionic:
+            <<: *std-filters
+        - build-bionic-gtk3:
+            <<: *std-filters
+        - build-focal-gtk3:
+            <<: *std-filters
+        - build-buster:
+            <<: *std-filters
+        - build-flatpak-arm64:
+            <<: *std-filters
+        - build-flatpak-x86-2008:
+            <<: *std-filters
+        - build-flatpak-x86-1808:
+            <<: *std-filters
+        - build-macos:
+            <<: *std-filters
+        - build-macos-wx315:
+            <<: *std-filters
+        - build-android-arm64:
+            <<: *std-filters
+        - build-android-armhf:
+            <<: *std-filters
 
