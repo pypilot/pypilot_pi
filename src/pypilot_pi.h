@@ -105,6 +105,7 @@ public:
       wxString GetCommonName();
       wxString GetShortDescription();
       wxString GetLongDescription();
+  	  wxBitmap m_panelBitmap; 
 
       int GetToolbarToolCount(void);
       void OnToolbarToolCallback(int id);

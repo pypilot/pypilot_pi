@@ -83,6 +83,31 @@ pypilot_pi::pypilot_pi(void *ppimgr)
 {
     // Create the PlugIn icons
     initialize_images();
+	
+	// Create the PlugIn icons  -from shipdriver
+    // loads png file for the listing panel icon
+    wxFileName fn;
+    auto path = GetPluginDataDir("pypilot_pi");
+    fn.SetPath(path);
+    fn.AppendDir("data");
+    fn.SetFullName("pypilot_panel.png");
+
+    path = fn.GetFullPath();
+
+    wxInitAllImageHandlers();
+
+    wxLogDebug(wxString("Using icon path: ") + path);
+    if (!wxImage::CanRead(path)) {
+        wxLogDebug("Initiating image handlers.");
+        wxInitAllImageHandlers();
+    }
+    wxImage panelIcon(path);
+    if (panelIcon.IsOk())
+        m_panelBitmap = wxBitmap(panelIcon);
+    else
+        wxLogWarning("Climatology panel icon has NOT been loaded");
+// End of from Shipdriver
+	
     m_declination = NAN;
     m_ap_heading = NAN;
     m_ap_heading_command = NAN;
@@ -188,10 +213,15 @@ int pypilot_pi::GetPlugInVersionMinor()
     return PLUGIN_VERSION_MINOR;
 }
 
-wxBitmap *pypilot_pi::GetPlugInBitmap()
-{
-    return new wxBitmap(_img_pypilot_grey->ConvertToImage().Copy());
-}
+//  Converts  icon.cpp file to an image. Original process
+//wxBitmap *pypilot_pi::GetPlugInBitmap()
+//{
+//    return new wxBitmap(_img_pypilot_grey->ConvertToImage().Copy());
+//}
+
+// Shipdriver uses the climatology_panel.png file to make the bitmap.
+wxBitmap *pypilot_pi::GetPlugInBitmap()  { return &m_panelBitmap; }
+// End of shipdriver process
 
 wxString pypilot_pi::GetCommonName()
 {
