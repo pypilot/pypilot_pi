@@ -42,6 +42,8 @@ CalibrationDialog::CalibrationDialog(pypilot_pi &_pypilot_pi, wxWindow* parent) 
     m_refreshtimer.Connect(wxEVT_TIMER, wxTimerEventHandler
                     ( CalibrationDialog::RefreshTimer ), NULL, this);
     m_refreshtimer.Start(1000);
+
+    m_settings_time = wxDateTime::UNow();
 }
 
 CalibrationDialog::~CalibrationDialog()
@@ -118,10 +120,16 @@ void CalibrationDialog::Receive(std::string name, Json::Value &value)
     else if(name == "rudder.range")
         m_sRudderRange->SetValue(value.asDouble());
     else if(m_settings.find(name) != m_settings.end())
-        m_settings[name]->SetValue(value.asDouble());
+        m_settings_values[name] = value.asDouble();
 
     m_accelCalibrationPlot->Receive(name, value);
     m_compassCalibrationPlot->Receive(name, value);
+
+    if((wxDateTime::UNow() - m_settings_time).GetMilliseconds() > 3000) {
+        for(std::map<std::string, double>::iterator i = m_settings_values.begin(); i != m_settings_values.end(); i++)
+            m_settings[i->first]->SetValue(i->second);
+        m_settings_time = wxDateTime::UNow();
+    }
 }
 
 std::map<std::string, double> &CalibrationDialog::GetWatchlist()
@@ -302,5 +310,6 @@ void CalibrationDialog::OnSpin(wxSpinDoubleEvent& event )
 #endif
         std::string name = i->first;
         m_pypilot_pi.m_client.set(name, s->GetValue());
+        m_settings_time = wxDateTime::UNow();
     }
 }

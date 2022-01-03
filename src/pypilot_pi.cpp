@@ -34,6 +34,8 @@
 #include <wx/socket.h>
 #include <wx/stdpaths.h>
 
+#include <wxServDisc.h>
+
 #ifdef __MSVC__
 #include "msvcdefs.h"
 #endif
@@ -89,6 +91,7 @@ pypilot_pi::pypilot_pi(void *ppimgr)
     m_imu_heading = NAN;
     m_lastfix.nSats = 0;
 
+    m_servscan = NULL;
 
     m_nmeasocket.SetEventHandler(*this);
     m_nmeasocket.SetNotify(wxSOCKET_CONNECTION_FLAG | wxSOCKET_INPUT_FLAG | wxSOCKET_LOST_FLAG);
@@ -241,7 +244,7 @@ double pypilot_pi::AdjustHeading(double heading)
     if(m_mode == "gps")
         return heading;
     // otherwise wind or true wind
-    return m_imu_heading + m_declination + heading;
+    return m_imu_heading - m_declination + heading;
 }
 
 void pypilot_pi::Receive(std::string name, Json::Value &value)
@@ -256,9 +259,9 @@ void pypilot_pi::Receive(std::string name, Json::Value &value)
             UpdateWatchlist();
         SetToolbarIcon();
     } else if(name == "ap.heading")
-        m_ap_heading = AdjustHeading(value.asDouble());
+        m_ap_heading = value.asDouble();
     else if(name == "ap.heading_command")
-        m_ap_heading_command = AdjustHeading(value.asDouble());
+        m_ap_heading_command = value.asDouble();
     else if(name == "imu.heading")
         m_imu_heading = value.asDouble();
 }
@@ -283,6 +286,59 @@ void pypilot_pi::SetToolbarIcon()
             bitmap = _img_pypilot_cyan;
     }
     SetToolbarToolBitmaps(m_leftclick_tool_id, bitmap, bitmap);
+}
+
+void pypilot_pi::StartZeroConfig()
+{
+    if(m_servscan)
+        return;
+    m_servscan = new wxServDisc(this, "_pypilot._tcp.local.", QTYPE_PTR);
+    Connect(wxServDiscNOTIFY, wxCommandEventHandler( pypilot_pi::onSDNotify ), NULL, this);
+}
+
+void pypilot_pi::StopZeroConfig()
+{
+    if(m_servscan) {
+        Disconnect(wxServDiscNOTIFY, wxCommandEventHandler( pypilot_pi::onSDNotify ), NULL, this);
+        delete m_servscan;
+        m_servscan = NULL;
+    }
+}
+
+void pypilot_pi::onSDNotify(wxCommandEvent& event)
+{
+    if(event.GetEventObject() == m_servscan) {
+	wxArrayString items; 
+	
+	// length of qeury plus leading dot
+	size_t qlen =  m_servscan->getQuery().Len() + 1;
+	
+        std::vector<wxSDEntry> entries = m_servscan->getResults();
+        std::vector<wxSDEntry>::const_iterator it; 
+        int timeout = 3000;
+	for(it=entries.begin(); it != entries.end(); it++) {
+            wxString name = it->name;
+            //int port = it->port;  //use QTYPE_SRV to get port, for now assume 23322
+            wxServDisc namescan(0, name, QTYPE_A);
+
+            while(timeout > 0) {
+                wxMilliSleep(25);
+                timeout-=25;
+                if(namescan.getResultCount()) {
+                    wxString ip = namescan.getResults().at(0).ip;
+                    m_host = ip;
+                    wxFileConfig *pConf = GetOCPNConfigObject();
+                    pConf->SetPath ( _T( "/Settings/pypilot" ) );
+                    pConf->Write ( _T ( "Host" ), m_host);
+                    if(m_ConfigurationDialog)
+                        m_ConfigurationDialog->DetectedHost(ip);
+                    
+//    port = wxString() << namescan.getResults().at(0).port;
+                    return;
+                }
+            }
+        }
+    }
 }
 
 static void MergeWatchlist(std::map<std::string, double> &watchlist, const char **list)
@@ -424,20 +480,22 @@ void pypilot_pi::Render(piDC &dc, PlugIn_ViewPort &vp)
     double dlat, dlon;
     wxPoint p;
 
-    if(!wxIsNaN(m_ap_heading)) {
+    double heading = AdjustHeading(m_ap_heading);
+    if(!wxIsNaN(heading)) {
         //PositionBearingDistanceMercator_Plugin(m_lastfix.Lat, m_lastfix.Lon, m_ap_heading, dist, &dlat, &dlon);
         //GetCanvasPixLL(&vp, &p, dlat, dlon);
-        p.x = dist*sin(deg2rad(m_ap_heading) + vp.rotation) + boat.x;
-        p.y = -dist*cos(deg2rad(m_ap_heading) + vp.rotation) + boat.y;
+        p.x = dist*sin(deg2rad(heading) + vp.rotation) + boat.x;
+        p.y = -dist*cos(deg2rad(heading) + vp.rotation) + boat.y;
             
         dc.SetPen(wxPen(*wxRED, 3));
         dc.DrawLine(boat.x, boat.y, p.x, p.y);
         dc.DrawCircle(p.x, p.y, 5);
     }
 
-    if(!wxIsNaN(m_ap_heading_command)) {
-        p.x = dist*sin(deg2rad(m_ap_heading_command) + vp.rotation) + boat.x;
-        p.y = -dist*cos(deg2rad(m_ap_heading_command) + vp.rotation) + boat.y;
+    double heading_command = AdjustHeading(m_ap_heading_command);
+    if(!wxIsNaN(heading_command)) {
+        p.x = dist*sin(deg2rad(heading_command) + vp.rotation) + boat.x;
+        p.y = -dist*cos(deg2rad(heading_command) + vp.rotation) + boat.y;
 
         dc.SetPen(wxPen(*wxGREEN, 3));
         dc.DrawLine(boat.x, boat.y, p.x, p.y);
@@ -470,10 +528,20 @@ void pypilot_pi::OnTimer( wxTimerEvent & )
 
     if(!m_client.connected()) {
         m_client.connect(m_host);
+
+        wxFileConfig *pConf = GetOCPNConfigObject();
+        pConf->SetPath ( _T( "/Settings/pypilot" ) );
+        bool discover = pConf->Read ( _T ( "AutoDiscover" ), true );
+        if(discover)
+            StartZeroConfig();
+        else
+            StopZeroConfig();
+        
         m_lastMessage = wxDateTime(); // invalidate
         m_Timer.Start(2000);
         return;
     }
+    StopZeroConfig();
 
     std::string name;
     Json::Value val;
@@ -490,7 +558,7 @@ void pypilot_pi::OnTimer( wxTimerEvent & )
                  m_CalibrationDialog->Receive(name, val);
                  m_pypilotClientDialog->Receive(name, val);
              }
-         } catch(std::exception e) {
+         } catch(std::exception const &e) {
              printf("exception!!! %s: %s\n", name.c_str(), e.what());
          }
 
@@ -545,6 +613,9 @@ void pypilot_pi::SetNMEASentence(wxString &sentence)
 void pypilot_pi::OnNMEASocketEvent(wxSocketEvent& event)
 {
     wxFileConfig *pConf = GetOCPNConfigObject();
+    if(!pConf)
+        return
+
     pConf->SetPath ( "/Settings/pypilot" );
 
     if(!pConf->Read ( "ForwardNMEA" , 0L )) {

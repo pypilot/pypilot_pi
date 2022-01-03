@@ -138,6 +138,7 @@ class ConfigurationDialogBase : public wxDialog
 	protected:
 		wxStaticText* m_staticText6;
 		wxComboBox* m_cHost;
+		wxCheckBox* m_cbAutoDiscover;
 		wxCheckBox* m_cbTackingButton;
 		wxButton* m_button31;
 		wxCheckBox* m_cbCenterButton;
