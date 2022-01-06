@@ -35,6 +35,7 @@ public:
     ConfigurationDialog( pypilot_pi &_pypilot_pi, wxWindow* parent);
     ~ConfigurationDialog() {}
     bool Show( bool show=true );
+    void DetectedHost(wxString);
 
 private:
     void OnAboutTacking( wxCommandEvent& event );

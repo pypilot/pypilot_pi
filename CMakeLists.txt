@@ -62,10 +62,10 @@ set(LONG_DESCRIPTION
 # SET(PACKAGE_NAME pypilot_pi)
 
 set(VERSION_MAJOR "0")
-set(VERSION_MINOR "30")
-set(VERSION_PATCH "3")
+set(VERSION_MINOR "33")
+set(VERSION_PATCH "0")
 set(VERSION_TWEAK "0")
-set(VERSION_DATE "08/12/2021") # DD/MM/YYYY format
+set(VERSION_DATE "01/01/2022")
 set(OCPN_MIN_VERSION "ov50")
 set(OCPN_API_VERSION_MAJOR "1")
 set(OCPN_API_VERSION_MINOR "16")
@@ -256,6 +256,11 @@ target_sources(${PACKAGE_NAME} PUBLIC ${SRCS} ${HDRS} ${OCPNSRC} ${EXTSRC} ${LIB
 #
 #    target_link_libraries(${PACKAGE_NAME} ocpn::tinyxml)
 #endif(NOT OCPN_FLATPAK_CONFIG)
+
+add_subdirectory(libs/wxservdisc)
+
+include_directories( ${PROJECT_SOURCE_DIR}/libs/wxservdisc/src )
+target_link_libraries(${PACKAGE_NAME} "wxservdisc")
 
 
 add_definitions(-DTIXML_USE_STL)

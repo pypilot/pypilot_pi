@@ -382,7 +382,7 @@ ConfigurationDialogBase::ConfigurationDialogBase( wxWindow* parent, wxWindowID i
 	fgSizer16->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
 	wxFlexGridSizer* fgSizer41;
-	fgSizer41 = new wxFlexGridSizer( 0, 2, 0, 0 );
+	fgSizer41 = new wxFlexGridSizer( 1, 0, 0, 0 );
 	fgSizer41->AddGrowableCol( 1 );
 	fgSizer41->SetFlexibleDirection( wxBOTH );
 	fgSizer41->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
@@ -392,10 +392,15 @@ ConfigurationDialogBase::ConfigurationDialogBase( wxWindow* parent, wxWindowID i
 	fgSizer41->Add( m_staticText6, 0, wxALL, 5 );
 
 	m_cHost = new wxComboBox( this, wxID_ANY, _("127.0.0.1"), wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
+	m_cHost->Append( _("127.0.0.1") );
 	m_cHost->Append( _("127.0.0.1 (localhost)") );
 	m_cHost->Append( _("192.168.14.1 (tinypilot)") );
 	m_cHost->Append( _("10.10.10.1 (openplotter)") );
 	fgSizer41->Add( m_cHost, 0, wxALL|wxEXPAND, 5 );
+
+	m_cbAutoDiscover = new wxCheckBox( this, wxID_ANY, _("Auto Discover"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_cbAutoDiscover->SetValue(true);
+	fgSizer41->Add( m_cbAutoDiscover, 0, wxALL, 5 );
 
 
 	fgSizer16->Add( fgSizer41, 1, wxEXPAND, 5 );

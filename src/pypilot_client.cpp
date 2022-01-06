@@ -211,6 +211,7 @@ void pypilotClient::OnSocketEvent(wxSocketEvent& event)
                     break;
                 std::string line = m_sock_buffer.substr(0, line_end);
                 long unsigned int c = line.find('=');
+                //printf("LINE: %s\n", line.c_str());
                 if(c == std::string::npos) {
                     wxString sLogMessage;
                     sLogMessage.Append(wxT("pypilot_pi: Error parsing - "));

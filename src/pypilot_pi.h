@@ -65,6 +65,8 @@
 
 #define PYPILOT_TOOL_POSITION    -1          // Request default positioning of toolbar tool
 
+class wxServDisc;
+
 class piDC;
 class pypilotDialog;
 class GainsDialog;
@@ -130,6 +132,7 @@ public:
       void OnConnected();
       void OnDisconnected();
       void UpdateWatchlist();
+      double HeadingCommand() { return m_ap_heading_command; }
 
       pypilotClient_pi m_client;
 
@@ -155,6 +158,12 @@ private:
       void UpdateStatus();
       void SetToolbarIcon();
 
+      void StartZeroConfig();
+      void StopZeroConfig();
+      void onSDNotify(wxCommandEvent& event);
+
+      wxServDisc *m_servscan;
+    
       wxDateTime m_declinationRequestTime;
       int               m_leftclick_tool_id;
 
