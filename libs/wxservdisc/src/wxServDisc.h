@@ -39,8 +39,8 @@
 // https://stackoverflow.com/questions/5004858/stdmin-gives-error
 #define NOMINMAX
 // mingw/ visual studio socket includes
-//#include <winsock2.h>
-#include <ws2tcpip.h>
+#include <winsock2.h>
+//#include <ws2tcpip.h>
 #define SHUT_RDWR SD_BOTH
 #else // proper UNIX
 typedef int SOCKET;       // under windows, SOCKET is unsigned
