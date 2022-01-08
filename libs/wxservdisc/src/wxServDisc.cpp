@@ -36,6 +36,7 @@
 // only used by VC++
 #ifdef _WIN32
 #pragma comment(lib, "Ws2_32.lib")
+#include <winsock2.h>
 #include <ws2tcpip.h>
 #endif
 
