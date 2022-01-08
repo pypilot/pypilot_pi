@@ -195,7 +195,7 @@ int wxServDisc::recvm(struct message* m, SOCKET s, unsigned long int *ip, unsign
   struct sockaddr_in from;
   int bsize;
   static unsigned char buf[MAX_PACKET_LEN];
-#ifdef __WIN32__
+#ifdef _WIN32
   int ssize  = sizeof(struct sockaddr_in);
 #else
   socklen_t ssize  = sizeof(struct sockaddr_in);
@@ -211,7 +211,7 @@ int wxServDisc::recvm(struct message* m, SOCKET s, unsigned long int *ip, unsign
       return bsize;
     }
 
-#ifdef __WIN32__
+#ifdef _WIN32
   if(bsize < 0 && WSAGetLastError() != WSAEWOULDBLOCK) 
 #else
     if(bsize < 0 && errno != EAGAIN)
@@ -311,7 +311,7 @@ SOCKET wxServDisc::msock()
 
 
  
-#ifdef __WIN32__
+#ifdef _WIN32
   /*
     Start up WinSock
    */

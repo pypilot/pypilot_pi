@@ -1,7 +1,7 @@
 #include "mdnsd.h"
 #include <string.h>
 #include <stdlib.h>
-#ifdef WIN32
+#ifdef _WIN32
 // for the inet related functions
 #include <ws2tcpip.h>
 #else
