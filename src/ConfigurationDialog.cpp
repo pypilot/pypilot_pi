@@ -43,8 +43,13 @@ bool ConfigurationDialog::Show( bool show )
     if(show) {
         wxFileConfig *pConf = GetOCPNConfigObject();
         pConf->SetPath ( _T( "/Settings/pypilot" ) );
-        m_cHost->Insert(pConf->Read ( _T ( "Host" ), "192.168.14.1" ), 0);
+        m_cbAutoDiscover->SetValue(pConf->Read ( _T ( "AutoDiscover" ), true));
         m_cHost->SetSelection(0);
+        wxString host = pConf->Read ( _T ( "Host" ), "192.168.14.1" );
+        if(m_cHost->GetString(0) != host) {
+            m_cHost->Insert(host, 0);
+            m_cHost->SetSelection(0);
+        }
         m_cbTackingButton->SetValue((bool)pConf->Read ( _T ( "TackingButton" ), 1));
         m_cbCenterButton->SetValue((bool)pConf->Read ( _T ( "CenterButton" ), 1));
         m_cbForwardNMEA->SetValue((bool)pConf->Read ( _T ( "ForwardNMEA" ), 0L ));
@@ -70,9 +75,16 @@ bool ConfigurationDialog::Show( bool show )
             }
         }
     }
-
     
     return ConfigurationDialogBase::Show(show);
+}
+
+void ConfigurationDialog::DetectedHost(wxString host)
+{
+    if(m_cHost->GetString(0) != host) {
+        m_cHost->SetString(0, host + " (discovered)");
+        m_cHost->SetSelection(0);
+    }
 }
 
 void ConfigurationDialog::OnAboutTacking( wxCommandEvent& event )
@@ -163,6 +175,7 @@ void ConfigurationDialog::OnOk( wxCommandEvent& event )
 
     wxFileConfig *pConf = GetOCPNConfigObject();
     pConf->SetPath ( _T( "/Settings/pypilot" ) );
+    pConf->Write ( _T ( "AutoDiscover" ), m_cbAutoDiscover->GetValue());
     pConf->Write ( _T ( "Host" ), m_cHost->GetValue().BeforeFirst(' '));
     pConf->Write ( _T ( "TackingButton" ), m_cbTackingButton->GetValue());
     pConf->Write ( _T ( "CenterButton" ), m_cbCenterButton->GetValue());

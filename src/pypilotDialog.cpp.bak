@@ -57,7 +57,7 @@ pypilotDialog::pypilotDialog( pypilot_pi &_pypilot_pi, wxWindow* parent)
     Move(pConf->Read ( _T ( "DialogPosX" ), 20L ), pConf->Read ( _T ( "DialogPosY" ), 20L ));
 
     m_HeadingCommandUpdate = wxDateTime::UNow() - wxTimeSpan::Seconds(5);
-    m_HeadingCommand = m_pypilot_pi.HeadingCommand();
+    m_HeadingCommand = NAN;
 
     ShowTacking();
     RebuildControlAngles();
@@ -374,11 +374,7 @@ void pypilotDialog::OnControlAngle( wxCommandEvent& event )
     wxString angle = button->GetLabel(), heading_command = m_stCommand->GetLabel();
     double a, b;
     if(heading_command.ToDouble(&a) && angle.ToDouble(&b)) {
-        double cmd;
-        if(m_pypilot_pi.m_mode.Contains("wind"))
-            cmd = heading_resolve(a + b);
-        else
-            cmd = heading_resolve_pos(a + b);
+        double cmd = heading_resolve_pos(a + b);
         m_stCommand->SetLabel(wxString::Format("%.1f", cmd));
         m_HeadingCommandUpdate = wxDateTime::UNow();
         if(m_bTrueNorthMode && m_cMode->GetSelection() == 0 /*compass*/)

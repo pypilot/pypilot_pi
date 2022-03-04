@@ -18,7 +18,7 @@
 ## *   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                                       *
 ## ***
 #-----------------------------------------------------------------------------
-# Frontend2 Author: Jon Gough  Frontend2: v1.0.185.0  08/12/2021
+# Frontend2 Author: Jon Gough  Frontend2: v1.0.193.0  02/17/2022
 # ---------------------------------------------------------------------------
 ## buildCI:yes useODAPI:no validateJSON:no
 ## ----- When changing this file do NOT change the order in which sections occur        ----- ##
@@ -64,8 +64,8 @@ set(LONG_DESCRIPTION
 set(VERSION_MAJOR "0")
 set(VERSION_MINOR "30")
 set(VERSION_PATCH "3")
-set(VERSION_TWEAK "0")
-set(VERSION_DATE "08/12/2021") # DD/MM/YYYY format
+set(VERSION_TWEAK "2")
+set(VERSION_DATE "03/3/2022") # DD/MM/YYYY format
 set(OCPN_MIN_VERSION "ov50")
 set(OCPN_API_VERSION_MAJOR "1")
 set(OCPN_API_VERSION_MINOR "16")
@@ -256,6 +256,13 @@ target_sources(${PACKAGE_NAME} PUBLIC ${SRCS} ${HDRS} ${OCPNSRC} ${EXTSRC} ${LIB
 #
 #    target_link_libraries(${PACKAGE_NAME} ocpn::tinyxml)
 #endif(NOT OCPN_FLATPAK_CONFIG)
+
+
+add_subdirectory(libs/wxservdisc)
+
+include_directories( ${PROJECT_SOURCE_DIR}/libs/wxservdisc/src )
+target_link_libraries(${PACKAGE_NAME} "wxservdisc")
+
 
 
 add_definitions(-DTIXML_USE_STL)

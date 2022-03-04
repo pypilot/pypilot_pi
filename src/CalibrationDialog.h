@@ -73,6 +73,9 @@ private:
 
     std::map<std::string, wxSpinCtrlDouble*> m_settings;
 
+    std::map<std::string, double> m_settings_values;
+    wxDateTime m_settings_time;
+    
     wxTimer m_HeadingOffsetTimer;
     wxTimer m_refreshtimer;
 };
