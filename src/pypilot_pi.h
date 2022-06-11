@@ -171,11 +171,14 @@ private:
       wxString m_status;
 
       wxString m_host;
-      bool m_bForwardnmea;
+      bool m_bForwardNMEA;
       bool m_bEnableGraphicOverlay;
 
       PlugIn_Position_Fix_Ex m_lastfix;
       double m_ap_heading, m_ap_heading_command, m_imu_heading;
+
+      double m_filtered_lat, m_filtered_lon, m_filtered_speed, m_filtered_track;
+
       wxDateTime m_lastMessage;
 
       bool m_enabled;
