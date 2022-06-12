@@ -182,6 +182,7 @@ private:
       wxDateTime m_lastMessage;
 
       bool m_enabled;
+      int     m_ReadConfig;
       
       wxSocketClient      m_nmeasocket;
       std::string         m_nmeasock_buffer;

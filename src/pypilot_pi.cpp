@@ -102,6 +102,8 @@ pypilot_pi::pypilot_pi(void *ppimgr)
     
     m_enabled = false;
     m_mode = "";
+
+    m_ReadConfig = 20;
 }
 
 //---------------------------------------------------------------------------------------------------------
@@ -124,7 +126,7 @@ int pypilot_pi::Init(void)
 #endif
     m_Timer.Connect(wxEVT_TIMER, wxTimerEventHandler
                     ( pypilot_pi::OnTimer ), NULL, this);
-    m_Timer.Start(1000);
+    m_Timer.Start(3000);
             
     m_pypilotDialog = NULL;
     m_GainsDialog = NULL;
@@ -134,8 +136,6 @@ int pypilot_pi::Init(void)
     m_pypilotClientDialog = NULL;
 
     m_status = _("Disconnected");
-
-    ReadConfig();
         
     return (WANTS_OVERLAY_CALLBACK |
             WANTS_OPENGL_OVERLAY_CALLBACK |
@@ -529,7 +529,8 @@ void pypilot_pi::ReadConfig()
         m_host = host;
     }
 
-    m_bForwardNMEA = pConf->Read ( "ForwardNMEA" , 0L );;
+    m_bForwardNMEA = (bool)pConf->Read ( _T("ForwardNMEA") , 0L );
+
     m_bEnableGraphicOverlay = (bool)pConf->Read ( _T ( "EnableGraphicOverlay" ), 0L);
     if(m_pypilotDialog) {
         m_pypilotDialog->RebuildControlAngles();
@@ -541,6 +542,11 @@ void pypilot_pi::ReadConfig()
 
 void pypilot_pi::OnTimer( wxTimerEvent & )
 {
+    if(m_ReadConfig) {
+        ReadConfig();
+        m_ReadConfig=0;
+    }
+    
     Declination();
 
     if(!m_client.connected()) {
