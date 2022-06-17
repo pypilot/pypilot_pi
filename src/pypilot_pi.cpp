@@ -629,7 +629,13 @@ void pypilot_pi::SetNMEASentence(wxString &sentence)
         m_nmeasocket.Connect(addr, false);
 
     }
-        
+
+    if(sentence.StartsWith("$AP"))
+        return; // ignore
+
+    if(!sentence.EndsWith("\n"))
+        sentence += "\n";
+    
     if(m_nmeasocket.IsConnected())
         m_nmeasocket.Write(sentence.c_str(), sentence.size());
 }
