@@ -18,7 +18,7 @@
 ## *   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                                       *
 ## ***
 #-----------------------------------------------------------------------------
-# Frontend2 Author: Jon Gough  Frontend2: v1.0.193.0  02/17/2022
+# Frontend2 Author: Jon Gough  Frontend2: v1.0.213.0  17/06/2022
 # ---------------------------------------------------------------------------
 ## buildCI:yes useODAPI:no validateJSON:no
 ## ----- When changing this file do NOT change the order in which sections occur        ----- ##
@@ -64,8 +64,8 @@ set(LONG_DESCRIPTION
 set(VERSION_MAJOR "0")
 set(VERSION_MINOR "30")
 set(VERSION_PATCH "3")
-set(VERSION_TWEAK "3")
-set(VERSION_DATE "05/02/2022") # DD/MM/YYYY format
+set(VERSION_TWEAK "4")
+set(VERSION_DATE "17/06/2022") # DD/MM/YYYY format
 set(OCPN_MIN_VERSION "ov50")
 set(OCPN_API_VERSION_MAJOR "1")
 set(OCPN_API_VERSION_MINOR "16")
