@@ -5,7 +5,7 @@
  * Author:   Sean D'Epagnier
  *
  ***************************************************************************
- *   Copyright (C) 2018 by Sean D'Epagnier                                 *
+ *   Copyright (C) 2022 by Sean D'Epagnier                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -114,6 +114,8 @@ pypilot_pi::pypilot_pi(void *ppimgr)
     m_ap_heading = NAN;
     m_ap_heading_command = NAN;
     m_imu_heading = NAN;
+    m_filtered_lat = m_filtered_lon = m_filtered_speed = m_filtered_track = NAN;
+    
     m_lastfix.nSats = 0;
 
     m_servscan = NULL;
@@ -125,6 +127,8 @@ pypilot_pi::pypilot_pi(void *ppimgr)
     
     m_enabled = false;
     m_mode = "";
+
+    m_ReadConfig = 20;
 }
 
 //---------------------------------------------------------------------------------------------------------
@@ -137,12 +141,6 @@ int pypilot_pi::Init(void)
 {
     AddLocaleCatalog( PLUGIN_CATALOG_NAME );
 
-/*   OLD _img code
-    m_leftclick_tool_id  = InsertPlugInTool
-        (_T(""), _img_pypilot_grey, _img_pypilot_grey, wxITEM_NORMAL,
-         _("pypilot"), _T(""), NULL, PYPILOT_TOOL_POSITION, 0, this);
-*/
-
 // See line 265 for various colored icons for Mode - sail, compass, etc.
 #ifdef PLUGIN_USE_SVG
     m_leftclick_tool_id = InsertPlugInToolSVG( _T( "Pypilot" ), _svg_pypilot, _svg_pypilot_rollover, _svg_pypilot_toggled, wxITEM_CHECK, _( "Pypilot" ), _T( "" ), NULL, PYPILOT_TOOL_POSITION, 0, this);
@@ -151,12 +149,9 @@ int pypilot_pi::Init(void)
         (_T(""), _img_plots, _img_plots, wxITEM_NORMAL,
          _("Plots"), _T(""), NULL, PYPILOT_TOOL_POSITION, 0, this);
 #endif
-
-
-    
     m_Timer.Connect(wxEVT_TIMER, wxTimerEventHandler
                     ( pypilot_pi::OnTimer ), NULL, this);
-    m_Timer.Start(1000);
+    m_Timer.Start(3000);
             
     m_pypilotDialog = NULL;
     m_GainsDialog = NULL;
@@ -166,8 +161,6 @@ int pypilot_pi::Init(void)
     m_pypilotClientDialog = NULL;
 
     m_status = _("Disconnected");
-
-    ReadConfig();
         
     return (WANTS_OVERLAY_CALLBACK |
             WANTS_OPENGL_OVERLAY_CALLBACK |
@@ -228,27 +221,17 @@ wxBitmap *pypilot_pi::GetPlugInBitmap()  { return &m_panelBitmap; }
 
 wxString pypilot_pi::GetCommonName()
 {
-//    return _("pypilot");
     return _T(PLUGIN_COMMON_NAME);
 }
 
 wxString pypilot_pi::GetShortDescription()
 {
-//    return _("pypilot PlugIn for OpenCPN");
     return _T(PLUGIN_COMMON_NAME);	
 }
 
 wxString pypilot_pi::GetLongDescription()
 {
     return _(PLUGIN_LONG_DESCRIPTION);
-
-/*    return _("Control the free software autopilot pypilot.\n  \
-See http://pypilot.org for more details.\n\n\
-The plugin connects to pypilot directly implementing a control\n\
-interface to configure, calibrate and command pypilot from opencpn.\n\n\
-For more control and tuning route-following logic,\n\
-consider the autopilot route plugin."); */
-
 }
 
 int pypilot_pi::GetToolbarToolCount(void)
@@ -294,6 +277,16 @@ void pypilot_pi::Receive(std::string name, Json::Value &value)
         m_ap_heading_command = value.asDouble();
     else if(name == "imu.heading")
         m_imu_heading = value.asDouble();
+    else if(name == "gps.filtered.lat")
+        m_filtered_lat = value.asDouble();
+    else if(name == "gps.filtered.lon")
+        m_filtered_lon = value.asDouble();
+    else if(name == "gps.filtered.speed")
+        m_filtered_speed = value.asDouble();
+    else if(name == "gps.filtered.track") {
+        m_filtered_track = value.asDouble();
+        //RequestRefresh(GetOCPNCanvasWindow());
+    }
 }
 
 void pypilot_pi::UpdateStatus()
@@ -421,6 +414,11 @@ void pypilot_pi::UpdateWatchlist()
         MergeWatchlist(watchlist, wl);
         if(m_mode == "wind" || m_mode == "true wind")
             watchlist["imu.heading"] = 0.5;
+
+
+        static const char *wl2[] = {"gps.filtered.lat", "gps.filtered.lon", "gps.filtered.speed", "gps.filtered.track", 0};
+        MergeWatchlist(watchlist, wl2);
+        
     } else
         watchlist["imu.uptime"] = true; // use as heartbeat to time out connection
 
@@ -531,18 +529,38 @@ void pypilot_pi::Render(piDC &dc, PlugIn_ViewPort &vp)
         dc.DrawLine(boat.x, boat.y, p.x, p.y);
         dc.DrawCircle(p.x, p.y, 5);
     }
+
+    // render filtered position speed track
+    if(!wxIsNaN(m_filtered_lat) && !wxIsNaN(m_filtered_lon)) {
+        GetCanvasPixLL(&vp, &boat, m_filtered_lat, m_filtered_lon);
+        dc.SetPen(wxPen(wxColour(255, 0, 255), 3));
+        dc.DrawCircle(boat.x, boat.y, 5);
+
+        if(!wxIsNaN(m_filtered_speed) && !wxIsNaN(m_filtered_track)) {
+            double dlat, dlon;
+            PositionBearingDistanceMercator_Plugin(m_filtered_lat, m_filtered_lon, m_filtered_track, m_filtered_speed, &dlat, &dlon);
+            GetCanvasPixLL(&vp, &p, dlat, dlon);
+            dc.DrawLine(boat.x, boat.y, p.x, p.y);
+        }
+    }
 }
 
 void pypilot_pi::ReadConfig()
 {
     wxFileConfig *pConf = GetOCPNConfigObject();
+    if(!pConf)
+        return
+
     pConf->SetPath ( _T( "/Settings/pypilot" ) );
+    
     wxString host = pConf->Read ( _T ( "Host" ), "192.168.14.1" );
     if(host != m_host) {
         m_client.disconnect();
         m_host = host;
     }
-    m_bForwardnmea = (bool)pConf->Read ( _T ( "Forwardnema" ), 0L);
+
+    m_bForwardNMEA = (bool)pConf->Read ( _T("ForwardNMEA") , 0L );
+
     m_bEnableGraphicOverlay = (bool)pConf->Read ( _T ( "EnableGraphicOverlay" ), 0L);
     if(m_pypilotDialog) {
         m_pypilotDialog->RebuildControlAngles();
@@ -554,6 +572,11 @@ void pypilot_pi::ReadConfig()
 
 void pypilot_pi::OnTimer( wxTimerEvent & )
 {
+    if(m_ReadConfig) {
+        ReadConfig();
+        m_ReadConfig=0;
+    }
+    
     Declination();
 
     if(!m_client.connected()) {
@@ -625,7 +648,7 @@ void pypilot_pi::SetNMEASentence(wxString &sentence)
     wxFileConfig *pConf = GetOCPNConfigObject();
     pConf->SetPath ( "/Settings/pypilot" );
 
-    if(!pConf->Read ( "ForwardNMEA" , 0L ))
+    if(!m_bForwardNMEA)
         return;
 
     if(!m_nmeasocket.IsConnected()) {
@@ -634,21 +657,23 @@ void pypilot_pi::SetNMEASentence(wxString &sentence)
         addr.Hostname(host);
         addr.Service(20220);
         m_nmeasocket.Connect(addr, false);
+
     }
-        
+
+    if(sentence.StartsWith("$AP"))
+        return; // ignore
+
+    if(!sentence.EndsWith("\n"))
+        sentence += "\n";
+    
     if(m_nmeasocket.IsConnected())
         m_nmeasocket.Write(sentence.c_str(), sentence.size());
 }
 
 void pypilot_pi::OnNMEASocketEvent(wxSocketEvent& event)
 {
-    wxFileConfig *pConf = GetOCPNConfigObject();
-    if(!pConf)
-        return
 
-    pConf->SetPath ( "/Settings/pypilot" );
-
-    if(!pConf->Read ( "ForwardNMEA" , 0L )) {
+    if(!m_bForwardNMEA) {
         m_nmeasocket.Close();
         return;
     }
