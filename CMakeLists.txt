@@ -51,7 +51,7 @@ set(TITLE_NAME "PYPILOT")
 set(PACKAGE_CONTACT "Sean D'Epagnier")
 set(PACKAGE "pypilot")
 set(SHORT_DESCRIPTION "Pypilot PlugIn for OpenCPN")
-set(LONG_DESCRIPTION 
+set(LONG_DESCRIPTION
 "Control the free software autopilot pypilot. See http://pypilot.org for more details. /n /"
 "The plugin connects to pypilot directly implementing a control interface to configure, /n /"
 "calibrate and command pypilot from opencpn. For more control and tuning route-following /n /"
@@ -90,7 +90,7 @@ set(ALPHA "alpha")  #Standard Repos
 # Set if yourCloudsmith Base Repository name does not match your Git Repository name.
 #set(CLOUDSMITH_BASE_REPOSITORY "opencpn-plugins") #Rick's customization
 set (CLOUDSMITH_BASE_REPOSITORY "pypilot")  #without the pi
-# Set the following to use OpenCPN cloudsmith repositories instead of own repositories	  
+# Set the following to use OpenCPN cloudsmith repositories instead of own repositories
 set(CLOUDSMITH_USER "opencpn")
 #set(CLOUDSMITH_USER "rick-gleason")
 
@@ -183,7 +183,7 @@ SET(HDRS
 if(NOT QT_ANDROID)
   SET(SRCS ${SRCS}
      src/CalibrationDialog.cpp
-     src/CalibrationPlot.cpp						   
+     src/CalibrationPlot.cpp
      )
 endif(NOT QT_ANDROID)
 
@@ -208,7 +208,7 @@ set(EXTINCLUDE_DIR ${EXTINCLUDE_DIR} extinclude libs/ocpn-api/)
 ## Modify/configure 'Include' Directories below for the Plugin
 ##
 
-# Not doing json validator		 
+# Not doing json validator
 
 
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/include)
@@ -250,26 +250,22 @@ target_sources(${PACKAGE_NAME} PUBLIC ${SRCS} ${HDRS} ${OCPNSRC} ${EXTSRC} ${LIB
 ##==========================================================================
 
 
-# Pypilot does not require tinyxml 
-#if(NOT OCPN_FLATPAK_CONFIG)
-#    # Build environment not available when flatpak is being configured so following statements will not work
-#    message(STATUS "${CMLOC}Adding target link libraries to ${PACKAGE_NAME}")
-#
-#    add_subdirectory(libs/tinyxml)
-#
-#    target_link_libraries(${PACKAGE_NAME} ocpn::tinyxml)
-#endif(NOT OCPN_FLATPAK_CONFIG)
+if(NOT OCPN_FLATPAK_CONFIG)
+    # Build environment not available when flatpak is being configured so following statements will not run
+    message(STATUS "${CMLOC}Adding target link libraries to ${PACKAGE_NAME}")
 
-add_subdirectory(libs/wxservdisc)
+    add_subdirectory(libs/wxservdisc)
 
-include_directories( ${PROJECT_SOURCE_DIR}/libs/wxservdisc/src )
-target_link_libraries(${PACKAGE_NAME} "wxservdisc")
+    include_directories( ${PROJECT_SOURCE_DIR}/libs/wxservdisc/src )
+    target_link_libraries(${PACKAGE_NAME} "wxservdisc")
+
+endif(NOT OCPN_FLATPAK_CONFIG)
 
 
 add_definitions(-DTIXML_USE_STL)
 
 
-# Not doing JSOn Schema Validator								
+# Not doing JSOn Schema Validator
 
 ##
 ## ----- Change above to match project requirements ----- ##
