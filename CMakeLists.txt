@@ -249,6 +249,11 @@ include("PluginGL")
 target_sources(${PACKAGE_NAME} PUBLIC ${SRCS} ${HDRS} ${OCPNSRC} ${EXTSRC} ${LIBSSRC}  ${SRC_JSON} ${SRC_PLUGINGL})
 ##==========================================================================
 
+# Needed for android builds  - current
+if(QT_ANDROID)
+    include_directories(BEFORE ${qt_android_include})
+endif(QT_ANDROID)
+
 
 if(NOT OCPN_FLATPAK_CONFIG)
     # Build environment not available when flatpak is being configured so following statements will not run
@@ -270,10 +275,6 @@ add_definitions(-DTIXML_USE_STL)
 ##
 ## ----- Change above to match project requirements ----- ##
 
-# Needed for android builds  - current
-if(QT_ANDROID)
-    include_directories(BEFORE ${qt_android_include})
-endif(QT_ANDROID)
 
 # Needed for all builds
 ## Do not change next section - needed to configure build process ----- ##
