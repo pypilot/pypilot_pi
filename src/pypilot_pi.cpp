@@ -151,7 +151,7 @@ int pypilot_pi::Init(void)
 #endif
     m_Timer.Connect(wxEVT_TIMER, wxTimerEventHandler
                     ( pypilot_pi::OnTimer ), NULL, this);
-    m_Timer.Start(3000);
+    m_Timer.Start(1000);
             
     m_pypilotDialog = NULL;
     m_GainsDialog = NULL;
@@ -161,6 +161,8 @@ int pypilot_pi::Init(void)
     m_pypilotClientDialog = NULL;
 
     m_status = _("Disconnected");
+
+    ReadConfig();
         
     return (WANTS_OVERLAY_CALLBACK |
             WANTS_OPENGL_OVERLAY_CALLBACK |
@@ -209,15 +211,10 @@ int pypilot_pi::GetPlugInVersionMinor()
     return PLUGIN_VERSION_MINOR;
 }
 
-//  Converts  icon.cpp file to an image. Original process
-//wxBitmap *pypilot_pi::GetPlugInBitmap()
-//{
-//    return new wxBitmap(_img_pypilot_grey->ConvertToImage().Copy());
-//}
-
-// Shipdriver uses the climatology_panel.png file to make the bitmap.
-wxBitmap *pypilot_pi::GetPlugInBitmap()  { return &m_panelBitmap; }
-// End of shipdriver process
+wxBitmap *pypilot_pi::GetPlugInBitmap()
+{
+    return new wxBitmap(_img_pypilot_grey->ConvertToImage().Copy());
+}
 
 wxString pypilot_pi::GetCommonName()
 {
@@ -672,7 +669,6 @@ void pypilot_pi::SetNMEASentence(wxString &sentence)
 
 void pypilot_pi::OnNMEASocketEvent(wxSocketEvent& event)
 {
-
     if(!m_bForwardNMEA) {
         m_nmeasocket.Close();
         return;
