@@ -247,15 +247,12 @@ void pypilot_pi::Receive(std::string name, Json::Value &value)
         m_ap_heading_command = value.asDouble();
     else if(name == "imu.heading")
         m_imu_heading = value.asDouble();
-    else if(name == "gps.filtered.lat")
-        m_filtered_lat = value.asDouble();
-    else if(name == "gps.filtered.lon")
-        m_filtered_lon = value.asDouble();
-    else if(name == "gps.filtered.speed")
-        m_filtered_speed = value.asDouble();
-    else if(name == "gps.filtered.track") {
-        m_filtered_track = value.asDouble();
-        //RequestRefresh(GetOCPNCanvasWindow());
+    else if(name == "gps.filtered.fix") {
+        m_filtered_lat = value["lat"].asDouble();
+        m_filtered_lon = value["lon"].asDouble();
+        m_filtered_speed = value["speed"].asDouble();
+        m_filtered_track = value["track"].asDouble();
+        RequestRefresh(GetOCPNCanvasWindow());
     }
 }
 
@@ -385,8 +382,7 @@ void pypilot_pi::UpdateWatchlist()
         if(m_mode == "wind" || m_mode == "true wind")
             watchlist["imu.heading"] = 0.5;
 
-
-        static const char *wl2[] = {"gps.filtered.lat", "gps.filtered.lon", "gps.filtered.speed", "gps.filtered.track", 0};
+        static const char *wl2[] = {"gps.filtered.fix", 0};
         MergeWatchlist(watchlist, wl2);
         
     } else
