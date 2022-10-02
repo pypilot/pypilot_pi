@@ -146,7 +146,7 @@ void pypilotDialog::SetEnabled(bool enabled)
 
     m_fgControlAnglesPos->Show(enabled);
     m_fgControlAnglesNeg->Show(enabled);
-    m_fgControlManual->Show(!enabled);
+    m_fgControlManual->Show(true);
 
     SetAPColor();
     ShowCenter();

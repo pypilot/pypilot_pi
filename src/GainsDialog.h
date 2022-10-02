@@ -43,6 +43,7 @@ public:
     std::list<std::string> &GetWatchlist();
 
 private:
+    void OnProfile( wxCommandEvent& event );
     void OnPilot( wxCommandEvent& event );
     void OnClose( wxCommandEvent& event );
     void OnTimer( wxTimerEvent & );

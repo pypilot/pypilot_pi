@@ -110,6 +110,8 @@ class GainsDialogBase : public wxDialog
 	protected:
 		wxScrolledWindow* m_swGains;
 		wxFlexGridSizer* m_fgGains;
+		wxStaticText* m_staticText51;
+		wxChoice* m_cProfile;
 		wxStaticText* m_staticText52;
 		wxChoice* m_cPilot;
 		wxStdDialogButtonSizer* m_sdbSizer4;
@@ -117,6 +119,7 @@ class GainsDialogBase : public wxDialog
 
 		// Virtual event handlers, overide them in your derived class
 		virtual void OnClose( wxCloseEvent& event ) { event.Skip(); }
+		virtual void OnProfile( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnPilot( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnClose( wxCommandEvent& event ) { event.Skip(); }
 

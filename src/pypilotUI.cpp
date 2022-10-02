@@ -327,6 +327,16 @@ GainsDialogBase::GainsDialogBase( wxWindow* parent, wxWindowID id, const wxStrin
 	fgSizer42->SetFlexibleDirection( wxBOTH );
 	fgSizer42->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
+	m_staticText51 = new wxStaticText( this, wxID_ANY, _("Profile"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText51->Wrap( -1 );
+	fgSizer42->Add( m_staticText51, 0, wxALL, 5 );
+
+	wxString m_cProfileChoices[] = { _("0"), _("1"), _("2"), _("3"), _("4") };
+	int m_cProfileNChoices = sizeof( m_cProfileChoices ) / sizeof( wxString );
+	m_cProfile = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_cProfileNChoices, m_cProfileChoices, 0 );
+	m_cProfile->SetSelection( 0 );
+	fgSizer42->Add( m_cProfile, 0, wxALL, 5 );
+
 	m_staticText52 = new wxStaticText( this, wxID_ANY, _("Pilot"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText52->Wrap( -1 );
 	fgSizer42->Add( m_staticText52, 0, wxALL, 5 );
@@ -356,6 +366,7 @@ GainsDialogBase::GainsDialogBase( wxWindow* parent, wxWindowID id, const wxStrin
 
 	// Connect Events
 	this->Connect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( GainsDialogBase::OnClose ) );
+	m_cProfile->Connect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( GainsDialogBase::OnProfile ), NULL, this );
 	m_cPilot->Connect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( GainsDialogBase::OnPilot ), NULL, this );
 	m_sdbSizer4OK->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GainsDialogBase::OnClose ), NULL, this );
 }
@@ -364,6 +375,7 @@ GainsDialogBase::~GainsDialogBase()
 {
 	// Disconnect Events
 	this->Disconnect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( GainsDialogBase::OnClose ) );
+	m_cProfile->Disconnect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( GainsDialogBase::OnProfile ), NULL, this );
 	m_cPilot->Disconnect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( GainsDialogBase::OnPilot ), NULL, this );
 	m_sdbSizer4OK->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GainsDialogBase::OnClose ), NULL, this );
 

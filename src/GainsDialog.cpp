@@ -135,7 +135,10 @@ static bool hasEnding (std::string const &str, std::string const &ending)
 
 void GainsDialog::Receive(std::string name, Json::Value &value)
 {
-    if(name == "ap.pilot") {
+    if(name == "profile") {
+        int i = value.asInt();
+        m_cPilot->SetSelection(i);
+    } else if(name == "ap.pilot") {
         int i = m_cPilot->FindString(value.asCString());
         if(i >= 0) {
             m_cPilot->SetSelection(i);
@@ -157,6 +160,12 @@ void GainsDialog::Receive(std::string name, Json::Value &value)
         }
     } else if(m_gains.find(name) != m_gains.end())
         m_gains[name]->gain_val = jsondouble(value);
+}
+
+void GainsDialog::OnProfile( wxCommandEvent& event )
+{
+    int ind = m_cProfile->GetSelection();
+    m_pypilot_pi.m_client.set("profile", ind);
 }
 
 void GainsDialog::OnPilot( wxCommandEvent& event )
@@ -258,6 +267,7 @@ void GainsDialog::EnumerateGains()
     std::list<std::string> gains;
     m_pypilot_pi.m_client.GetSettings(gains, "AutopilotGain");
     m_watchlist.clear();
+    m_watchlist.push_back("profile");
     m_watchlist.push_back("ap.pilot");
     m_gains.clear();
     
