@@ -206,7 +206,7 @@ void pypilotDialog::Receive(std::string name, Json::Value &value)
         ShowCenter();
     }
 
-    if(!wxIsNaN(m_HeadingCommand) &&
+    if(!isnan(m_HeadingCommand) &&
        (wxDateTime::UNow() - m_HeadingCommandUpdate).GetMilliseconds() > 1000) {
         m_stCommand->SetLabel(wxString::Format("%.1f", m_HeadingCommand));
         m_HeadingCommand = NAN;

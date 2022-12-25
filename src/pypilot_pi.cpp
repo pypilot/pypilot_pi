@@ -506,7 +506,7 @@ void pypilot_pi::Render(piDC &dc, PlugIn_ViewPort &vp)
     wxPoint p;
 
     double heading = AdjustHeading(m_ap_heading);
-    if(!wxIsNaN(heading)) {
+    if(!isnan(heading)) {
         //PositionBearingDistanceMercator_Plugin(m_lastfix.Lat, m_lastfix.Lon, m_ap_heading, dist, &dlat, &dlon);
         //GetCanvasPixLL(&vp, &p, dlat, dlon);
         p.x = dist*sin(deg2rad(heading) + vp.rotation) + boat.x;
@@ -518,7 +518,7 @@ void pypilot_pi::Render(piDC &dc, PlugIn_ViewPort &vp)
     }
 
     double heading_command = AdjustHeading(m_ap_heading_command);
-    if(!wxIsNaN(heading_command)) {
+    if(!isnan(heading_command)) {
         p.x = dist*sin(deg2rad(heading_command) + vp.rotation) + boat.x;
         p.y = -dist*cos(deg2rad(heading_command) + vp.rotation) + boat.y;
 
@@ -528,12 +528,12 @@ void pypilot_pi::Render(piDC &dc, PlugIn_ViewPort &vp)
     }
 
     // render filtered position speed track
-    if(!wxIsNaN(m_filtered_lat) && !wxIsNaN(m_filtered_lon)) {
+    if(!isnan(m_filtered_lat) && !isnan(m_filtered_lon)) {
         GetCanvasPixLL(&vp, &boat, m_filtered_lat, m_filtered_lon);
         dc.SetPen(wxPen(wxColour(255, 0, 255), 3));
         dc.DrawCircle(boat.x, boat.y, 5);
 
-        if(!wxIsNaN(m_filtered_speed) && !wxIsNaN(m_filtered_track)) {
+        if(!isnan(m_filtered_speed) && !isnan(m_filtered_track)) {
             double dlat, dlon;
             PositionBearingDistanceMercator_Plugin(m_filtered_lat, m_filtered_lon, m_filtered_track, m_filtered_speed, &dlat, &dlon);
             GetCanvasPixLL(&vp, &p, dlat, dlon);
