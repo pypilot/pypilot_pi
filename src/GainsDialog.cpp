@@ -135,9 +135,37 @@ static bool hasEnding (std::string const &str, std::string const &ending)
 
 void GainsDialog::Receive(std::string name, Json::Value &value)
 {
-    if(name == "profile") {
-        int i = value.asInt();
-        m_cPilot->SetSelection(i);
+    if(name == "ap.version") {
+        std::string strversion = value.asString(), erase = "pypilot ";
+        size_t pos = strversion.find(erase);
+        if (pos != std::string::npos)
+            strversion.erase(pos, erase.length());
+        double version = std::stod(strversion);
+        if(version < .4) {
+            m_cProfile->Disable();
+            m_bAddProfile->Disable();
+            m_bRemoveProfile->Disable();
+        }
+    } else if(name == "profile") {
+        printf("GAINS receive %s \n", name.c_str());
+        if(value.isNumeric())
+            m_profile = wxString::Format("%g", value.asDouble());
+        else
+            m_profile = value.asCString();
+        int i = m_cProfile->FindString(m_profile);
+        if(i >= 0)
+            m_cProfile->SetSelection(i);
+    } else if(name == "profiles") {
+        printf("GAINS receive %s \n", name.c_str());
+        wxString profile = m_cProfile->GetStringSelection();
+        if(!profile)
+            profile = m_profile;
+        m_cProfile->Clear();
+        for(unsigned int i=0; i<value.size(); i++)
+            m_cProfile->Append(value[i].asString());
+        int i = m_cProfile->FindString(m_profile);
+        if(i >= 0)
+            m_cProfile->SetSelection(i);
     } else if(name == "ap.pilot") {
         int i = m_cPilot->FindString(value.asCString());
         if(i >= 0) {
@@ -164,9 +192,41 @@ void GainsDialog::Receive(std::string name, Json::Value &value)
 
 void GainsDialog::OnProfile( wxCommandEvent& event )
 {
-    int ind = m_cProfile->GetSelection();
-    m_pypilot_pi.m_client.set("profile", ind);
+    m_pypilot_pi.m_client.set("profile", m_cProfile->GetStringSelection());
 }
+
+void GainsDialog::OnAddProfile( wxCommandEvent& event )
+{
+    wxTextEntryDialog dialog(this, _("Add New Profile"), _("Profile"));
+    if(dialog.ShowModal() == wxID_OK) {
+        wxString profile = dialog.GetValue();
+        int i = m_cProfile->Append(profile);
+        m_cProfile->SetSelection(i);
+        SendProfiles();
+        m_pypilot_pi.m_client.set("profile", profile);
+    }
+}
+
+void GainsDialog::OnRemoveProfile( wxCommandEvent& event )
+{
+    wxMessageDialog dialog(this, _("Remove Current Profile?"), _("Profile"), wxOK | wxCANCEL | wxICON_QUESTION);
+    if(dialog.ShowModal() == wxID_OK) {
+        int ind = m_cProfile->GetSelection();
+        m_cProfile->Delete(ind);
+        SendProfiles();
+    }
+}
+
+void GainsDialog::SendProfiles()
+{
+    Json::Value profiles;
+    for(unsigned int i=0; i<m_cProfile->GetCount(); i++) {
+        wxString str = m_cProfile->GetString(i);
+        profiles.append(Json::Value(str.mb_str()));
+    }
+
+    m_pypilot_pi.m_client.set("profiles", profiles);
+}    
 
 void GainsDialog::OnPilot( wxCommandEvent& event )
 {
@@ -268,6 +328,7 @@ void GainsDialog::EnumerateGains()
     m_pypilot_pi.m_client.GetSettings(gains, "AutopilotGain");
     m_watchlist.clear();
     m_watchlist.push_back("profile");
+    m_watchlist.push_back("profiles");
     m_watchlist.push_back("ap.pilot");
     m_gains.clear();
     

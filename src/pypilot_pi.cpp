@@ -136,7 +136,8 @@ int pypilot_pi::Init(void)
     m_pypilotClientDialog = NULL;
 
     m_status = _("Disconnected");
-        
+    m_bHaveNAV = false;
+    
     return (WANTS_OVERLAY_CALLBACK |
             WANTS_OPENGL_OVERLAY_CALLBACK |
             WANTS_TOOLBAR_CALLBACK    |
@@ -241,6 +242,11 @@ void pypilot_pi::Receive(std::string name, Json::Value &value)
         if(m_bEnableGraphicOverlay && m_mode != oldmode)
             UpdateWatchlist();
         SetToolbarIcon();
+    } else if(name == "ap.modes") {
+        m_bHaveNAV = false;
+        for(unsigned int i=0; i<value.size(); i++)
+            if(value[i] == "nav")
+                m_bHaveNAV = true;
     } else if(name == "ap.heading")
         m_ap_heading = value.asDouble();
     else if(name == "ap.heading_command")
@@ -270,6 +276,8 @@ void pypilot_pi::SetToolbarIcon()
             bitmap = _img_pypilot_green;
         else if(m_mode == "gps")
             bitmap = _img_pypilot_yellow;
+        else if(m_mode == "nav")
+            bitmap = _img_pypilot_magenta;
         else if(m_mode == "wind")
             bitmap = _img_pypilot_blue;
         else if(m_mode == "true wind")
@@ -388,7 +396,7 @@ void pypilot_pi::UpdateWatchlist()
     } else
         watchlist["imu.uptime"] = true; // use as heartbeat to time out connection
 
-    static const char *wl[] = {"ap.mode", "ap.enabled", 0};
+    static const char *wl[] = {"ap.mode", "ap.modes", "ap.enabled", 0};
     MergeWatchlist(watchlist, wl);
 
     m_client.update_watchlist(watchlist);
@@ -526,6 +534,7 @@ void pypilot_pi::ReadConfig()
     }
 
     m_bForwardNMEA = (bool)pConf->Read ( _T("ForwardNMEA") , 0L );
+    m_bSwitchToNAVMode = (bool)pConf->Read ( _T("SwitchToNAVMode") , 0L );
 
     m_bEnableGraphicOverlay = (bool)pConf->Read ( _T ( "EnableGraphicOverlay" ), 0L);
     if(m_pypilotDialog) {
@@ -614,6 +623,10 @@ void pypilot_pi::SetNMEASentence(wxString &sentence)
     wxFileConfig *pConf = GetOCPNConfigObject();
     pConf->SetPath ( "/Settings/pypilot" );
 
+    if(m_bSwitchToNAVMode && m_bHaveNAV && m_mode != "nav" && sentence.SubString(3, 6) == "APB")
+        m_client.set("ap.mode", "nav");
+            
+    
     if(!m_bForwardNMEA)
         return;
 

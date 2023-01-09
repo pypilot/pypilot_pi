@@ -39,7 +39,7 @@ wxWindow *g_Window;
 
 pypilotDialog::pypilotDialog( pypilot_pi &_pypilot_pi, wxWindow* parent)
     : pypilotDialogBase( parent ),
-      m_bAPHaveGPS(false), m_bAPHaveWind(false), m_bAPHaveRudder(false),
+      m_bAPHaveRudder(false),
       m_pypilot_pi(_pypilot_pi)
 {
 #ifdef __OCPN__ANDROID__
@@ -166,6 +166,12 @@ void pypilotDialog::Receive(std::string name, Json::Value &value)
     else if(name == "ap.mode") {
         RebuildControlAngles();
         SetAPColor();
+        m_cMode->SetStringSelection(m_pypilot_pi.m_mode);
+    } else if(name == "ap.modes") {
+        m_cMode->Clear();
+        for(unsigned int i=0; i < value.size(); i++)
+            m_cMode->Append(value[i].asString());
+        m_cMode->SetStringSelection(m_pypilot_pi.m_mode);
     } else if(name == "ap.enabled")
         SetEnabled(value.asBool());
     else if(name == "ap.tack.state") {
@@ -174,20 +180,6 @@ void pypilotDialog::Receive(std::string name, Json::Value &value)
             m_bTack->SetLabel(_("Tack"));
         else
             m_bTack->SetLabel(_("Cancel"));
-    } else if(name == "ap.tack.direction") {
-        if(value.asString() == "port")
-            m_cTackDirection->SetSelection(1);
-        else
-            m_cTackDirection->SetSelection(0);
-    } else if(name == "ap.tack.timeout") {
-        m_stTackTimeout->SetLabel(wxString::Format("%.1f", value.asDouble()));
-    } else if(name == "gps.source") {
-        m_bAPHaveGPS = value.asString() != "none";
-        UpdateModes();
-    } else if(name == "wind.source") {
-        m_bAPHaveWind = value.asString() != "none";
-        //m_cMode->SetStringSelection(m_pypilot_pi.m_mode);
-        UpdateModes();
     } else if(name == "servo.state") {
         if(m_servoController != "none")
             m_stServoState->SetLabel(value.asString());
@@ -223,6 +215,8 @@ void pypilotDialog::SetAPColor()
             c = *wxGREEN;
         else if(mode == "gps")
             c = *wxYELLOW;
+        else if(mode == "nav")
+            c = wxColour(255, 255, 0);
         else if(mode == "wind")
             c = *wxBLUE;
         else if(mode == "true wind")
@@ -237,9 +231,8 @@ std::map<std::string, double> &pypilotDialog::GetWatchlist()
     list.clear();
     // continuous updates for these
     static const char *watchlist[] =
-        {"ap.enabled", "ap.mode", "ap.heading", "ap.heading_command",
-         "ap.tack.state", "ap.tack.direction", "ap.tack.timeout",
-         "gps.source", "wind.source",
+        {"ap.enabled", "ap.mode", "ap.modes", "ap.heading", "ap.heading_command",
+         "ap.tack.state",
          "servo.state", "servo.flags", "servo.controller"};
     for(unsigned int i=0; i<(sizeof watchlist)/(sizeof *watchlist); i++)
         list[watchlist[i]] = 0;
@@ -393,23 +386,6 @@ void pypilotDialog::OnTack( wxCommandEvent& event )
     m_pypilot_pi.m_client.set("ap.tack.state", m_bTack->GetLabel() == _("Tack") ? "begin": "none");
 }
 
-void pypilotDialog::OnTackDirection( wxCommandEvent& event )
-{
-    m_pypilot_pi.m_client.set("ap.tack.direction", m_cTackDirection->GetSelection() ? "port" : "starboard");
-}
-
-void pypilotDialog::UpdateModes()
-{
-    m_cMode->Clear();
-    m_cMode->Append("compass");
-    if(m_bAPHaveGPS)
-        m_cMode->Append("gps");
-    if(m_bAPHaveWind)
-        m_cMode->Append("wind");
-    if(m_bAPHaveGPS && m_bAPHaveWind)
-        m_cMode->Append("true wind");
-    m_cMode->SetStringSelection(m_pypilot_pi.m_mode);
-}
 
 void pypilotDialog::Manual(double amount)
 {

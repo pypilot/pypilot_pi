@@ -68,7 +68,6 @@ class pypilotDialogBase : public wxDialog
 		wxStaticText* m_stTackState;
 		wxButton* m_bTack;
 		wxStaticText* m_stTackTimeout;
-		wxChoice* m_cTackDirection;
 		wxButton* m_bGains;
 		wxButton* m_bConfiguration;
 		wxButton* m_bCalibration;
@@ -85,7 +84,6 @@ class pypilotDialogBase : public wxDialog
 		virtual void OnManualStarboardShort( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnManualStarboardLong( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnTack( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnTackDirection( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnGains( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnConfiguration( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnCalibration( wxCommandEvent& event ) { event.Skip(); }
@@ -112,6 +110,8 @@ class GainsDialogBase : public wxDialog
 		wxFlexGridSizer* m_fgGains;
 		wxStaticText* m_staticText51;
 		wxChoice* m_cProfile;
+		wxButton* m_bAddProfile;
+		wxButton* m_bRemoveProfile;
 		wxStaticText* m_staticText52;
 		wxChoice* m_cPilot;
 		wxStdDialogButtonSizer* m_sdbSizer4;
@@ -120,6 +120,8 @@ class GainsDialogBase : public wxDialog
 		// Virtual event handlers, overide them in your derived class
 		virtual void OnClose( wxCloseEvent& event ) { event.Skip(); }
 		virtual void OnProfile( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnAddProfile( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnRemoveProfile( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnPilot( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnClose( wxCommandEvent& event ) { event.Skip(); }
 
@@ -152,6 +154,8 @@ class ConfigurationDialogBase : public wxDialog
 		wxButton* m_bAboutEnableOverlay;
 		wxCheckBox* m_cbTrueNorthMode;
 		wxButton* m_button18;
+		wxCheckBox* m_cbSwitchToNAVMode;
+		wxButton* m_button321;
 		wxSpinCtrl* m_sControlAngle;
 		wxListBox* m_lControlAngles;
 		wxButton* m_bAddControlAngle;
@@ -171,6 +175,7 @@ class ConfigurationDialogBase : public wxDialog
 		virtual void OnAboutForwardNMEA( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnAboutEnableOverlay( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnAboutTrueNorth( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnAboutSwitchToNAVMode( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnAddControlAngle( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnRemoveControlAngle( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnInformation( wxCommandEvent& event ) { event.Skip(); }

@@ -44,6 +44,9 @@ public:
 
 private:
     void OnProfile( wxCommandEvent& event );
+    void OnAddProfile( wxCommandEvent& event );
+    void OnRemoveProfile( wxCommandEvent& event );
+    void SendProfiles();
     void OnPilot( wxCommandEvent& event );
     void OnClose( wxCommandEvent& event );
     void OnTimer( wxTimerEvent & );
@@ -56,4 +59,6 @@ private:
     std::list<std::string> m_watchlist;
     std::map<std::string, Gain*> m_gains;
     pypilot_pi &m_pypilot_pi;
+
+    wxString m_profile;
 };
