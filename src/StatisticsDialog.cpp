@@ -43,7 +43,9 @@ StatisticsDialog::~StatisticsDialog()
 
 void StatisticsDialog::Receive(std::string name, Json::Value &value)
 {
-    if(name == "imu.uptime")
+    if(name == "ap.version")
+        m_stVersion->SetLabel(value.asString());
+    else if(name == "imu.uptime")
         m_stUptime->SetLabel(value.asString());
     else if(name == "ap.runtime")
         m_stAPRuntime->SetLabel(value.asString());
@@ -76,7 +78,7 @@ std::list<std::string> &StatisticsDialog::GetWatchlist()
     watchlist.clear();
 
     static const char *c_watchlist[] =
-        {"imu.uptime", "ap.runtime", "servo.watts", "servo.amp_hours", "servo.voltage", "servo.controller_temp", "servo.motor_temp"};
+        {"ap.version", "imu.uptime", "ap.runtime", "servo.watts", "servo.amp_hours", "servo.voltage", "servo.controller_temp", "servo.motor_temp"};
 
     for(unsigned int  i=0; i<(sizeof c_watchlist)/(sizeof *c_watchlist); i++)
         watchlist.push_back(c_watchlist[i]);

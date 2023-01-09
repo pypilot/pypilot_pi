@@ -62,15 +62,14 @@ set(LONG_DESCRIPTION
 # SET(PACKAGE_NAME pypilot_pi)
 
 set(VERSION_MAJOR "0")
-set(VERSION_MINOR "34")
-set(VERSION_PATCH "7")
+set(VERSION_MINOR "36")
+set(VERSION_PATCH "0")
 set(VERSION_TWEAK "0")
-set(VERSION_DATE "25/12/2022") # DD/MM/YYYY format
-
+set(VERSION_DATE "29/06/2022")
 set(OCPN_MIN_VERSION "ov50")
 set(OCPN_API_VERSION_MAJOR "1")
 set(OCPN_API_VERSION_MINOR "16")
-set(TP_COMMENT "  * Release for O5 using CI")
+set(TP_COMMENT "")
 
 set(PARENT "opencpn")
 

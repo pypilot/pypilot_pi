@@ -439,8 +439,10 @@ void pypilotDialog::ShowCenter()
     if(!m_bAPHaveRudder || !m_pypilot_pi.m_ConfigurationDialog->m_cbCenterButton->GetValue())
         show_center=false;
 
-    if(m_bCenter->IsShown() != show_center)
+    if(m_bCenter->IsShown() != show_center) {
         m_bCenter->Show(show_center);
+        Fit();
+    }
 }
 
 void pypilotDialog::ShowTacking()
