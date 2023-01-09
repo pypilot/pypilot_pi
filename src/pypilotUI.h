@@ -214,6 +214,8 @@ class StatisticsDialogBase : public wxDialog
 	private:
 
 	protected:
+		wxStaticText* m_staticText50;
+		wxStaticText* m_stVersion;
 		wxStaticText* m_staticText39;
 		wxStaticText* m_stUptime;
 		wxStaticText* m_staticText36;

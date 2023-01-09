@@ -245,8 +245,7 @@ void GainsDialog::EnumeratePilots()
 void GainsDialog::EnumerateGains()
 {
     int ind = m_cPilot->GetSelection();
-    wxString inds = m_cPilot->GetString(ind);
-    const char *pilot = ind >= 0 ? inds.ToUTF8() : "";
+    wxString pilot = ind >= 0 ? m_cPilot->GetString(ind) : "";
 
     while(!m_fgGains->IsEmpty())
         m_fgGains->Detach(0);
@@ -268,7 +267,7 @@ void GainsDialog::EnumerateGains()
         m_watchlist.push_back(name);
         m_watchlist.push_back(name+"gain");
 
-        int ret = name.find(pilot);
+        int ret = name.find(("ap.pilot." + pilot + ".").mb_str());
         if(ret < 0)
             continue;
 

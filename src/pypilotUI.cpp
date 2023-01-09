@@ -68,11 +68,14 @@ pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxS
 	m_stServoState = new wxStaticText( this, wxID_ANY, _("-----"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_stServoState->Wrap( -1 );
 	m_stServoState->SetFont( wxFont( 10, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxT("Sans") ) );
+	m_stServoState->SetMinSize( wxSize( 50,-1 ) );
 
 	fgSizer39->Add( m_stServoState, 0, wxALL, 5 );
 
 	m_stRudder = new wxStaticText( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_stRudder->Wrap( -1 );
+	m_stRudder->SetMinSize( wxSize( 50,-1 ) );
+
 	fgSizer39->Add( m_stRudder, 0, wxALL|wxEXPAND, 5 );
 
 	m_stServoFlags = new wxStaticText( this, wxID_ANY, _("-----"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -654,11 +657,19 @@ StatisticsDialogBase::StatisticsDialogBase( wxWindow* parent, wxWindowID id, con
 	fgSizer34->SetFlexibleDirection( wxBOTH );
 	fgSizer34->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
+	m_staticText50 = new wxStaticText( this, wxID_ANY, _("pypilot Version"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText50->Wrap( -1 );
+	fgSizer34->Add( m_staticText50, 0, wxALL, 5 );
+
+	m_stVersion = new wxStaticText( this, wxID_ANY, _("------"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER_HORIZONTAL );
+	m_stVersion->Wrap( -1 );
+	fgSizer34->Add( m_stVersion, 0, wxALL|wxEXPAND, 5 );
+
 	m_staticText39 = new wxStaticText( this, wxID_ANY, _("Uptime"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText39->Wrap( -1 );
 	fgSizer34->Add( m_staticText39, 0, wxALL, 5 );
 
-	m_stUptime = new wxStaticText( this, wxID_ANY, _("-------"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_stUptime = new wxStaticText( this, wxID_ANY, _("-------"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER_HORIZONTAL );
 	m_stUptime->Wrap( -1 );
 	fgSizer34->Add( m_stUptime, 0, wxALL|wxEXPAND, 5 );
 
@@ -666,7 +677,7 @@ StatisticsDialogBase::StatisticsDialogBase( wxWindow* parent, wxWindowID id, con
 	m_staticText36->Wrap( -1 );
 	fgSizer34->Add( m_staticText36, 0, wxALL, 5 );
 
-	m_stAPRuntime = new wxStaticText( this, wxID_ANY, _("-------"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_stAPRuntime = new wxStaticText( this, wxID_ANY, _("-------"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER_HORIZONTAL );
 	m_stAPRuntime->Wrap( -1 );
 	fgSizer34->Add( m_stAPRuntime, 0, wxALL|wxEXPAND, 5 );
 
