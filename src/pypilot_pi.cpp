@@ -575,13 +575,13 @@ void pypilot_pi::OnTimer( wxTimerEvent & )
     if(!m_client.connected()) {
         m_client.connect(m_host);
 
-        wxFileConfig *pConf = GetOCPNConfigObject();
-        pConf->SetPath ( _T( "/Settings/pypilot" ) );
-        bool discover = pConf->Read ( _T ( "AutoDiscover" ), true );
-        if(discover)
-            StartZeroConfig();
-        else
-            StopZeroConfig();
+  //      wxFileConfig *pConf = GetOCPNConfigObject();
+  //      pConf->SetPath ( _T( "/Settings/pypilot" ) );
+  //      bool discover = pConf->Read ( _T ( "AutoDiscover" ), false );
+  //      if(discover)
+  //          StartZeroConfig();
+  //      else
+  //          StopZeroConfig();
         
         m_lastMessage = wxDateTime(); // invalidate
         m_Timer.Start(2000);
