@@ -151,7 +151,7 @@ int pypilot_pi::Init(void)
 #endif
     m_Timer.Connect(wxEVT_TIMER, wxTimerEventHandler
                     ( pypilot_pi::OnTimer ), NULL, this);
-    m_Timer.Start(1000);
+    m_Timer.Start(3000);
             
     m_pypilotDialog = NULL;
     m_GainsDialog = NULL;
@@ -161,8 +161,6 @@ int pypilot_pi::Init(void)
     m_pypilotClientDialog = NULL;
 
     m_status = _("Disconnected");
-
-    ReadConfig();
         
     return (WANTS_OVERLAY_CALLBACK |
             WANTS_OPENGL_OVERLAY_CALLBACK |
@@ -211,10 +209,15 @@ int pypilot_pi::GetPlugInVersionMinor()
     return PLUGIN_VERSION_MINOR;
 }
 
-wxBitmap *pypilot_pi::GetPlugInBitmap()
-{
-    return new wxBitmap(_img_pypilot_grey->ConvertToImage().Copy());
-}
+//  Converts  icon.cpp file to an image. Original process
+//wxBitmap *pypilot_pi::GetPlugInBitmap()
+//{
+//    return new wxBitmap(_img_pypilot_grey->ConvertToImage().Copy());
+//}
+
+// Shipdriver uses the climatology_panel.png file to make the bitmap.
+wxBitmap *pypilot_pi::GetPlugInBitmap()  { return &m_panelBitmap; }
+// End of shipdriver process
 
 wxString pypilot_pi::GetCommonName()
 {
@@ -274,12 +277,15 @@ void pypilot_pi::Receive(std::string name, Json::Value &value)
         m_ap_heading_command = value.asDouble();
     else if(name == "imu.heading")
         m_imu_heading = value.asDouble();
-    else if(name == "gps.filtered.fix") {
-        m_filtered_lat = value["lat"].asDouble();
-        m_filtered_lon = value["lon"].asDouble();
-        m_filtered_speed = value["speed"].asDouble();
-        m_filtered_track = value["track"].asDouble();
-        RequestRefresh(GetOCPNCanvasWindow());
+    else if(name == "gps.filtered.lat")
+        m_filtered_lat = value.asDouble();
+    else if(name == "gps.filtered.lon")
+        m_filtered_lon = value.asDouble();
+    else if(name == "gps.filtered.speed")
+        m_filtered_speed = value.asDouble();
+    else if(name == "gps.filtered.track") {
+        m_filtered_track = value.asDouble();
+        //RequestRefresh(GetOCPNCanvasWindow());
     }
 }
 
@@ -409,7 +415,8 @@ void pypilot_pi::UpdateWatchlist()
         if(m_mode == "wind" || m_mode == "true wind")
             watchlist["imu.heading"] = 0.5;
 
-        static const char *wl2[] = {"gps.filtered.fix", 0};
+
+        static const char *wl2[] = {"gps.filtered.lat", "gps.filtered.lon", "gps.filtered.speed", "gps.filtered.track", 0};
         MergeWatchlist(watchlist, wl2);
         
     } else
@@ -502,7 +509,7 @@ void pypilot_pi::Render(piDC &dc, PlugIn_ViewPort &vp)
     wxPoint p;
 
     double heading = AdjustHeading(m_ap_heading);
-    if(!isnan(heading)) {
+    if(!wxIsNaN(heading)) {
         //PositionBearingDistanceMercator_Plugin(m_lastfix.Lat, m_lastfix.Lon, m_ap_heading, dist, &dlat, &dlon);
         //GetCanvasPixLL(&vp, &p, dlat, dlon);
         p.x = dist*sin(deg2rad(heading) + vp.rotation) + boat.x;
@@ -514,7 +521,7 @@ void pypilot_pi::Render(piDC &dc, PlugIn_ViewPort &vp)
     }
 
     double heading_command = AdjustHeading(m_ap_heading_command);
-    if(!isnan(heading_command)) {
+    if(!wxIsNaN(heading_command)) {
         p.x = dist*sin(deg2rad(heading_command) + vp.rotation) + boat.x;
         p.y = -dist*cos(deg2rad(heading_command) + vp.rotation) + boat.y;
 
@@ -524,12 +531,12 @@ void pypilot_pi::Render(piDC &dc, PlugIn_ViewPort &vp)
     }
 
     // render filtered position speed track
-    if(!isnan(m_filtered_lat) && !isnan(m_filtered_lon)) {
+    if(!wxIsNaN(m_filtered_lat) && !wxIsNaN(m_filtered_lon)) {
         GetCanvasPixLL(&vp, &boat, m_filtered_lat, m_filtered_lon);
         dc.SetPen(wxPen(wxColour(255, 0, 255), 3));
         dc.DrawCircle(boat.x, boat.y, 5);
 
-        if(!isnan(m_filtered_speed) && !isnan(m_filtered_track)) {
+        if(!wxIsNaN(m_filtered_speed) && !wxIsNaN(m_filtered_track)) {
             double dlat, dlon;
             PositionBearingDistanceMercator_Plugin(m_filtered_lat, m_filtered_lon, m_filtered_track, m_filtered_speed, &dlat, &dlon);
             GetCanvasPixLL(&vp, &p, dlat, dlon);
@@ -665,6 +672,7 @@ void pypilot_pi::SetNMEASentence(wxString &sentence)
 
 void pypilot_pi::OnNMEASocketEvent(wxSocketEvent& event)
 {
+
     if(!m_bForwardNMEA) {
         m_nmeasocket.Close();
         return;
