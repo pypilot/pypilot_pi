@@ -159,7 +159,15 @@ void pypilotDialog::SetEnabled(bool enabled)
 
 void pypilotDialog::Receive(std::string name, Json::Value &value)
 {
-    if(name == "ap.heading_command")
+    if(name == "imu.warning") {
+        m_imuwarning = value.asString();
+        if(!m_imuwarning.empty())
+            m_stServoFlags->SetLabel(m_imuwarning);
+    } else if(name == "imu.compass.calibration.warning") {
+        m_imuwarning = value.asString();
+        if(!m_imuwarning.empty())
+            m_stServoFlags->SetLabel(m_imuwarning);
+    } else if(name == "ap.heading_command")
         m_HeadingCommand = ApplyTrueNorth(value.asDouble());
     else if(name == "ap.heading")
         m_stHeading->SetLabel(wxString::Format("%.1f", ApplyTrueNorth(value.asDouble())));
@@ -184,7 +192,8 @@ void pypilotDialog::Receive(std::string name, Json::Value &value)
         if(m_servoController != "none")
             m_stServoState->SetLabel(value.asString());
     } else if(name == "servo.flags") {
-        m_stServoFlags->SetLabel(value.asString());
+        if(m_imuwarning.empty())
+            m_stServoFlags->SetLabel(value.asString());
     } else if(name == "servo.controller") {
         if(value == "none")
             m_stServoState->SetLabel(_("No Motor Controller"));
@@ -231,7 +240,8 @@ std::map<std::string, double> &pypilotDialog::GetWatchlist()
     list.clear();
     // continuous updates for these
     static const char *watchlist[] =
-        {"ap.enabled", "ap.mode", "ap.modes", "ap.heading", "ap.heading_command",
+        {"imu.warning", "imu.compass.calibration.warning",
+         "ap.enabled", "ap.mode", "ap.modes", "ap.heading", "ap.heading_command",
          "ap.tack.state",
          "servo.state", "servo.flags", "servo.controller"};
     for(unsigned int i=0; i<(sizeof watchlist)/(sizeof *watchlist); i++)

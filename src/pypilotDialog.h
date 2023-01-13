@@ -91,5 +91,5 @@ private:
     
     bool m_bTrueNorthMode;
     pypilot_pi &m_pypilot_pi;
-    wxString m_servoController;
+    wxString m_servoController, m_imuwarning;
 };
