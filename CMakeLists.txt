@@ -18,7 +18,7 @@
 ## *   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                                       *
 ## ***
 #-----------------------------------------------------------------------------
-# Frontend2 Author: Jon Gough  Frontend2: v1.0.173.0  02/07/2021
+# Frontend2 Author: Jon Gough  Frontend2: v1.0.222.0  25/12/2022
 # ---------------------------------------------------------------------------
 ## buildCI:yes useODAPI:no validateJSON:no
 ## ----- When changing this file do NOT change the order in which sections occur        ----- ##
@@ -31,12 +31,14 @@
 set(CMLOC "CMakeLists: ")
 
 # define minimum cmake version
-cmake_minimum_required(VERSION 3.1.1)
+cmake_minimum_required(VERSION 3.5.1)
 if(COMMAND cmake_policy)
     if(POLICY CMP0043)
         cmake_policy(SET CMP0043 NEW)
     endif(POLICY CMP0043)
     cmake_policy(SET CMP0048 NEW)
+# Need cmake 3.13 to implement this, but raspbian builds are at 3.7.2 and bionic at 3.10 and xenial builds at 3.5.1
+#    cmake_policy(SET CMP0076 NEW)
     if(POLICY CMP0077)
         cmake_policy(SET CMP0077 NEW)
     endif(POLICY CMP0077)
@@ -49,7 +51,7 @@ set(TITLE_NAME "PYPILOT")
 set(PACKAGE_CONTACT "Sean D'Epagnier")
 set(PACKAGE "pypilot")
 set(SHORT_DESCRIPTION "Pypilot PlugIn for OpenCPN")
-set(LONG_DESCRIPTION 
+set(LONG_DESCRIPTION
 "Control the free software autopilot pypilot. See http://pypilot.org for more details. /n /"
 "The plugin connects to pypilot directly implementing a control interface to configure, /n /"
 "calibrate and command pypilot from opencpn. For more control and tuning route-following /n /"
@@ -76,10 +78,6 @@ set(PARENT "opencpn")
 # This default is needed to build locally and to build flatpak.
 #set(GIT_REPOSITORY_SERVER "github.com")
 
-#No longer needed, queried.
-#set(GIT_USER "rgleason")
-#set(GIT_USER "seandepagnier")
-#set(GIT_REPOSITORY_NAME "pypilot_pi")
 
 # Specifies Cloudsmith upload repository suffix for each catalog
 set(PROD "prod")    #Standard Repos
@@ -90,7 +88,7 @@ set(ALPHA "alpha")  #Standard Repos
 # Set if yourCloudsmith Base Repository name does not match your Git Repository name.
 #set(CLOUDSMITH_BASE_REPOSITORY "opencpn-plugins") #Rick's customization
 set (CLOUDSMITH_BASE_REPOSITORY "pypilot")  #without the pi
-# Set the following to use OpenCPN cloudsmith repositories instead of own repositories	  
+# Set the following to use OpenCPN cloudsmith repositories instead of own repositories
 set(CLOUDSMITH_USER "opencpn")
 #set(CLOUDSMITH_USER "rick-gleason")
 
@@ -183,7 +181,7 @@ SET(HDRS
 if(NOT QT_ANDROID)
   SET(SRCS ${SRCS}
      src/CalibrationDialog.cpp
-     src/CalibrationPlot.cpp						   
+     src/CalibrationPlot.cpp
      )
 endif(NOT QT_ANDROID)
 
@@ -208,7 +206,7 @@ set(EXTINCLUDE_DIR ${EXTINCLUDE_DIR} extinclude libs/ocpn-api/)
 ## Modify/configure 'Include' Directories below for the Plugin
 ##
 
-# Not doing json validator		 
+# Not doing json validator
 
 
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/include)
@@ -216,13 +214,26 @@ include_directories(BEFORE ${PROJECT_SOURCE_DIR}/ocpninclude)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/ocpnsrc/glu/include)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/${EXTINCLUDE_DIR})
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/)
-include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/glshim)
+#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/glshim)
+#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/GL)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/ocpn-api)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/wxJSON/include)
+#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/wxservdisc)
 
-# may need some of these later
+#
+# ----- Change below to match project requirements for android build ----- ##
+#
 
-## These are NOT used in Testplugin, used for other plugins
+if(QT_ANDROID)
+    include_directories( ${PROJECT_SOURCE_DIR}/extinclude/GLES2)
+endif(QT_ANDROID)
+
+
+##
+## ----- Change above to match project requirements for android build ----- ##
+##
+
+## These are used in Pypilot NOT used in Testplugin
 ##=======================================
 include("PluginJSON")
 include("PluginGL")
@@ -235,39 +246,33 @@ include("PluginGL")
 ##==========================================================================
 target_sources(${PACKAGE_NAME} PUBLIC ${SRCS} ${HDRS} ${OCPNSRC} ${EXTSRC} ${LIBSSRC}  ${SRC_JSON} ${SRC_PLUGINGL})
 ##==========================================================================
-# add_library(${PACKAGE_NAME} SHARED ${SRCS} ${LIBSSRC}  ${SRC_JSON} ${SRC_PLUGINGL})
-#add_library(${PACKAGE_NAME} SHARED ${SRCS_PYPILOT} ${HDRS} ${EXTSRC} ${LIBSSRC}  ${SRC_JSON} ${SRC_PLUGINGL})
-# add_library(${PACKAGE_NAME} SHARED ${SRC_PYPILOT} ${SRC_JSON} ${SRC_PLUGINGL})
-
-
-# Pypilot does not require tinyxml 
-#if(NOT OCPN_FLATPAK_CONFIG)
-#    # Build environment not available when flatpak is being configured so following statements will not work
-#    message(STATUS "${CMLOC}Adding target link libraries to ${PACKAGE_NAME}")
-#
-#    add_subdirectory(libs/tinyxml)
-#
-#    target_link_libraries(${PACKAGE_NAME} ocpn::tinyxml)
-#endif(NOT OCPN_FLATPAK_CONFIG)
-
-add_subdirectory(libs/wxservdisc)
-
-include_directories( ${PROJECT_SOURCE_DIR}/libs/wxservdisc/src )
-target_link_libraries(${PACKAGE_NAME} "wxservdisc")
-
-
-add_definitions(-DTIXML_USE_STL)
-
-
-# Not doing JSOn Schema Validator								
-
-##
-## ----- Change above to match project requirements ----- ##
 
 # Needed for android builds  - current
 if(QT_ANDROID)
     include_directories(BEFORE ${qt_android_include})
 endif(QT_ANDROID)
+
+
+if(NOT OCPN_FLATPAK_CONFIG)
+    # Build environment not available when flatpak is being configured so following statements will not run
+    message(STATUS "${CMLOC}Adding target link libraries to ${PACKAGE_NAME}")
+
+    add_subdirectory(libs/wxservdisc)
+
+    include_directories( ${PROJECT_SOURCE_DIR}/libs/wxservdisc/src )
+    target_link_libraries(${PACKAGE_NAME} "wxservdisc")
+
+endif(NOT OCPN_FLATPAK_CONFIG)
+
+
+add_definitions(-DTIXML_USE_STL)
+
+
+# Not doing JSOn Schema Validator
+
+##
+## ----- Change above to match project requirements ----- ##
+
 
 # Needed for all builds
 ## Do not change next section - needed to configure build process ----- ##

@@ -65,8 +65,6 @@
 
 #define PYPILOT_TOOL_POSITION    -1          // Request default positioning of toolbar tool
 
-class wxServDisc;
-
 class piDC;
 class pypilotDialog;
 class GainsDialog;
@@ -132,7 +130,6 @@ public:
       void OnConnected();
       void OnDisconnected();
       void UpdateWatchlist();
-      double HeadingCommand() { return m_ap_heading_command; }
 
       pypilotClient_pi m_client;
 
@@ -158,33 +155,22 @@ private:
       void UpdateStatus();
       void SetToolbarIcon();
 
-      void StartZeroConfig();
-      void StopZeroConfig();
-      void onSDNotify(wxCommandEvent& event);
-
-      wxServDisc *m_servscan;
-    
       wxDateTime m_declinationRequestTime;
       int               m_leftclick_tool_id;
 
       wxTimer m_Timer;
 
       wxString m_status;
-      bool m_bHaveNAV;
 
       wxString m_host;
-      bool m_bForwardNMEA, m_bSwitchToNAVMode;
+      bool m_bForwardnmea;
       bool m_bEnableGraphicOverlay;
 
       PlugIn_Position_Fix_Ex m_lastfix;
       double m_ap_heading, m_ap_heading_command, m_imu_heading;
-
-      double m_filtered_lat, m_filtered_lon, m_filtered_speed, m_filtered_track;
-
       wxDateTime m_lastMessage;
 
       bool m_enabled;
-      int     m_ReadConfig;
       
       wxSocketClient      m_nmeasocket;
       std::string         m_nmeasock_buffer;

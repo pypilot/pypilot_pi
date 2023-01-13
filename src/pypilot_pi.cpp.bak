@@ -151,7 +151,7 @@ int pypilot_pi::Init(void)
 #endif
     m_Timer.Connect(wxEVT_TIMER, wxTimerEventHandler
                     ( pypilot_pi::OnTimer ), NULL, this);
-    m_Timer.Start(1000);
+    m_Timer.Start(3000);
             
     m_pypilotDialog = NULL;
     m_GainsDialog = NULL;
@@ -161,9 +161,7 @@ int pypilot_pi::Init(void)
     m_pypilotClientDialog = NULL;
 
     m_status = _("Disconnected");
-    m_bHaveNAV = false;
-
-    ReadConfig();
+        
     return (WANTS_OVERLAY_CALLBACK |
             WANTS_OPENGL_OVERLAY_CALLBACK |
             WANTS_TOOLBAR_CALLBACK    |
@@ -211,10 +209,15 @@ int pypilot_pi::GetPlugInVersionMinor()
     return PLUGIN_VERSION_MINOR;
 }
 
-wxBitmap *pypilot_pi::GetPlugInBitmap()
-{
-    return new wxBitmap(_img_pypilot_grey->ConvertToImage().Copy());
-}
+//  Converts  icon.cpp file to an image. Original process
+//wxBitmap *pypilot_pi::GetPlugInBitmap()
+//{
+//    return new wxBitmap(_img_pypilot_grey->ConvertToImage().Copy());
+//}
+
+// Shipdriver uses the climatology_panel.png file to make the bitmap.
+wxBitmap *pypilot_pi::GetPlugInBitmap()  { return &m_panelBitmap; }
+// End of shipdriver process
 
 wxString pypilot_pi::GetCommonName()
 {
@@ -268,23 +271,21 @@ void pypilot_pi::Receive(std::string name, Json::Value &value)
         if(m_bEnableGraphicOverlay && m_mode != oldmode)
             UpdateWatchlist();
         SetToolbarIcon();
-    } else if(name == "ap.modes") {
-        m_bHaveNAV = false;
-        for(unsigned int i=0; i<value.size(); i++)
-            if(value[i] == "nav")
-                m_bHaveNAV = true;
     } else if(name == "ap.heading")
         m_ap_heading = value.asDouble();
     else if(name == "ap.heading_command")
         m_ap_heading_command = value.asDouble();
     else if(name == "imu.heading")
         m_imu_heading = value.asDouble();
-    else if(name == "gps.filtered.fix") {
-        m_filtered_lat = value["lat"].asDouble();
-        m_filtered_lon = value["lon"].asDouble();
-        m_filtered_speed = value["speed"].asDouble();
-        m_filtered_track = value["track"].asDouble();
-        RequestRefresh(GetOCPNCanvasWindow());
+    else if(name == "gps.filtered.lat")
+        m_filtered_lat = value.asDouble();
+    else if(name == "gps.filtered.lon")
+        m_filtered_lon = value.asDouble();
+    else if(name == "gps.filtered.speed")
+        m_filtered_speed = value.asDouble();
+    else if(name == "gps.filtered.track") {
+        m_filtered_track = value.asDouble();
+        //RequestRefresh(GetOCPNCanvasWindow());
     }
 }
 
@@ -302,8 +303,6 @@ void pypilot_pi::SetToolbarIcon()
             bitmap = _img_pypilot_green;
         else if(m_mode == "gps")
             bitmap = _img_pypilot_yellow;
-        else if(m_mode == "nav")
-            bitmap = _img_pypilot_magenta;
         else if(m_mode == "wind")
             bitmap = _img_pypilot_blue;
         else if(m_mode == "true wind")
@@ -416,13 +415,14 @@ void pypilot_pi::UpdateWatchlist()
         if(m_mode == "wind" || m_mode == "true wind")
             watchlist["imu.heading"] = 0.5;
 
-        static const char *wl2[] = {"gps.filtered.fix", 0};
+
+        static const char *wl2[] = {"gps.filtered.lat", "gps.filtered.lon", "gps.filtered.speed", "gps.filtered.track", 0};
         MergeWatchlist(watchlist, wl2);
         
     } else
         watchlist["imu.uptime"] = true; // use as heartbeat to time out connection
 
-    static const char *wl[] = {"ap.mode", "ap.modes", "ap.enabled", 0};
+    static const char *wl[] = {"ap.mode", "ap.enabled", 0};
     MergeWatchlist(watchlist, wl);
 
     m_client.update_watchlist(watchlist);
@@ -509,7 +509,7 @@ void pypilot_pi::Render(piDC &dc, PlugIn_ViewPort &vp)
     wxPoint p;
 
     double heading = AdjustHeading(m_ap_heading);
-    if(!isnan(heading)) {
+    if(!wxIsNaN(heading)) {
         //PositionBearingDistanceMercator_Plugin(m_lastfix.Lat, m_lastfix.Lon, m_ap_heading, dist, &dlat, &dlon);
         //GetCanvasPixLL(&vp, &p, dlat, dlon);
         p.x = dist*sin(deg2rad(heading) + vp.rotation) + boat.x;
@@ -521,7 +521,7 @@ void pypilot_pi::Render(piDC &dc, PlugIn_ViewPort &vp)
     }
 
     double heading_command = AdjustHeading(m_ap_heading_command);
-    if(!isnan(heading_command)) {
+    if(!wxIsNaN(heading_command)) {
         p.x = dist*sin(deg2rad(heading_command) + vp.rotation) + boat.x;
         p.y = -dist*cos(deg2rad(heading_command) + vp.rotation) + boat.y;
 
@@ -531,12 +531,12 @@ void pypilot_pi::Render(piDC &dc, PlugIn_ViewPort &vp)
     }
 
     // render filtered position speed track
-    if(!isnan(m_filtered_lat) && !isnan(m_filtered_lon)) {
+    if(!wxIsNaN(m_filtered_lat) && !wxIsNaN(m_filtered_lon)) {
         GetCanvasPixLL(&vp, &boat, m_filtered_lat, m_filtered_lon);
         dc.SetPen(wxPen(wxColour(255, 0, 255), 3));
         dc.DrawCircle(boat.x, boat.y, 5);
 
-        if(!isnan(m_filtered_speed) && !isnan(m_filtered_track)) {
+        if(!wxIsNaN(m_filtered_speed) && !wxIsNaN(m_filtered_track)) {
             double dlat, dlon;
             PositionBearingDistanceMercator_Plugin(m_filtered_lat, m_filtered_lon, m_filtered_track, m_filtered_speed, &dlat, &dlon);
             GetCanvasPixLL(&vp, &p, dlat, dlon);
@@ -560,7 +560,6 @@ void pypilot_pi::ReadConfig()
     }
 
     m_bForwardNMEA = (bool)pConf->Read ( _T("ForwardNMEA") , 0L );
-    m_bSwitchToNAVMode = (bool)pConf->Read ( _T("SwitchToNAVMode") , 0L );
 
     m_bEnableGraphicOverlay = (bool)pConf->Read ( _T ( "EnableGraphicOverlay" ), 0L);
     if(m_pypilotDialog) {
@@ -649,10 +648,6 @@ void pypilot_pi::SetNMEASentence(wxString &sentence)
     wxFileConfig *pConf = GetOCPNConfigObject();
     pConf->SetPath ( "/Settings/pypilot" );
 
-    if(m_bSwitchToNAVMode && m_bHaveNAV && m_mode != "nav" && sentence.SubString(3, 6) == "APB")
-        m_client.set("ap.mode", "nav");
-            
-    
     if(!m_bForwardNMEA)
         return;
 
@@ -677,6 +672,7 @@ void pypilot_pi::SetNMEASentence(wxString &sentence)
 
 void pypilot_pi::OnNMEASocketEvent(wxSocketEvent& event)
 {
+
     if(!m_bForwardNMEA) {
         m_nmeasocket.Close();
         return;
