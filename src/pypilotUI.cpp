@@ -210,12 +210,6 @@ pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxS
 
 	m_fgSizerTacking->Add( fgSizer51, 1, wxEXPAND, 5 );
 
-	wxString m_cTackDirectionChoices[] = { _("--> Starboard"), _("<-- Port") };
-	int m_cTackDirectionNChoices = sizeof( m_cTackDirectionChoices ) / sizeof( wxString );
-	m_cTackDirection = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxSize( -1,-1 ), m_cTackDirectionNChoices, m_cTackDirectionChoices, 0 );
-	m_cTackDirection->SetSelection( 0 );
-	m_fgSizerTacking->Add( m_cTackDirection, 0, wxALL, 5 );
-
 
 	fgSizer44->Add( m_fgSizerTacking, 1, wxEXPAND, 5 );
 
@@ -267,7 +261,6 @@ pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxS
 	m_bManualStarboardShort->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnManualStarboardShort ), NULL, this );
 	m_bManualStarboardLong->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnManualStarboardLong ), NULL, this );
 	m_bTack->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnTack ), NULL, this );
-	m_cTackDirection->Connect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( pypilotDialogBase::OnTackDirection ), NULL, this );
 	m_bGains->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnGains ), NULL, this );
 	m_bConfiguration->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnConfiguration ), NULL, this );
 	m_bCalibration->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnCalibration ), NULL, this );
@@ -287,7 +280,6 @@ pypilotDialogBase::~pypilotDialogBase()
 	m_bManualStarboardShort->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnManualStarboardShort ), NULL, this );
 	m_bManualStarboardLong->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnManualStarboardLong ), NULL, this );
 	m_bTack->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnTack ), NULL, this );
-	m_cTackDirection->Disconnect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( pypilotDialogBase::OnTackDirection ), NULL, this );
 	m_bGains->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnGains ), NULL, this );
 	m_bConfiguration->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnConfiguration ), NULL, this );
 	m_bCalibration->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnCalibration ), NULL, this );
@@ -327,6 +319,21 @@ GainsDialogBase::GainsDialogBase( wxWindow* parent, wxWindowID id, const wxStrin
 	fgSizer42->SetFlexibleDirection( wxBOTH );
 	fgSizer42->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
+	m_staticText51 = new wxStaticText( this, wxID_ANY, _("Profile"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText51->Wrap( -1 );
+	fgSizer42->Add( m_staticText51, 0, wxALL, 5 );
+
+	wxArrayString m_cProfileChoices;
+	m_cProfile = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_cProfileChoices, 0 );
+	m_cProfile->SetSelection( 0 );
+	fgSizer42->Add( m_cProfile, 0, wxALL, 5 );
+
+	m_bAddProfile = new wxButton( this, wxID_ANY, _("Add"), wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer42->Add( m_bAddProfile, 0, wxALL, 5 );
+
+	m_bRemoveProfile = new wxButton( this, wxID_ANY, _("Remove"), wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer42->Add( m_bRemoveProfile, 0, wxALL, 5 );
+
 	m_staticText52 = new wxStaticText( this, wxID_ANY, _("Pilot"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText52->Wrap( -1 );
 	fgSizer42->Add( m_staticText52, 0, wxALL, 5 );
@@ -356,6 +363,9 @@ GainsDialogBase::GainsDialogBase( wxWindow* parent, wxWindowID id, const wxStrin
 
 	// Connect Events
 	this->Connect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( GainsDialogBase::OnClose ) );
+	m_cProfile->Connect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( GainsDialogBase::OnProfile ), NULL, this );
+	m_bAddProfile->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GainsDialogBase::OnAddProfile ), NULL, this );
+	m_bRemoveProfile->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GainsDialogBase::OnRemoveProfile ), NULL, this );
 	m_cPilot->Connect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( GainsDialogBase::OnPilot ), NULL, this );
 	m_sdbSizer4OK->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GainsDialogBase::OnClose ), NULL, this );
 }
@@ -364,6 +374,9 @@ GainsDialogBase::~GainsDialogBase()
 {
 	// Disconnect Events
 	this->Disconnect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( GainsDialogBase::OnClose ) );
+	m_cProfile->Disconnect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( GainsDialogBase::OnProfile ), NULL, this );
+	m_bAddProfile->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GainsDialogBase::OnAddProfile ), NULL, this );
+	m_bRemoveProfile->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GainsDialogBase::OnRemoveProfile ), NULL, this );
 	m_cPilot->Disconnect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( GainsDialogBase::OnPilot ), NULL, this );
 	m_sdbSizer4OK->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GainsDialogBase::OnClose ), NULL, this );
 
@@ -454,6 +467,13 @@ ConfigurationDialogBase::ConfigurationDialogBase( wxWindow* parent, wxWindowID i
 
 	m_button18 = new wxButton( sbSizer1->GetStaticBox(), wxID_ANY, _("?"), wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer17->Add( m_button18, 0, wxALL, 5 );
+
+	m_cbSwitchToNAVMode = new wxCheckBox( sbSizer1->GetStaticBox(), wxID_ANY, _("Switch to NAV Mode"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_cbSwitchToNAVMode->SetValue(true);
+	fgSizer17->Add( m_cbSwitchToNAVMode, 0, wxALL, 5 );
+
+	m_button321 = new wxButton( sbSizer1->GetStaticBox(), wxID_ANY, _("?"), wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer17->Add( m_button321, 0, wxALL, 5 );
 
 
 	fgSizer45->Add( fgSizer17, 1, wxEXPAND, 5 );
@@ -569,6 +589,7 @@ ConfigurationDialogBase::ConfigurationDialogBase( wxWindow* parent, wxWindowID i
 	m_bAboutForwardnema->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnAboutForwardNMEA ), NULL, this );
 	m_bAboutEnableOverlay->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnAboutEnableOverlay ), NULL, this );
 	m_button18->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnAboutTrueNorth ), NULL, this );
+	m_button321->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnAboutSwitchToNAVMode ), NULL, this );
 	m_bAddControlAngle->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnAddControlAngle ), NULL, this );
 	m_button11->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnRemoveControlAngle ), NULL, this );
 	m_bInformation->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnInformation ), NULL, this );
@@ -586,6 +607,7 @@ ConfigurationDialogBase::~ConfigurationDialogBase()
 	m_bAboutForwardnema->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnAboutForwardNMEA ), NULL, this );
 	m_bAboutEnableOverlay->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnAboutEnableOverlay ), NULL, this );
 	m_button18->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnAboutTrueNorth ), NULL, this );
+	m_button321->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnAboutSwitchToNAVMode ), NULL, this );
 	m_bAddControlAngle->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnAddControlAngle ), NULL, this );
 	m_button11->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnRemoveControlAngle ), NULL, this );
 	m_bInformation->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ConfigurationDialogBase::OnInformation ), NULL, this );

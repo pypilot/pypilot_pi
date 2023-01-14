@@ -170,9 +170,10 @@ private:
       wxTimer m_Timer;
 
       wxString m_status;
+      bool m_bHaveNAV;
 
       wxString m_host;
-      bool m_bForwardNMEA;
+      bool m_bForwardNMEA, m_bSwitchToNAVMode;
       bool m_bEnableGraphicOverlay;
 
       PlugIn_Position_Fix_Ex m_lastfix;
