@@ -170,7 +170,7 @@ void pypilotDialog::Receive(std::string name, Json::Value &value)
     } else if(name == "ap.heading_command")
         m_HeadingCommand = ApplyTrueNorth(value.asDouble());
     else if(name == "ap.heading")
-        m_stHeading->SetLabel(wxString::Format("%.1f", ApplyTrueNorth(value.asDouble())));
+        m_stHeading->SetLabel(wxString::Format(" %05.1f", ApplyTrueNorth(value.asDouble())));
     else if(name == "ap.mode") {
         RebuildControlAngles();
         SetAPColor();
@@ -209,7 +209,7 @@ void pypilotDialog::Receive(std::string name, Json::Value &value)
 
     if(!isnan(m_HeadingCommand) &&
        (wxDateTime::UNow() - m_HeadingCommandUpdate).GetMilliseconds() > 1000) {
-        m_stCommand->SetLabel(wxString::Format("%.1f", m_HeadingCommand));
+        m_stCommand->SetLabel(wxString::Format("%05.1f", m_HeadingCommand));
         m_HeadingCommand = NAN;
     }
 }
