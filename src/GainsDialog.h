@@ -58,6 +58,8 @@ private:
     wxTimer m_Timer;
     std::list<std::string> m_watchlist;
     std::map<std::string, Gain*> m_gains;
+    std::map<std::string, double> m_gainvals;
+
     pypilot_pi &m_pypilot_pi;
 
     wxString m_profile;

@@ -33,21 +33,31 @@ struct Gain
     Gain(wxWindow *parent, wxString name, double min_val, double max_val);
     ~Gain();
 
+    void set(double val) {
+        double v = fabs(val) * 1000.0;
+        if(v < gauge->GetRange()) {
+            gauge->SetValue(v);
+            gauge->SetBackgroundColour(val > 0 ? *wxRED : val < 0 ? *wxGREEN : *wxLIGHT_GREY);
+        } else {
+            gauge->SetValue(0);
+            gauge->SetBackgroundColour(*wxBLUE);
+        }
+    }
+
     wxFlexGridSizer *sizer;
     wxStaticText *value;
     wxGauge *gauge;
     wxSlider *slider;
     double min, max;
-    bool need_update;
+    bool need_update, initial;
     wxDateTime last_change;
-    double gain_val;
-    int slider_val() { return (gain_val-min)*1000/(max - min); }
+    int slider_val(double gain_val) { return (gain_val-min)*1000/(max - min); }
 
     wxStaticText *stname;
 };
 
 Gain::Gain(wxWindow *parent, wxString name, double min_val, double max_val)
-    : min(min_val), max(max_val), need_update(false), gain_val(0)
+    : min(min_val), max(max_val), need_update(false), initial(true)
 {
     sizer = new wxFlexGridSizer( 0, 1, 0, 0 );
     sizer->AddGrowableRow( 2 );
@@ -147,7 +157,6 @@ void GainsDialog::Receive(std::string name, Json::Value &value)
             m_bRemoveProfile->Disable();
         }
     } else if(name == "profile") {
-        printf("GAINS receive %s \n", name.c_str());
         if(value.isNumeric())
             m_profile = wxString::Format("%g", value.asDouble());
         else
@@ -156,7 +165,6 @@ void GainsDialog::Receive(std::string name, Json::Value &value)
         if(i >= 0)
             m_cProfile->SetSelection(i);
     } else if(name == "profiles") {
-        printf("GAINS receive %s \n", name.c_str());
         wxString profile = m_cProfile->GetStringSelection();
         if(!profile)
             profile = m_profile;
@@ -174,20 +182,12 @@ void GainsDialog::Receive(std::string name, Json::Value &value)
         }
     } else if(hasEnding(name, "gain")) {
         name = name.substr(0, name.size()-4);
-        if(m_gains.find(name) != m_gains.end()) {
-            Gain *g = m_gains[name];
-            double val = jsondouble(value);
-            double v = fabs(val) * 1000.0;
-            if(v < g->gauge->GetRange()) {
-                g->gauge->SetValue(v);
-                g->gauge->SetBackgroundColour(val > 0 ? *wxRED : val < 0 ? *wxGREEN : *wxLIGHT_GREY);
-            } else {
-                g->gauge->SetValue(0);
-                g->gauge->SetBackgroundColour(*wxBLUE);
-            }
-        }
-    } else if(m_gains.find(name) != m_gains.end())
-        m_gains[name]->gain_val = jsondouble(value);
+        if(m_gains.find(name) != m_gains.end())
+            m_gains[name]->set(jsondouble(value));
+    } else {
+        double val = jsondouble(value);
+        m_gainvals[name] = val;
+    }
 }
 
 void GainsDialog::OnProfile( wxCommandEvent& event )
@@ -254,13 +254,20 @@ void GainsDialog::OnTimer( wxTimerEvent & )
             m_pypilot_pi.m_client.set(i->first, value);
         }
 
-        int slider_val = g->slider_val();
+        std::string name = i->first;
+        if(m_gainvals.find(name) == m_gainvals.end())
+            continue;
+
+        double gain_val = m_gainvals[name];
+        int slider_val = g->slider_val(gain_val);
         if(g->slider->GetValue() != slider_val &&
            (!g->last_change.IsValid() || (wxDateTime::UNow() - g->last_change).GetMilliseconds() > 1000)) {
             g->slider->SetValue(slider_val);
-            g->value->SetLabel(wxString::Format("%.5f", g->gain_val));
-        }
-        
+            g->value->SetLabel(wxString::Format("%.5f", gain_val));
+        } else if(g->initial) {
+            g->initial = false;  // if gain is also set to zero
+            g->value->SetLabel(wxString::Format("%.5f", gain_val));
+        }        
     }
 }
 
