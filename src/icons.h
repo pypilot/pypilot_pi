@@ -21,6 +21,7 @@ extern wxBitmap *_img_pypilot_green;
 extern wxBitmap *_img_pypilot_grey;
 extern wxBitmap *_img_pypilot_red;
 extern wxBitmap *_img_pypilot_yellow;
+extern wxBitmap *_img_pypilot_magenta;
 
 
 #ifdef PLUGIN_USE_SVG

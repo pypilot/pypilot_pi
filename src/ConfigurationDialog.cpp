@@ -55,6 +55,7 @@ bool ConfigurationDialog::Show( bool show )
         m_cbForwardNMEA->SetValue((bool)pConf->Read ( _T ( "ForwardNMEA" ), 0L ));
         m_cbEnableGraphicOverlay->SetValue((bool)pConf->Read ( _T ( "EnableGraphicOverlay" ), 0L ));
         m_cbTrueNorthMode->SetValue((bool)pConf->Read ( _T ( "TrueNorthMode" ), 0L ));
+        m_cbSwitchToNAVMode->SetValue((bool)pConf->Read ( _T ( "SwitchToNAVMode" ), 0L ));
 
         m_lControlAngles->Clear();
         wxString ControlAngles = pConf->Read ( _T ( "ControlAngles" ), "1;10;" );
@@ -70,9 +71,8 @@ bool ConfigurationDialog::Show( bool show )
 
         Json::Value list = m_pypilot_pi.m_client.list();
         if(!list.isNull()) {
-            for(Json::ValueIterator val = list.begin(); val != list.end(); val++) {
+            for(Json::ValueIterator val = list.begin(); val != list.end(); val++)
                 std::string name = val.key().asString();
-            }
         }
     }
     
@@ -135,6 +135,14 @@ This affects compass mode only, and requires the wmm plugin to be active.  The c
     mdlg.ShowModal();
 }
 
+void ConfigurationDialog::OnAboutSwitchToNAVMode( wxCommandEvent& event )
+{
+    wxMessageDialog mdlg(GetOCPNCanvasWindow(),
+                         _("Automatically switch pypilot to NAV mode whenever a route is active"),
+                         "pypilot", wxOK | wxICON_INFORMATION);
+    mdlg.ShowModal();
+}
+
 void ConfigurationDialog::OnAddControlAngle( wxCommandEvent& event )
 {
     int angle = m_sControlAngle->GetValue();
@@ -182,6 +190,7 @@ void ConfigurationDialog::OnOk( wxCommandEvent& event )
     pConf->Write ( _T ( "ForwardNMEA" ), m_cbForwardNMEA->GetValue());
     pConf->Write ( _T ( "EnableGraphicOverlay" ), m_cbEnableGraphicOverlay->GetValue());
     pConf->Write ( _T ( "TrueNorthMode" ), m_cbTrueNorthMode->GetValue());
+    pConf->Write ( _T ( "SwitchToNAVMode" ), m_cbSwitchToNAVMode->GetValue());
 
     wxString ControlAngles;
     for(unsigned int i=0; i<m_lControlAngles->GetCount(); i++)

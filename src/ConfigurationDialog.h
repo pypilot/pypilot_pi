@@ -43,6 +43,7 @@ private:
     void OnAboutForwardNMEA( wxCommandEvent& event );
     void OnAboutEnableOverlay( wxCommandEvent& event );
     void OnAboutTrueNorth( wxCommandEvent& event );
+    void OnAboutSwitchToNAVMode( wxCommandEvent& event );
     void OnAddControlAngle( wxCommandEvent& event );
     void OnRemoveControlAngle( wxCommandEvent& event );
     void OnInformation( wxCommandEvent& event );
