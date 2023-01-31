@@ -273,6 +273,7 @@ void pypilot_pi::Receive(std::string name, Json::Value &value)
         for(unsigned int i=0; i<value.size(); i++)
             if(value[i] == "nav")
                 m_bHaveNAV = true;
+        m_modes = value;
     } else if(name == "ap.heading")
         m_ap_heading = value.asDouble();
     else if(name == "ap.heading_command")
@@ -358,6 +359,7 @@ void pypilot_pi::onSDNotify(wxCommandEvent& event)
                         m_ConfigurationDialog->DetectedHost(ip);
                     
 //    port = wxString() << namescan.getResults().at(0).port;
+                    m_ReadConfig = 1;
                     return;
                 }
             }
@@ -435,6 +437,10 @@ void pypilot_pi::OnToolbarToolCallback(int id)
         m_ConfigurationDialog = new ConfigurationDialog(*this, GetOCPNCanvasWindow());
         m_pypilotDialog = new pypilotDialog(*this, GetOCPNCanvasWindow());
         m_pypilotDialog->SetEnabled(m_enabled);
+
+        Json::Value mode = Json::Value(std::string(m_mode));
+        m_pypilotDialog->Receive("ap.mode", mode);
+        m_pypilotDialog->Receive("ap.modes", m_modes);
 
         UpdateStatus();
         
@@ -547,6 +553,7 @@ void pypilot_pi::Render(piDC &dc, PlugIn_ViewPort &vp)
 
 void pypilot_pi::ReadConfig()
 {
+    printf("readconfig\n");
     wxFileConfig *pConf = GetOCPNConfigObject();
     if(!pConf)
         return
@@ -555,7 +562,9 @@ void pypilot_pi::ReadConfig()
     
     wxString host = pConf->Read ( _T ( "Host" ), "192.168.14.1" );
     if(host != m_host) {
+        printf("hostchange\n");
         m_client.disconnect();
+        m_nmeasocket.Close();
         m_host = host;
     }
 
@@ -576,6 +585,12 @@ void pypilot_pi::OnTimer( wxTimerEvent & )
     if(m_ReadConfig) {
         ReadConfig();
         m_ReadConfig=0;
+    }
+
+    wxDateTime now = wxDateTime::Now();
+    if((now - m_lastsocketinput).GetSeconds() > 10) {
+        m_nmeasocket.Close();
+        m_lastsocketinput = now;
     }
     
     Declination();
@@ -599,7 +614,6 @@ void pypilot_pi::OnTimer( wxTimerEvent & )
 
     std::string name;
     Json::Value val;
-    wxDateTime now = wxDateTime::Now();
      while(m_client.receive(name, val)) {
          //printf("msg %s %s\n", name.c_str(), val.asString().c_str());
 
@@ -662,17 +676,12 @@ void pypilot_pi::SetNMEASentence(wxString &sentence)
         addr.Hostname(host);
         addr.Service(20220);
         m_nmeasocket.Connect(addr, false);
-
-    }
-
-    if(sentence.StartsWith("$AP"))
-        return; // ignore
-
-    if(!sentence.EndsWith("\n"))
-        sentence += "\n";
-    
-    if(m_nmeasocket.IsConnected())
+        printf("try connect %s\n", std::string(host).c_str());
+    } else if(!sentence.StartsWith("$AP")) { // ignore
+        if(!sentence.EndsWith("\n"))
+            sentence += "\n";
         m_nmeasocket.Write(sentence.c_str(), sentence.size());
+    }
 }
 
 void pypilot_pi::OnNMEASocketEvent(wxSocketEvent& event)
@@ -693,6 +702,7 @@ void pypilot_pi::OnNMEASocketEvent(wxSocketEvent& event)
 
         case wxSOCKET_INPUT:
         {
+            m_lastsocketinput = wxDateTime::Now();
     #define RD_BUF_SIZE    65536
             std::vector<char> data(RD_BUF_SIZE+1);
             event.GetSocket()->Read(&data.front(), RD_BUF_SIZE);
