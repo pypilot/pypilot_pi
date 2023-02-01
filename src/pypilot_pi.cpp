@@ -553,7 +553,6 @@ void pypilot_pi::Render(piDC &dc, PlugIn_ViewPort &vp)
 
 void pypilot_pi::ReadConfig()
 {
-    printf("readconfig\n");
     wxFileConfig *pConf = GetOCPNConfigObject();
     if(!pConf)
         return
@@ -562,7 +561,6 @@ void pypilot_pi::ReadConfig()
     
     wxString host = pConf->Read ( _T ( "Host" ), "192.168.14.1" );
     if(host != m_host) {
-        printf("hostchange\n");
         m_client.disconnect();
         m_nmeasocket.Close();
         m_host = host;
@@ -627,7 +625,7 @@ void pypilot_pi::OnTimer( wxTimerEvent & )
                  m_pypilotClientDialog->Receive(name, val);
              }
          } catch(std::exception const &e) {
-             printf("exception!!! %s: %s\n", name.c_str(), e.what());
+             printf("pypilot_pi exception!!! %s: %s\n", name.c_str(), e.what());
          }
 
         m_lastMessage = now;
@@ -676,7 +674,7 @@ void pypilot_pi::SetNMEASentence(wxString &sentence)
         addr.Hostname(host);
         addr.Service(20220);
         m_nmeasocket.Connect(addr, false);
-        printf("try connect %s\n", std::string(host).c_str());
+        //printf("try connect %s\n", std::string(host).c_str());
     } else if(!sentence.StartsWith("$AP")) { // ignore
         if(!sentence.EndsWith("\n"))
             sentence += "\n";
