@@ -136,6 +136,13 @@ bool GainsDialog::Show( bool show )
     return GainsDialogBase::Show(show);
 }
 
+static bool Begins (std::string const &str, std::string const &beginning)
+{
+    if (str.length() < beginning.length())
+        return false;
+    return (0 == str.compare (0, beginning.length(), beginning));
+}
+
 static bool hasEnding (std::string const &str, std::string const &ending)
 {
     if (str.length() < ending.length())
@@ -184,7 +191,7 @@ void GainsDialog::Receive(std::string name, Json::Value &value)
         name = name.substr(0, name.size()-4);
         if(m_gains.find(name) != m_gains.end())
             m_gains[name]->set(jsondouble(value));
-    } else {
+    } else if(Begins(name, "ap.pilot")) {
         double val = jsondouble(value);
         m_gainvals[name] = val;
     }

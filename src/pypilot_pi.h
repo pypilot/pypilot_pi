@@ -146,7 +146,8 @@ public:
       double m_declination;
       wxDateTime m_declinationTime;
       wxString m_mode;
-      
+      Json::Value m_modes;
+
 private:
       void SetNMEASentence(wxString &sentence);
       void OnNMEASocketEvent(wxSocketEvent& event);
@@ -171,6 +172,7 @@ private:
 
       wxString m_status;
       bool m_bHaveNAV;
+      wxDateTime m_lastsocketinput;
 
       wxString m_host;
       bool m_bForwardNMEA, m_bSwitchToNAVMode;
