@@ -161,9 +161,9 @@ int pypilot_pi::Init(void)
     m_pypilotClientDialog = NULL;
 
     m_status = _("Disconnected");
+    m_bHaveNAV = false;
 
     ReadConfig();
-        
     return (WANTS_OVERLAY_CALLBACK |
             WANTS_OPENGL_OVERLAY_CALLBACK |
             WANTS_TOOLBAR_CALLBACK    |
@@ -268,6 +268,12 @@ void pypilot_pi::Receive(std::string name, Json::Value &value)
         if(m_bEnableGraphicOverlay && m_mode != oldmode)
             UpdateWatchlist();
         SetToolbarIcon();
+    } else if(name == "ap.modes") {
+        m_bHaveNAV = false;
+        for(unsigned int i=0; i<value.size(); i++)
+            if(value[i] == "nav")
+                m_bHaveNAV = true;
+        m_modes = value;
     } else if(name == "ap.heading")
         m_ap_heading = value.asDouble();
     else if(name == "ap.heading_command")
@@ -297,6 +303,8 @@ void pypilot_pi::SetToolbarIcon()
             bitmap = _img_pypilot_green;
         else if(m_mode == "gps")
             bitmap = _img_pypilot_yellow;
+        else if(m_mode == "nav")
+            bitmap = _img_pypilot_magenta;
         else if(m_mode == "wind")
             bitmap = _img_pypilot_blue;
         else if(m_mode == "true wind")
@@ -351,6 +359,7 @@ void pypilot_pi::onSDNotify(wxCommandEvent& event)
                         m_ConfigurationDialog->DetectedHost(ip);
                     
 //    port = wxString() << namescan.getResults().at(0).port;
+                    m_ReadConfig = 1;
                     return;
                 }
             }
@@ -415,7 +424,7 @@ void pypilot_pi::UpdateWatchlist()
     } else
         watchlist["imu.uptime"] = true; // use as heartbeat to time out connection
 
-    static const char *wl[] = {"ap.mode", "ap.enabled", 0};
+    static const char *wl[] = {"ap.mode", "ap.modes", "ap.enabled", 0};
     MergeWatchlist(watchlist, wl);
 
     m_client.update_watchlist(watchlist);
@@ -428,6 +437,10 @@ void pypilot_pi::OnToolbarToolCallback(int id)
         m_ConfigurationDialog = new ConfigurationDialog(*this, GetOCPNCanvasWindow());
         m_pypilotDialog = new pypilotDialog(*this, GetOCPNCanvasWindow());
         m_pypilotDialog->SetEnabled(m_enabled);
+
+        Json::Value mode = Json::Value(std::string(m_mode));
+        m_pypilotDialog->Receive("ap.mode", mode);
+        m_pypilotDialog->Receive("ap.modes", m_modes);
 
         UpdateStatus();
         
@@ -549,10 +562,12 @@ void pypilot_pi::ReadConfig()
     wxString host = pConf->Read ( _T ( "Host" ), "192.168.14.1" );
     if(host != m_host) {
         m_client.disconnect();
+        m_nmeasocket.Close();
         m_host = host;
     }
 
     m_bForwardNMEA = (bool)pConf->Read ( _T("ForwardNMEA") , 0L );
+    m_bSwitchToNAVMode = (bool)pConf->Read ( _T("SwitchToNAVMode") , 0L );
 
     m_bEnableGraphicOverlay = (bool)pConf->Read ( _T ( "EnableGraphicOverlay" ), 0L);
     if(m_pypilotDialog) {
@@ -568,6 +583,12 @@ void pypilot_pi::OnTimer( wxTimerEvent & )
     if(m_ReadConfig) {
         ReadConfig();
         m_ReadConfig=0;
+    }
+
+    wxDateTime now = wxDateTime::Now();
+    if((now - m_lastsocketinput).GetSeconds() > 10) {
+        m_nmeasocket.Close();
+        m_lastsocketinput = now;
     }
     
     Declination();
@@ -591,7 +612,6 @@ void pypilot_pi::OnTimer( wxTimerEvent & )
 
     std::string name;
     Json::Value val;
-    wxDateTime now = wxDateTime::Now();
      while(m_client.receive(name, val)) {
          //printf("msg %s %s\n", name.c_str(), val.asString().c_str());
 
@@ -605,7 +625,7 @@ void pypilot_pi::OnTimer( wxTimerEvent & )
                  m_pypilotClientDialog->Receive(name, val);
              }
          } catch(std::exception const &e) {
-             printf("exception!!! %s: %s\n", name.c_str(), e.what());
+             printf("pypilot_pi exception!!! %s: %s\n", name.c_str(), e.what());
          }
 
         m_lastMessage = now;
@@ -641,6 +661,10 @@ void pypilot_pi::SetNMEASentence(wxString &sentence)
     wxFileConfig *pConf = GetOCPNConfigObject();
     pConf->SetPath ( "/Settings/pypilot" );
 
+    if(m_bSwitchToNAVMode && m_bHaveNAV && m_mode != "nav" && sentence.SubString(3, 6) == "APB")
+        m_client.set("ap.mode", "nav");
+            
+    
     if(!m_bForwardNMEA)
         return;
 
@@ -650,17 +674,12 @@ void pypilot_pi::SetNMEASentence(wxString &sentence)
         addr.Hostname(host);
         addr.Service(20220);
         m_nmeasocket.Connect(addr, false);
-
-    }
-
-    if(sentence.StartsWith("$AP"))
-        return; // ignore
-
-    if(!sentence.EndsWith("\n"))
-        sentence += "\n";
-    
-    if(m_nmeasocket.IsConnected())
+        //printf("try connect %s\n", std::string(host).c_str());
+    } else if(!sentence.StartsWith("$AP")) { // ignore
+        if(!sentence.EndsWith("\n"))
+            sentence += "\n";
         m_nmeasocket.Write(sentence.c_str(), sentence.size());
+    }
 }
 
 void pypilot_pi::OnNMEASocketEvent(wxSocketEvent& event)
@@ -681,6 +700,7 @@ void pypilot_pi::OnNMEASocketEvent(wxSocketEvent& event)
 
         case wxSOCKET_INPUT:
         {
+            m_lastsocketinput = wxDateTime::Now();
     #define RD_BUF_SIZE    65536
             std::vector<char> data(RD_BUF_SIZE+1);
             event.GetSocket()->Read(&data.front(), RD_BUF_SIZE);
