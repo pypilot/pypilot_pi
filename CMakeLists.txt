@@ -18,7 +18,7 @@
 ## *   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                                       *
 ## ***
 #-----------------------------------------------------------------------------
-# Frontend2 Author: Jon Gough  Frontend2: v1.0.226.0  17/02/2023
+# Frontend2 Author: Jon Gough  Frontend2: v1.0.230.0  05/03/2023
 # ---------------------------------------------------------------------------
 ## buildCI:yes useODAPI:no validateJSON:no
 ## ----- When changing this file do NOT change the order in which sections occur        ----- ##
@@ -62,11 +62,10 @@ set(LONG_DESCRIPTION
 # SET(PACKAGE_NAME pypilot_pi)
 
 set(VERSION_MAJOR "0")
-
 set(VERSION_MINOR "40")
-set(VERSION_PATCH "2")
+set(VERSION_PATCH "3")
 set(VERSION_TWEAK "0")
-set(VERSION_DATE "04/03/2023")
+set(VERSION_DATE "28/03/2023")
 
 set(OCPN_MIN_VERSION "ov58")
 set(OCPN_API_VERSION_MAJOR "1")
