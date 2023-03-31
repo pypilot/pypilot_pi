@@ -35,7 +35,7 @@ pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxS
 
 	fgSizer13->Add( m_bAP, 0, wxALL, 5 );
 
-	wxString m_cModeChoices[] = { _("N/A") };
+	wxString m_cModeChoices[] = { _("compass"), _("wind"), _("gps") };
 	int m_cModeNChoices = sizeof( m_cModeChoices ) / sizeof( wxString );
 	m_cMode = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_cModeNChoices, m_cModeChoices, 0 );
 	m_cMode->SetSelection( 0 );
