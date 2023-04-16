@@ -159,14 +159,12 @@ void pypilotDialog::SetEnabled(bool enabled)
 
 void pypilotDialog::Receive(std::string name, Json::Value &value)
 {
-    if(name == "imu.warning") {
+    if(name == "imu.error") {
+        m_imuerror = value.asString();
+        UpdateStatus();
+    } else if(name == "imu.warning") {
         m_imuwarning = value.asString();
-        if(!m_imuwarning.empty())
-            m_stServoFlags->SetLabel(m_imuwarning);
-    } else if(name == "imu.compass.calibration.warning") {
-        m_imuwarning = value.asString();
-        if(!m_imuwarning.empty())
-            m_stServoFlags->SetLabel(m_imuwarning);
+        UpdateStatus();
     } else if(name == "ap.heading_command")
         m_HeadingCommand = ApplyTrueNorth(value.asDouble());
     else if(name == "ap.heading")
@@ -192,8 +190,8 @@ void pypilotDialog::Receive(std::string name, Json::Value &value)
         if(m_servoController != "none")
             m_stServoState->SetLabel(value.asString());
     } else if(name == "servo.flags") {
-        if(m_imuwarning.empty())
-            m_stServoFlags->SetLabel(value.asString());
+        m_servoflags = value.asString();
+        UpdateStatus();
     } else if(name == "servo.controller") {
         if(value == "none")
             m_stServoState->SetLabel(_("No Motor Controller"));
@@ -202,8 +200,9 @@ void pypilotDialog::Receive(std::string name, Json::Value &value)
         m_servoController = value.asString();
     } else if(name == "rudder.angle") {
         wxString str = value.asString();
-        m_bAPHaveRudder = str != "false";        
-        m_stRudder->SetLabel(wxString::Format("%.1f", value.asDouble()));
+        m_bAPHaveRudder = str != "false";
+        if(m_bAPHaveRudder)
+            m_stRudder->SetLabel(wxString::Format("%.1f", value.asDouble()));
         ShowCenter();
     }
 
@@ -240,9 +239,8 @@ std::map<std::string, double> &pypilotDialog::GetWatchlist()
     list.clear();
     // continuous updates for these
     static const char *watchlist[] =
-        {"imu.warning", "imu.compass.calibration.warning",
-         "ap.enabled", "ap.mode", "ap.modes", "ap.heading", "ap.heading_command",
-         "ap.tack.state",
+        {"imu.error", "imu.warning",
+         "ap.enabled", "ap.mode", "ap.modes", "ap.heading", "ap.heading_command", "ap.tack.state",
          "servo.state", "servo.flags", "servo.controller"};
     for(unsigned int i=0; i<(sizeof watchlist)/(sizeof *watchlist); i++)
         list[watchlist[i]] = 0;
@@ -320,6 +318,18 @@ void pypilotDialog::Fit()
     SetSize(s);
     s.x-=1;
     SetSize(s);
+}
+
+void pypilotDialog::UpdateStatus()
+{
+    wxString status;
+    if(!m_imuerror.empty())
+        status += m_imuerror + ' ';
+    if(!m_imuwarning.empty())
+        status += m_imuwarning + ' ';
+    status += m_servoflags;
+    
+    m_stStatus->SetLabel(status);
 }
 
 void pypilotDialog::OnAP( wxCommandEvent& event )

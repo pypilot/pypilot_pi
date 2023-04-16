@@ -436,7 +436,6 @@ void pypilot_pi::OnToolbarToolCallback(int id)
     {
         m_ConfigurationDialog = new ConfigurationDialog(*this, GetOCPNCanvasWindow());
         m_pypilotDialog = new pypilotDialog(*this, GetOCPNCanvasWindow());
-        m_pypilotDialog->SetEnabled(m_enabled);
 
         Json::Value mode = Json::Value(std::string(m_mode));
         m_pypilotDialog->Receive("ap.mode", mode);
@@ -461,6 +460,8 @@ void pypilot_pi::OnToolbarToolCallback(int id)
 
     bool show = !m_pypilotDialog->IsShown();
     m_pypilotDialog->Show(show);
+
+    m_pypilotDialog->SetEnabled(m_enabled);
     
     if(!show) {
         m_GainsDialog->Show(false);

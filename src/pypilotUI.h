@@ -51,9 +51,8 @@ class pypilotDialogBase : public wxDialog
 	protected:
 		wxToggleButton* m_bAP;
 		wxChoice* m_cMode;
+		wxStaticText* m_stStatus;
 		wxStaticText* m_stServoState;
-		wxStaticText* m_stRudder;
-		wxStaticText* m_stServoFlags;
 		wxStaticText* m_stCommand;
 		wxStaticText* m_stHeading;
 		wxFlexGridSizer* m_fgControlAnglesNeg;
@@ -68,6 +67,7 @@ class pypilotDialogBase : public wxDialog
 		wxStaticText* m_stTackState;
 		wxButton* m_bTack;
 		wxStaticText* m_stTackTimeout;
+		wxStaticText* m_stRudder;
 		wxButton* m_bGains;
 		wxButton* m_bConfiguration;
 		wxButton* m_bCalibration;
@@ -93,7 +93,7 @@ class pypilotDialogBase : public wxDialog
 
 	public:
 
-		pypilotDialogBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("pypilot"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxCAPTION|wxDEFAULT_DIALOG_STYLE|wxTAB_TRAVERSAL );
+		pypilotDialogBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("pypilot"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxCAPTION|wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxTAB_TRAVERSAL );
 		~pypilotDialogBase();
 
 };
@@ -273,6 +273,7 @@ class CalibrationDialogBase : public wxDialog
 		wxPanel* m_panel1;
 		wxStaticText* m_staticText461;
 		CalibrationPlot* m_accelCalibrationPlot;
+		wxStaticText* m_stAccelCalibrationWarning;
 		wxTextCtrl* m_tAccelCalibrationLog;
 		wxStaticText* m_stAccelCalibration;
 		wxStaticText* m_staticText48;

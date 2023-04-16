@@ -15,7 +15,6 @@ pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxS
 
 	wxFlexGridSizer* fgSizer8;
 	fgSizer8 = new wxFlexGridSizer( 0, 1, 0, 0 );
-	fgSizer8->AddGrowableRow( 1 );
 	fgSizer8->SetFlexibleDirection( wxBOTH );
 	fgSizer8->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_ALL );
 
@@ -27,13 +26,15 @@ pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxS
 
 	wxFlexGridSizer* fgSizer13;
 	fgSizer13 = new wxFlexGridSizer( 0, 1, 0, 0 );
+	fgSizer13->AddGrowableCol( 0 );
+	fgSizer13->AddGrowableRow( 0 );
 	fgSizer13->SetFlexibleDirection( wxBOTH );
 	fgSizer13->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
 	m_bAP = new wxToggleButton( this, wxID_ANY, _("AP"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_bAP->SetFont( wxFont( 36, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, wxT("Sans") ) );
 
-	fgSizer13->Add( m_bAP, 0, wxALL, 5 );
+	fgSizer13->Add( m_bAP, 0, wxALL|wxEXPAND, 5 );
 
 	wxString m_cModeChoices[] = { _("compass"), _("wind"), _("gps") };
 	int m_cModeNChoices = sizeof( m_cModeChoices ) / sizeof( wxString );
@@ -61,29 +62,20 @@ pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxS
 
 	wxFlexGridSizer* fgSizer39;
 	fgSizer39 = new wxFlexGridSizer( 1, 0, 0, 0 );
-	fgSizer39->AddGrowableCol( 2 );
+	fgSizer39->AddGrowableCol( 0 );
 	fgSizer39->SetFlexibleDirection( wxBOTH );
 	fgSizer39->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
-	m_stServoState = new wxStaticText( this, wxID_ANY, _("-----"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_stStatus = new wxStaticText( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_stStatus->Wrap( 30 );
+	m_stStatus->SetFont( wxFont( 10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString ) );
+	m_stStatus->SetMaxSize( wxSize( 200,-1 ) );
+
+	fgSizer39->Add( m_stStatus, 0, wxALL|wxEXPAND, 5 );
+
+	m_stServoState = new wxStaticText( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_stServoState->Wrap( -1 );
-	m_stServoState->SetFont( wxFont( 10, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxT("Sans") ) );
-	m_stServoState->SetMinSize( wxSize( 50,-1 ) );
-
 	fgSizer39->Add( m_stServoState, 0, wxALL, 5 );
-
-	m_stRudder = new wxStaticText( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	m_stRudder->Wrap( -1 );
-	m_stRudder->SetMinSize( wxSize( 50,-1 ) );
-
-	fgSizer39->Add( m_stRudder, 0, wxALL|wxEXPAND, 5 );
-
-	m_stServoFlags = new wxStaticText( this, wxID_ANY, _("-----"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_stServoFlags->Wrap( 30 );
-	m_stServoFlags->SetFont( wxFont( 10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString ) );
-	m_stServoFlags->SetMaxSize( wxSize( 200,-1 ) );
-
-	fgSizer39->Add( m_stServoFlags, 0, wxALL|wxEXPAND, 5 );
 
 
 	fgSizer50->Add( fgSizer39, 1, wxEXPAND, 5 );
@@ -187,6 +179,7 @@ pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxS
 	fgSizer44->Add( fgSizer50, 1, wxEXPAND, 5 );
 
 	m_fgSizerTacking = new wxFlexGridSizer( 0, 1, 0, 0 );
+	m_fgSizerTacking->AddGrowableCol( 0 );
 	m_fgSizerTacking->SetFlexibleDirection( wxBOTH );
 	m_fgSizerTacking->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
@@ -209,6 +202,12 @@ pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxS
 
 
 	m_fgSizerTacking->Add( fgSizer51, 1, wxEXPAND, 5 );
+
+	m_stRudder = new wxStaticText( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_stRudder->Wrap( -1 );
+	m_stRudder->SetMinSize( wxSize( 50,-1 ) );
+
+	m_fgSizerTacking->Add( m_stRudder, 0, wxALL|wxEXPAND, 5 );
 
 
 	fgSizer44->Add( m_fgSizerTacking, 1, wxEXPAND, 5 );
@@ -838,6 +837,10 @@ CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, c
 	fgSizer46->SetFlexibleDirection( wxBOTH );
 	fgSizer46->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
+	m_stAccelCalibrationWarning = new wxStaticText( sbSizer6->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_stAccelCalibrationWarning->Wrap( -1 );
+	fgSizer46->Add( m_stAccelCalibrationWarning, 0, wxALL, 5 );
+
 	m_tAccelCalibrationLog = new wxTextCtrl( sbSizer6->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_READONLY|wxTE_WORDWRAP );
 	fgSizer46->Add( m_tAccelCalibrationLog, 0, wxALL|wxEXPAND, 5 );
 
@@ -889,7 +892,7 @@ CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, c
 	m_panel1->SetSizer( sbSizer6 );
 	m_panel1->Layout();
 	sbSizer6->Fit( m_panel1 );
-	m_notebook->AddPage( m_panel1, _("Accelerometers"), false );
+	m_notebook->AddPage( m_panel1, _("Accelerometers"), true );
 	m_panel2 = new wxPanel( m_notebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxStaticBoxSizer* sbSizer4;
 	sbSizer4 = new wxStaticBoxSizer( new wxStaticBox( m_panel2, wxID_ANY, _("Compass") ), wxVERTICAL );
@@ -1025,7 +1028,7 @@ CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, c
 	m_panel3->SetSizer( sbSizer3 );
 	m_panel3->Layout();
 	sbSizer3->Fit( m_panel3 );
-	m_notebook->AddPage( m_panel3, _("Alignment"), true );
+	m_notebook->AddPage( m_panel3, _("Alignment"), false );
 	m_panel4 = new wxPanel( m_notebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxStaticBoxSizer* sbSizer7;
 	sbSizer7 = new wxStaticBoxSizer( new wxStaticBox( m_panel4, wxID_ANY, _("Rudder") ), wxVERTICAL );
