@@ -135,8 +135,6 @@ void pypilotDialog::Disconnected()
     m_fgControlAnglesNeg->Show(false);
     m_fgControlManual->Show(false);
 
-//    wxSize s(300, 100);
-//    SetMinSize(s);
     Fit();
 }
 
@@ -152,8 +150,6 @@ void pypilotDialog::SetEnabled(bool enabled)
     ShowCenter();
     ShowTacking();
 
-//        wxSize s(100, 100);
-//        SetMinSize(s);
     Fit();
 }
 
@@ -172,7 +168,10 @@ void pypilotDialog::Receive(std::string name, Json::Value &value)
     else if(name == "ap.mode") {
         RebuildControlAngles();
         SetAPColor();
-        m_cMode->SetStringSelection(m_pypilot_pi.m_mode);
+        wxString mode = value.asString();
+        if(!m_cMode->FindString(mode, true))
+            m_cMode->Append(mode);
+        m_cMode->SetStringSelection(mode);
     } else if(name == "ap.modes") {
         m_cMode->Clear();
         for(unsigned int i=0; i < value.size(); i++)

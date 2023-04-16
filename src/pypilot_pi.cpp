@@ -439,7 +439,8 @@ void pypilot_pi::OnToolbarToolCallback(int id)
 
         Json::Value mode = Json::Value(std::string(m_mode));
         m_pypilotDialog->Receive("ap.mode", mode);
-        m_pypilotDialog->Receive("ap.modes", m_modes);
+        if(m_modes.size())
+            m_pypilotDialog->Receive("ap.modes", m_modes);
 
         UpdateStatus();
         
