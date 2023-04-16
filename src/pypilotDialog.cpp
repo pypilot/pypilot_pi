@@ -64,7 +64,7 @@ pypilotDialog::pypilotDialog( pypilot_pi &_pypilot_pi, wxWindow* parent)
 
     this->GetSizer()->Fit( this );
     this->Layout();
-    this->SetSizeHints( GetSize().x, GetSize().y );
+    //this->SetSizeHints( GetSize().x, GetSize().y );
 
     m_ManualTimer.Connect(wxEVT_TIMER, wxTimerEventHandler
                           ( pypilotDialog::OnManualTimer ), NULL, this);
