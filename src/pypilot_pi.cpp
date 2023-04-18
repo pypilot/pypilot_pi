@@ -129,6 +129,8 @@ pypilot_pi::pypilot_pi(void *ppimgr)
     m_mode = "";
 
     m_ReadConfig = 20;
+
+    m_lastsocketinput = wxDateTime::Now();
 }
 
 //---------------------------------------------------------------------------------------------------------
@@ -297,6 +299,29 @@ void pypilot_pi::UpdateStatus()
 
 void pypilot_pi::SetToolbarIcon()
 {
+#ifdef PLUGIN_USE_SVG
+    wxFileName fn;
+    wxString tmp_path;
+
+    tmp_path = GetPluginDataDir("pypilot_pi");
+    fn.SetPath(tmp_path);
+    fn.AppendDir(_T("data"));
+
+    if(m_enabled) {
+        if(m_mode == "compass")
+            fn.SetFullName(_T("boat-green.svg"));
+        else if(m_mode == "gps")
+            fn.SetFullName(_T("boat-yellow.svg"));
+        else if(m_mode == "nav")
+            fn.SetFullName(_T("boat-magenta.svg"));
+        else if(m_mode == "wind")
+            fn.SetFullName(_T("boat-blue.svg"));
+        else if(m_mode == "true wind")
+            fn.SetFullName(_T("boat-cyan.svg"));
+    } else
+        fn.SetFullName(_T("boat-red.svg"));
+    SetToolbarToolBitmapsSVG(m_leftclick_tool_id, fn.GetFullPath(), fn.GetFullPath(), fn.GetFullPath());
+#else    
     wxBitmap *bitmap = _img_pypilot_red;
     if(m_enabled) {
         if(m_mode == "compass")
@@ -311,6 +336,7 @@ void pypilot_pi::SetToolbarIcon()
             bitmap = _img_pypilot_cyan;
     }
     SetToolbarToolBitmaps(m_leftclick_tool_id, bitmap, bitmap);
+#endif
 }
 
 void pypilot_pi::StartZeroConfig()
@@ -654,7 +680,19 @@ void pypilot_pi::OnDisconnected()
     m_status = _("Disconnected");
     if(m_pypilotDialog)
         m_pypilotDialog->Disconnected();
+#ifdef PLUGIN_USE_SVG
+    wxFileName fn;
+    wxString tmp_path;
+
+    tmp_path = GetPluginDataDir("pypilot_pi");
+    fn.SetPath(tmp_path);
+    fn.AppendDir(_T("data"));
+
+    fn.SetFullName(_T("boat-grey.svg"));
+    SetToolbarToolBitmapsSVG(m_leftclick_tool_id, fn.GetFullPath(), fn.GetFullPath(), fn.GetFullPath());
+#else
     SetToolbarToolBitmaps(m_leftclick_tool_id, _img_pypilot_grey, _img_pypilot_grey);
+#endif
     UpdateStatus();
 }
 

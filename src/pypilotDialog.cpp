@@ -169,7 +169,7 @@ void pypilotDialog::Receive(std::string name, Json::Value &value)
         RebuildControlAngles();
         SetAPColor();
         wxString mode = value.asString();
-        if(!m_cMode->FindString(mode, true))
+        if(m_cMode->FindString(mode, true)==-1)
             m_cMode->Append(mode);
         m_cMode->SetStringSelection(mode);
     } else if(name == "ap.modes") {
@@ -223,7 +223,7 @@ void pypilotDialog::SetAPColor()
         else if(mode == "gps")
             c = *wxYELLOW;
         else if(mode == "nav")
-            c = wxColour(255, 255, 0);
+            c = wxColour(255, 0, 255);
         else if(mode == "wind")
             c = *wxBLUE;
         else if(mode == "true wind")
