@@ -18,9 +18,10 @@
 ## *   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                                       *
 ## ***
 #-----------------------------------------------------------------------------
-# Frontend2 Author: Jon Gough  Frontend2: v1.0.230.0  05/03/2023
+# Frontend2 Author: Jon Gough  Frontend2: v1.0.238.0  09/06/2023
+# buildCI:yes useODAPI:no validateJSON:no										 
 # ---------------------------------------------------------------------------
-## buildCI:yes useODAPI:no validateJSON:no
+
 ## ----- When changing this file do NOT change the order in which sections occur        ----- ##
 ## ----- Changes should only be made between the section blocks that identify where     ----- ##
 ## ----- these changes should be. The whole configuration process relies on this        ----- ##
@@ -63,9 +64,9 @@ set(LONG_DESCRIPTION
 
 set(VERSION_MAJOR "0")
 set(VERSION_MINOR "40")
-set(VERSION_PATCH "3")
+set(VERSION_PATCH "4")
 set(VERSION_TWEAK "0")
-set(VERSION_DATE "28/03/2023")
+set(VERSION_DATE "12/06/2023")
 
 set(OCPN_MIN_VERSION "ov58")
 set(OCPN_API_VERSION_MAJOR "1")
@@ -74,9 +75,9 @@ set(TP_COMMENT "")
 
 set(PARENT "opencpn")
 
-# The next line allows setup of a local webserver with git for testing purposes.
-# The default is shown below, but it is done in cmake/pluginconfigure.cmake now.
-# This default is needed to build locally and to build flatpak.
+#Used to set up a local webserver with git loaded, for testing purposes.
+#Now set in plugin configure, needed to build flatpak, also locally.
+															   
 #set(GIT_REPOSITORY_SERVER "github.com")
 
 
@@ -85,9 +86,9 @@ set(PROD "prod")    #Standard Repos
 set(BETA "beta")    #Standard Repos
 set(ALPHA "alpha")  #Standard Repos
 
-
-# Set if yourCloudsmith Base Repository name does not match your Git Repository name.
-#set(CLOUDSMITH_BASE_REPOSITORY "opencpn-plugins") #Rick's customization
+# Set if  Cloudsmith Base Repository name does not match your Git Repository name.
+#set(CLOUDSMITH_BASE_REPOSITORY "${GIT_REPOSITORY_NAME}")
+#set(CLOUDSMITH_BASE_REPOSITORY "opencpn-plugins")  #Ricks's customization
 set (CLOUDSMITH_BASE_REPOSITORY "pypilot")  #without the pi
 # Set the following to use OpenCPN cloudsmith repositories instead of own repositories
 set(CLOUDSMITH_USER "opencpn")
@@ -212,14 +213,14 @@ set(EXTINCLUDE_DIR ${EXTINCLUDE_DIR} extinclude libs/ocpn-api/)
 
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/include)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/ocpninclude)
-include_directories(BEFORE ${PROJECT_SOURCE_DIR}/ocpnsrc/glu/include)
+# include_directories(BEFORE ${PROJECT_SOURCE_DIR}/ocpnsrc/glu/include)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/${EXTINCLUDE_DIR})
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/)
-#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/glshim)
-#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/GL)
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/GL)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/ocpn-api)
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/wxJSON/include)
-#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/wxservdisc)
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/wxservdisc)
+## Does not work without wxservdisc
 
 #
 # ----- Change below to match project requirements for android build ----- ##
@@ -228,7 +229,6 @@ include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/wxJSON/include)
 if(QT_ANDROID)
     include_directories( ${PROJECT_SOURCE_DIR}/extinclude/GLES2)
 endif(QT_ANDROID)
-
 
 ##
 ## ----- Change above to match project requirements for android build ----- ##
@@ -245,7 +245,9 @@ include("PluginGL")
 ## This add_library  can be used in conditionals below.
 ####
 ##==========================================================================
-target_sources(${PACKAGE_NAME} PUBLIC ${SRCS} ${HDRS} ${OCPNSRC} ${EXTSRC} ${LIBSSRC}  ${SRC_JSON} ${SRC_PLUGINGL})
+target_sources(${PACKAGE_NAME} PUBLIC ${SRCS} ${HDRS} ${OCPNSRC} ${EXTSRC} ${LIBSSRC} ${SRC_JSON} ${SRC_PLUGINGL})
+## Does not build in win without SRC_JSON !!!??
+##target_sources(${PACKAGE_NAME} PUBLIC ${SRCS} ${HDRS} ${OCPNSRC} ${EXTSRC} ${LIBSSRC} ${SRC_JSON} ${SRC_PLUGINGL})
 ##==========================================================================
 
 # Needed for android builds  - current
