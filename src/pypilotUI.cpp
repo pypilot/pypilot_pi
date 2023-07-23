@@ -837,10 +837,6 @@ CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, c
 	fgSizer46->SetFlexibleDirection( wxBOTH );
 	fgSizer46->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
-	m_stAccelCalibrationWarning = new wxStaticText( sbSizer6->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	m_stAccelCalibrationWarning->Wrap( -1 );
-	fgSizer46->Add( m_stAccelCalibrationWarning, 0, wxALL, 5 );
-
 	m_tAccelCalibrationLog = new wxTextCtrl( sbSizer6->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_READONLY|wxTE_WORDWRAP );
 	fgSizer46->Add( m_tAccelCalibrationLog, 0, wxALL|wxEXPAND, 5 );
 
@@ -854,6 +850,10 @@ CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, c
 	m_stAccelCalibration = new wxStaticText( sbSizer6->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_stAccelCalibration->Wrap( 30 );
 	fgSizer36->Add( m_stAccelCalibration, 0, wxALL|wxEXPAND, 5 );
+
+	m_stAccelCalibrationWarning = new wxStaticText( sbSizer6->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_stAccelCalibrationWarning->Wrap( -1 );
+	fgSizer36->Add( m_stAccelCalibrationWarning, 0, wxALL, 5 );
 
 	wxFlexGridSizer* fgSizer48;
 	fgSizer48 = new wxFlexGridSizer( 0, 2, 0, 0 );
@@ -892,7 +892,7 @@ CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, c
 	m_panel1->SetSizer( sbSizer6 );
 	m_panel1->Layout();
 	sbSizer6->Fit( m_panel1 );
-	m_notebook->AddPage( m_panel1, _("Accelerometers"), true );
+	m_notebook->AddPage( m_panel1, _("Accelerometers"), false );
 	m_panel2 = new wxPanel( m_notebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxStaticBoxSizer* sbSizer4;
 	sbSizer4 = new wxStaticBoxSizer( new wxStaticBox( m_panel2, wxID_ANY, _("Compass") ), wxVERTICAL );
@@ -933,6 +933,10 @@ CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, c
 	m_stCompassCalibration->Wrap( 30 );
 	fgSizer49->Add( m_stCompassCalibration, 0, wxALL|wxEXPAND, 5 );
 
+	m_stCompassCalibrationWarning = new wxStaticText( sbSizer4->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_stCompassCalibrationWarning->Wrap( -1 );
+	fgSizer49->Add( m_stCompassCalibrationWarning, 0, wxALL, 5 );
+
 	wxFlexGridSizer* fgSizer22;
 	fgSizer22 = new wxFlexGridSizer( 0, 2, 0, 0 );
 	fgSizer22->AddGrowableCol( 1 );
@@ -971,7 +975,7 @@ CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, c
 	m_panel2->SetSizer( sbSizer4 );
 	m_panel2->Layout();
 	sbSizer4->Fit( m_panel2 );
-	m_notebook->AddPage( m_panel2, _("Compass"), false );
+	m_notebook->AddPage( m_panel2, _("Compass"), true );
 	m_panel3 = new wxPanel( m_notebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxStaticBoxSizer* sbSizer3;
 	sbSizer3 = new wxStaticBoxSizer( new wxStaticBox( m_panel3, wxID_ANY, _("Alignment") ), wxVERTICAL );

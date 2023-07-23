@@ -72,22 +72,22 @@ void StatisticsDialog::Receive(std::string name, Json::Value &value)
     }
 }
 
-std::list<std::string> &StatisticsDialog::GetWatchlist()
+std::map<std::string, double> &StatisticsDialog::GetWatchlist()
 {
-    static std::list<std::string> watchlist;
+    static std::map<std::string, double> watchlist;
     watchlist.clear();
 
     static const char *c_watchlist[] =
         {"ap.version", "imu.uptime", "ap.runtime", "servo.watts", "servo.amp_hours", "servo.voltage", "servo.controller_temp", "servo.motor_temp"};
 
     for(unsigned int  i=0; i<(sizeof c_watchlist)/(sizeof *c_watchlist); i++)
-        watchlist.push_back(c_watchlist[i]);
+        watchlist[c_watchlist[i]] = 1;
 
     Json::Value list = m_pypilot_pi.m_client.list();
     for(Json::ValueIterator val = list.begin(); val != list.end(); val++) {
         std::string name = val.key().asString();
         if(wxString(name).EndsWith(".source"))
-            watchlist.push_back(name);
+            watchlist[name] = 0;
     }
 
     return watchlist;

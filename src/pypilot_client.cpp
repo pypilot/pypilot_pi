@@ -78,10 +78,10 @@ bool pypilotClient::receive(std::string &name, Json::Value &value)
             return false;
 
         std::pair<std::string, Json::Value> &val = m_queue.front();
-        m_queue.pop_front();
     
         name = val.first;
         value = val.second;
+        m_queue.pop_front();
         return true;
     }
 

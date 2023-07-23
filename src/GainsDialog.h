@@ -40,7 +40,7 @@ public:
     bool Show( bool show=true );
 
     void Receive(std::string name, Json::Value &value);
-    std::list<std::string> &GetWatchlist();
+    std::map<std::string, double> &GetWatchlist();
 
 private:
     void OnProfile( wxCommandEvent& event );
@@ -56,7 +56,7 @@ private:
     void EnumerateGains();
 
     wxTimer m_Timer;
-    std::list<std::string> m_watchlist;
+    std::map<std::string, double> m_watchlist;
     std::map<std::string, Gain*> m_gains;
     std::map<std::string, double> m_gainvals;
 

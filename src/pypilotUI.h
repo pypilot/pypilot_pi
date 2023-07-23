@@ -273,9 +273,9 @@ class CalibrationDialogBase : public wxDialog
 		wxPanel* m_panel1;
 		wxStaticText* m_staticText461;
 		CalibrationPlot* m_accelCalibrationPlot;
-		wxStaticText* m_stAccelCalibrationWarning;
 		wxTextCtrl* m_tAccelCalibrationLog;
 		wxStaticText* m_stAccelCalibration;
+		wxStaticText* m_stAccelCalibrationWarning;
 		wxStaticText* m_staticText48;
 		wxStaticText* m_stAccelCalibrationAge;
 		wxCheckBox* m_cbAccelCalibrationLocked;
@@ -285,6 +285,7 @@ class CalibrationDialogBase : public wxDialog
 		CalibrationPlot* m_compassCalibrationPlot;
 		wxTextCtrl* m_tCompassCalibrationLog;
 		wxStaticText* m_stCompassCalibration;
+		wxStaticText* m_stCompassCalibrationWarning;
 		wxStaticText* m_staticText30;
 		wxStaticText* m_stCompassCalibrationAge;
 		wxCheckBox* m_cbCompassCalibrationLocked;
