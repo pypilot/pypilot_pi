@@ -60,21 +60,17 @@ private:
     
     void OnAP( wxCommandEvent& event );
     void OnMode( wxCommandEvent& event );
-    void OnManualPortLong( wxCommandEvent& event ) { Manual(1.4); }
-    void OnManualPortShort( wxCommandEvent& event ) { Manual(.6); }
-    void OnManualCenter( wxCommandEvent& event );
-    void OnManualStarboardShort( wxCommandEvent& event ) { Manual(-.6); }
-    void OnManualStarboardLong( wxCommandEvent& event ) { Manual(-1.4); }
+    void OnManualEvents( wxMouseEvent& event );
     void OnGains( wxCommandEvent& event );
     void OnConfiguration( wxCommandEvent& event );
     void OnCalibration( wxCommandEvent& event );
+    void OnSettings( wxCommandEvent& event );
     void OnStatistics( wxCommandEvent& event );
     void OnClose( wxCommandEvent& event );
     void OnControlAngle( wxCommandEvent& event );
     void OnTack( wxCommandEvent& event );
 
-
-    void Manual(double amount);
+    void OnManualCenter( wxCommandEvent& );
     void OnManualTimer( wxTimerEvent & );
     void ShowCenter();
 

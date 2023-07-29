@@ -49,6 +49,7 @@
 #include "ConfigurationDialog.h"
 #include "StatisticsDialog.h"
 #include "CalibrationDialog.h"
+#include "SettingsDialog.h"
 #include "pypilotClientDialog.h"
 
 #include "icons.h"
@@ -160,6 +161,8 @@ int pypilot_pi::Init(void)
     m_ConfigurationDialog = NULL;
     m_StatisticsDialog = NULL;
     m_CalibrationDialog = NULL;
+    m_SettingsDialog = NULL;
+    m_SettingsDialog = NULL;
     m_pypilotClientDialog = NULL;
 
     m_status = _("Disconnected");
@@ -185,6 +188,7 @@ bool pypilot_pi::DeInit(void)
     delete m_GainsDialog;
     delete m_ConfigurationDialog;
     delete m_StatisticsDialog;
+    delete m_SettingsDialog;
     delete m_CalibrationDialog;
     delete m_pypilotClientDialog;
 
@@ -431,6 +435,9 @@ void pypilot_pi::UpdateWatchlist()
         if(m_StatisticsDialog->IsShown())
             MergeWatchlist(watchlist, m_StatisticsDialog->GetWatchlist());
         
+        if(m_SettingsDialog->IsShown())
+            MergeWatchlist(watchlist, m_SettingsDialog->GetWatchlist());
+
         if(m_CalibrationDialog->IsShown())
             MergeWatchlist(watchlist, m_CalibrationDialog->GetWatchlist());
 
@@ -472,6 +479,7 @@ void pypilot_pi::OnToolbarToolCallback(int id)
         
         m_StatisticsDialog = new StatisticsDialog(*this, GetOCPNCanvasWindow());
         m_CalibrationDialog = new CalibrationDialog(*this, GetOCPNCanvasWindow());
+        m_SettingsDialog = new SettingsDialog(*this, GetOCPNCanvasWindow());
         m_pypilotClientDialog = new pypilotClientDialog(*this, GetOCPNCanvasWindow());
         m_GainsDialog = new GainsDialog(*this, GetOCPNCanvasWindow());
 
@@ -481,6 +489,7 @@ void pypilot_pi::OnToolbarToolCallback(int id)
         m_GainsDialog->SetIcon(icon);
         m_ConfigurationDialog->SetIcon(icon);
         m_StatisticsDialog->SetIcon(icon);
+        m_SettingsDialog->SetIcon(icon);
         m_CalibrationDialog->SetIcon(icon);
         m_pypilotClientDialog->SetIcon(icon);
     }
@@ -494,6 +503,7 @@ void pypilot_pi::OnToolbarToolCallback(int id)
         m_GainsDialog->Show(false);
         m_ConfigurationDialog->Show(false);
         m_StatisticsDialog->Show(false);
+        m_SettingsDialog->Show(false);
         m_CalibrationDialog->Show(false);
         m_pypilotClientDialog->Show(false);
     }
@@ -649,6 +659,7 @@ void pypilot_pi::OnTimer( wxTimerEvent & )
                  m_pypilotDialog->Receive(name, val);
                  m_GainsDialog->Receive(name, val);
                  m_StatisticsDialog->Receive(name, val);
+                 m_SettingsDialog->Receive(name, val);
                  m_CalibrationDialog->Receive(name, val);
                  m_pypilotClientDialog->Receive(name, val);
              }

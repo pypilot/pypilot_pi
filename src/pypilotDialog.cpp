@@ -31,6 +31,7 @@ v */
 #include "GainsDialog.h"
 #include "ConfigurationDialog.h"
 #include "CalibrationDialog.h"
+#include "SettingsDialog.h"
 #include "StatisticsDialog.h"
 
 #ifdef __OCPN__ANDROID__
@@ -346,6 +347,39 @@ void pypilotDialog::OnMode( wxCommandEvent& event )
     m_pypilot_pi.m_client.set("ap.mode", m_cMode->GetStringSelection().mb_str());
 }
 
+void pypilotDialog::OnManualEvents( wxMouseEvent& event )
+{
+    double speed, length;
+    int timeout;
+    if(event.GetEventObject() == m_bManualPortLong)
+        speed = -.9, timeout = 300;
+    else if(event.GetEventObject() == m_bManualPortShort)
+        speed = -.5, timeout = 200;
+    else if(event.GetEventObject() == m_bManualStarboardShort)
+        speed = .5, timeout = 200;
+    else if(event.GetEventObject() == m_bManualStarboardLong)
+        speed = .9, timeout = 300;
+    else
+        return;
+      
+    if(event.LeftDown()) {
+        m_ManualCommand = speed;
+        if(!m_ManualTimer.IsRunning()) {
+            m_ManualTimeout = wxDateTime::UNow();
+            wxTimerEvent e;
+            OnManualTimer(e);
+            m_ManualTimer.Start(timeout);
+        }
+    }
+
+    if(event.ButtonUp()) {
+        m_ManualCommand = 0;
+        long ms = (wxDateTime::UNow() - m_ManualTimeout).GetMilliseconds().ToLong();
+        m_ManualTimer.Start(fmax(timeout-ms, 0));
+    }
+
+}
+
 void pypilotDialog::OnGains( wxCommandEvent& event )
 {
     m_pypilot_pi.m_GainsDialog->Show(!m_pypilot_pi.m_GainsDialog->IsShown());
@@ -361,6 +395,12 @@ void pypilotDialog::OnConfiguration( wxCommandEvent& event )
 void pypilotDialog::OnCalibration( wxCommandEvent& event )
 {
     m_pypilot_pi.m_CalibrationDialog->Show(!m_pypilot_pi.m_CalibrationDialog->IsShown());
+    m_pypilot_pi.UpdateWatchlist();
+}
+
+void pypilotDialog::OnSettings( wxCommandEvent& event )
+{
+    m_pypilot_pi.m_SettingsDialog->Show(!m_pypilot_pi.m_SettingsDialog->IsShown());
     m_pypilot_pi.UpdateWatchlist();
 }
 
@@ -406,13 +446,6 @@ void pypilotDialog::OnTack( wxCommandEvent& event )
 }
 
 
-void pypilotDialog::Manual(double amount)
-{
-    m_ManualCommand = amount > 0 ? 1 : -1;
-    m_ManualTimeout = wxDateTime::UNow() + wxTimeSpan::Milliseconds(abs(1000.0*amount));
-    m_ManualTimer.Start(50);
-}
-
 void pypilotDialog::OnManualCenter( wxCommandEvent& event )
 {
     m_pypilot_pi.m_client.set("servo.position_command", 0.0);
@@ -420,12 +453,16 @@ void pypilotDialog::OnManualCenter( wxCommandEvent& event )
 
 void pypilotDialog::OnManualTimer( wxTimerEvent & )
 {
-    if(wxDateTime::UNow() >= m_ManualTimeout) {
+    if(!m_ManualCommand ||
+       wxDateTime::UNow() >= m_ManualTimeout + wxTimeSpan::Milliseconds(5000)) {
         m_ManualCommand = 0;
         m_ManualTimer.Stop();
     }
-    //printf("manual %f %d\n", m_ManualCommand, (wxDateTime::UNow() - m_ManualTimeout).GetMilliseconds());
+
     m_pypilot_pi.m_client.set("servo.command", m_ManualCommand);
+
+    m_ManualCommand *= 1.05; // acceleration
+    m_ManualCommand = fmax(fmin(m_ManualCommand, 1), -1);
 }
 
 void pypilotDialog::ShowCenter()

@@ -73,6 +73,7 @@ class GainsDialog;
 class ConfigurationDialog;
 class StatisticsDialog;
 class CalibrationDialog;
+class SettingsDialog;
 class pypilotClientDialog;
 
 
@@ -141,6 +142,7 @@ public:
       ConfigurationDialog *m_ConfigurationDialog;
       StatisticsDialog   *m_StatisticsDialog;
       CalibrationDialog  *m_CalibrationDialog;
+      SettingsDialog  *m_SettingsDialog;
       pypilotClientDialog *m_pypilotClientDialog;
 
       double m_declination;

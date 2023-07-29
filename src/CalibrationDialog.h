@@ -34,7 +34,6 @@ class CalibrationDialog : public CalibrationDialogBase
 {
 public:
     CalibrationDialog( pypilot_pi &_pypilot_pi, wxWindow* parent);
-    ~CalibrationDialog();
 
     void Receive(std::string name, Json::Value &value);
     std::map<std::string, double> &GetWatchlist();
@@ -46,8 +45,6 @@ private:
     void OnMouseEventsCompass( wxMouseEvent& event );
     void OnCalibrationLocked( wxCommandEvent& event );
     void OnAboutCalibrationLocked( wxCommandEvent& event );
-    void OnpypilotClient( wxCommandEvent& event );
-    void OnSpin(wxSpinDoubleEvent& event );
     void OnClose( wxCommandEvent& event );
     void OnLevel( wxCommandEvent& event );
     void OnAboutLevel( wxCommandEvent& event );
@@ -70,11 +67,6 @@ private:
 
     pypilot_pi &m_pypilot_pi;
     wxDateTime m_lastOffsetTime;
-
-    std::map<std::string, wxSpinCtrlDouble*> m_settings;
-
-    std::map<std::string, double> m_settings_values;
-    wxDateTime m_settings_time;
     
     wxTimer m_HeadingOffsetTimer;
     wxTimer m_refreshtimer;

@@ -27,7 +27,6 @@
 #include "pypilotUI.h"
 #include "pypilot_pi.h"
 #include "CalibrationDialog.h"
-#include "pypilotClientDialog.h"
 
 CalibrationDialog::CalibrationDialog(pypilot_pi &_pypilot_pi, wxWindow* parent) :
     CalibrationDialogBase(parent),
@@ -42,12 +41,6 @@ CalibrationDialog::CalibrationDialog(pypilot_pi &_pypilot_pi, wxWindow* parent) 
     m_refreshtimer.Connect(wxEVT_TIMER, wxTimerEventHandler
                     ( CalibrationDialog::RefreshTimer ), NULL, this);
     m_refreshtimer.Start(1000);
-
-    m_settings_time = wxDateTime::UNow();
-}
-
-CalibrationDialog::~CalibrationDialog()
-{
 }
 
 static wxString StringValue(Json::Value &value)
@@ -122,17 +115,9 @@ void CalibrationDialog::Receive(std::string name, Json::Value &value)
         m_stRudderNonlinearity->SetLabel(wxString::Format("%.3f", value.asDouble()));
     else if(name == "rudder.range")
         m_sRudderRange->SetValue(value.asDouble());
-    else if(m_settings.find(name) != m_settings.end())
-        m_settings_values[name] = value.asDouble();
 
     m_accelCalibrationPlot->Receive(name, value);
     m_compassCalibrationPlot->Receive(name, value);
-
-    if((wxDateTime::UNow() - m_settings_time).GetMilliseconds() > 3000) {
-        for(std::map<std::string, double>::iterator i = m_settings_values.begin(); i != m_settings_values.end(); i++)
-            m_settings[i->first]->SetValue(i->second);
-        m_settings_time = wxDateTime::UNow();
-    }
 }
 
 std::map<std::string, double> &CalibrationDialog::GetWatchlist()
@@ -141,33 +126,13 @@ std::map<std::string, double> &CalibrationDialog::GetWatchlist()
     if(list.size())
         return list;
 
-    std::list<std::string> settings;
-    m_pypilot_pi.m_client.GetSettings(settings, "units");
-    if(settings.size() == 0)
-        return list;
-
     double period = 0.5;
-    for(std::list<std::string>::iterator i = settings.begin(); i != settings.end(); i++) {
-        Json::Value &clist = m_pypilot_pi.m_client.list();
-        Json::Value setting = clist[*i];
-        wxSpinCtrlDouble *s = new wxSpinCtrlDouble(m_pSettings, wxID_ANY);
-        double min = setting["min"].asDouble(), max = setting["max"].asDouble();
-        s->SetRange(min, max);
-        s->SetIncrement(wxMin(1, (max - min) / 100.0));
-        s->SetDigits(-log(s->GetIncrement()) / log(10) + 1);
-        m_fgSettings->Add(new wxStaticText(m_pSettings, wxID_ANY, *i), 0, wxALL, 5 );
-        m_fgSettings->Add(s, 0, wxALL | wxEXPAND);
-        m_fgSettings->Add(new wxStaticText(m_pSettings, wxID_ANY, setting["units"].asString()), 0, wxALL, 5 );
-        m_settings[*i] = s;
-        s->Connect( wxEVT_SPINCTRLDOUBLE, wxSpinDoubleEventHandler( CalibrationDialog::OnSpin ), NULL, this);
-        list[*i] = period;
-    }
 
     list["imu.pitch"] = period;
     list["imu.roll"] = period;
     list["imu.alignmentCounter"] = 0;
     list["imu.warning"] = 0;
-//        list["imu.fusionQPose"];
+//        list["imu.fusionQPose"];  // if we add 3d plot??
     list["imu.accel"] = period;
     list["imu.accel.calibration"] = 0;
     list["imu.accel.calibration.points"] = 0;
@@ -292,28 +257,4 @@ void CalibrationDialog::OnAboutCalibrationLocked( wxCommandEvent& event )
     wxMessageDialog mdlg(GetOCPNCanvasWindow(),
                          _("You may wish to lock the calibration against automatically updating"), "pypilot", wxOK | wxICON_INFORMATION);
     mdlg.ShowModal();
-}
-
-void CalibrationDialog::OnpypilotClient( wxCommandEvent& event )
-{
-    m_pypilot_pi.m_pypilotClientDialog->Show(!m_pypilot_pi.m_pypilotClientDialog->IsShown());
-    m_pypilot_pi.UpdateWatchlist();
-}
-
-void CalibrationDialog::OnSpin(wxSpinDoubleEvent& event )
-{
-    for(std::map<std::string, wxSpinCtrlDouble*>::iterator i = m_settings.begin();
-        i != m_settings.end(); i++) {
-        wxSpinCtrlDouble *s = i->second;
-#ifdef __OCPN__ANDROID__
-        if(!s->HasFocus())
-            continue;
-#else
-        if(event.GetEventObject() != s)
-            continue;
-#endif
-        std::string name = i->first;
-        m_pypilot_pi.m_client.set(name, s->GetValue());
-        m_settings_time = wxDateTime::UNow();
-    }
 }

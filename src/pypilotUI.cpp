@@ -219,7 +219,7 @@ pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxS
 	fgSizer8->Add( fgSizer37, 1, wxEXPAND, 5 );
 
 	wxFlexGridSizer* fgSizer71;
-	fgSizer71 = new wxFlexGridSizer( 0, 5, 0, 0 );
+	fgSizer71 = new wxFlexGridSizer( 1, 0, 0, 0 );
 	fgSizer71->SetFlexibleDirection( wxHORIZONTAL );
 	fgSizer71->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
@@ -234,11 +234,17 @@ pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxS
 	m_bCalibration = new wxButton( this, wxID_ANY, _("Calibration"), wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer71->Add( m_bCalibration, 0, wxALL, 5 );
 
-	m_bStatistics = new wxButton( this, wxID_ANY, _("Statistics"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_button35 = new wxButton( this, wxID_ANY, _("Settings"), wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer71->Add( m_button35, 0, wxALL, 5 );
+
+	m_bStatistics = new wxButton( this, wxID_ANY, _("Stats"), wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer71->Add( m_bStatistics, 0, wxALL, 5 );
 
-	m_bClose = new wxButton( this, wxID_ANY, _("Close"), wxDefaultPosition, wxDefaultSize, 0 );
-	fgSizer71->Add( m_bClose, 0, wxALL, 5 );
+	m_button37 = new wxButton( this, wxID_ANY, _("X"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_button37->SetFont( wxFont( 16, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, wxT("Sans") ) );
+	m_button37->SetMinSize( wxSize( 50,-1 ) );
+
+	fgSizer71->Add( m_button37, 0, wxALL, 5 );
 
 
 	fgSizer8->Add( fgSizer71, 0, wxEXPAND, 5 );
@@ -254,17 +260,93 @@ pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxS
 	this->Connect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( pypilotDialogBase::OnClose ) );
 	m_bAP->Connect( wxEVT_COMMAND_TOGGLEBUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnAP ), NULL, this );
 	m_cMode->Connect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( pypilotDialogBase::OnMode ), NULL, this );
-	m_bManualPortLong->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnManualPortLong ), NULL, this );
+	m_bManualPortLong->Connect( wxEVT_LEFT_DOWN, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortLong->Connect( wxEVT_LEFT_UP, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortLong->Connect( wxEVT_MIDDLE_DOWN, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortLong->Connect( wxEVT_MIDDLE_UP, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortLong->Connect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortLong->Connect( wxEVT_RIGHT_UP, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortLong->Connect( wxEVT_AUX1_DOWN, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortLong->Connect( wxEVT_AUX1_UP, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortLong->Connect( wxEVT_AUX2_DOWN, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortLong->Connect( wxEVT_AUX1_UP, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortLong->Connect( wxEVT_MOTION, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortLong->Connect( wxEVT_LEFT_DCLICK, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortLong->Connect( wxEVT_MIDDLE_DCLICK, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortLong->Connect( wxEVT_RIGHT_DCLICK, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortLong->Connect( wxEVT_AUX1_DCLICK, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortLong->Connect( wxEVT_AUX2_DCLICK, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortLong->Connect( wxEVT_LEAVE_WINDOW, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortLong->Connect( wxEVT_ENTER_WINDOW, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortLong->Connect( wxEVT_MOUSEWHEEL, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
 	m_bManualPortShort->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnManualPortShort ), NULL, this );
+	m_bManualPortShort->Connect( wxEVT_LEFT_DOWN, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortShort->Connect( wxEVT_LEFT_UP, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortShort->Connect( wxEVT_MIDDLE_DOWN, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortShort->Connect( wxEVT_MIDDLE_UP, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortShort->Connect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortShort->Connect( wxEVT_RIGHT_UP, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortShort->Connect( wxEVT_AUX1_DOWN, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortShort->Connect( wxEVT_AUX1_UP, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortShort->Connect( wxEVT_AUX2_DOWN, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortShort->Connect( wxEVT_AUX1_UP, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortShort->Connect( wxEVT_MOTION, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortShort->Connect( wxEVT_LEFT_DCLICK, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortShort->Connect( wxEVT_MIDDLE_DCLICK, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortShort->Connect( wxEVT_RIGHT_DCLICK, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortShort->Connect( wxEVT_AUX1_DCLICK, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortShort->Connect( wxEVT_AUX2_DCLICK, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortShort->Connect( wxEVT_LEAVE_WINDOW, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortShort->Connect( wxEVT_ENTER_WINDOW, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortShort->Connect( wxEVT_MOUSEWHEEL, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
 	m_bCenter->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnManualCenter ), NULL, this );
 	m_bManualStarboardShort->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnManualStarboardShort ), NULL, this );
+	m_bManualStarboardShort->Connect( wxEVT_LEFT_DOWN, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardShort->Connect( wxEVT_LEFT_UP, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardShort->Connect( wxEVT_MIDDLE_DOWN, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardShort->Connect( wxEVT_MIDDLE_UP, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardShort->Connect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardShort->Connect( wxEVT_RIGHT_UP, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardShort->Connect( wxEVT_AUX1_DOWN, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardShort->Connect( wxEVT_AUX1_UP, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardShort->Connect( wxEVT_AUX2_DOWN, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardShort->Connect( wxEVT_AUX1_UP, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardShort->Connect( wxEVT_MOTION, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardShort->Connect( wxEVT_LEFT_DCLICK, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardShort->Connect( wxEVT_MIDDLE_DCLICK, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardShort->Connect( wxEVT_RIGHT_DCLICK, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardShort->Connect( wxEVT_AUX1_DCLICK, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardShort->Connect( wxEVT_AUX2_DCLICK, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardShort->Connect( wxEVT_LEAVE_WINDOW, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardShort->Connect( wxEVT_ENTER_WINDOW, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardShort->Connect( wxEVT_MOUSEWHEEL, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
 	m_bManualStarboardLong->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnManualStarboardLong ), NULL, this );
+	m_bManualStarboardLong->Connect( wxEVT_LEFT_DOWN, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardLong->Connect( wxEVT_LEFT_UP, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardLong->Connect( wxEVT_MIDDLE_DOWN, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardLong->Connect( wxEVT_MIDDLE_UP, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardLong->Connect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardLong->Connect( wxEVT_RIGHT_UP, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardLong->Connect( wxEVT_AUX1_DOWN, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardLong->Connect( wxEVT_AUX1_UP, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardLong->Connect( wxEVT_AUX2_DOWN, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardLong->Connect( wxEVT_AUX1_UP, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardLong->Connect( wxEVT_MOTION, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardLong->Connect( wxEVT_LEFT_DCLICK, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardLong->Connect( wxEVT_MIDDLE_DCLICK, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardLong->Connect( wxEVT_RIGHT_DCLICK, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardLong->Connect( wxEVT_AUX1_DCLICK, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardLong->Connect( wxEVT_AUX2_DCLICK, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardLong->Connect( wxEVT_LEAVE_WINDOW, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardLong->Connect( wxEVT_ENTER_WINDOW, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardLong->Connect( wxEVT_MOUSEWHEEL, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
 	m_bTack->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnTack ), NULL, this );
 	m_bGains->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnGains ), NULL, this );
 	m_bConfiguration->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnConfiguration ), NULL, this );
 	m_bCalibration->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnCalibration ), NULL, this );
+	m_button35->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnSettings ), NULL, this );
 	m_bStatistics->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnStatistics ), NULL, this );
-	m_bClose->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnClose ), NULL, this );
+	m_button37->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnClose ), NULL, this );
 }
 
 pypilotDialogBase::~pypilotDialogBase()
@@ -273,17 +355,93 @@ pypilotDialogBase::~pypilotDialogBase()
 	this->Disconnect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( pypilotDialogBase::OnClose ) );
 	m_bAP->Disconnect( wxEVT_COMMAND_TOGGLEBUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnAP ), NULL, this );
 	m_cMode->Disconnect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( pypilotDialogBase::OnMode ), NULL, this );
-	m_bManualPortLong->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnManualPortLong ), NULL, this );
+	m_bManualPortLong->Disconnect( wxEVT_LEFT_DOWN, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortLong->Disconnect( wxEVT_LEFT_UP, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortLong->Disconnect( wxEVT_MIDDLE_DOWN, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortLong->Disconnect( wxEVT_MIDDLE_UP, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortLong->Disconnect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortLong->Disconnect( wxEVT_RIGHT_UP, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortLong->Disconnect( wxEVT_AUX1_DOWN, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortLong->Disconnect( wxEVT_AUX1_UP, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortLong->Disconnect( wxEVT_AUX2_DOWN, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortLong->Disconnect( wxEVT_AUX1_UP, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortLong->Disconnect( wxEVT_MOTION, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortLong->Disconnect( wxEVT_LEFT_DCLICK, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortLong->Disconnect( wxEVT_MIDDLE_DCLICK, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortLong->Disconnect( wxEVT_RIGHT_DCLICK, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortLong->Disconnect( wxEVT_AUX1_DCLICK, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortLong->Disconnect( wxEVT_AUX2_DCLICK, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortLong->Disconnect( wxEVT_LEAVE_WINDOW, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortLong->Disconnect( wxEVT_ENTER_WINDOW, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortLong->Disconnect( wxEVT_MOUSEWHEEL, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
 	m_bManualPortShort->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnManualPortShort ), NULL, this );
+	m_bManualPortShort->Disconnect( wxEVT_LEFT_DOWN, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortShort->Disconnect( wxEVT_LEFT_UP, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortShort->Disconnect( wxEVT_MIDDLE_DOWN, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortShort->Disconnect( wxEVT_MIDDLE_UP, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortShort->Disconnect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortShort->Disconnect( wxEVT_RIGHT_UP, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortShort->Disconnect( wxEVT_AUX1_DOWN, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortShort->Disconnect( wxEVT_AUX1_UP, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortShort->Disconnect( wxEVT_AUX2_DOWN, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortShort->Disconnect( wxEVT_AUX1_UP, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortShort->Disconnect( wxEVT_MOTION, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortShort->Disconnect( wxEVT_LEFT_DCLICK, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortShort->Disconnect( wxEVT_MIDDLE_DCLICK, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortShort->Disconnect( wxEVT_RIGHT_DCLICK, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortShort->Disconnect( wxEVT_AUX1_DCLICK, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortShort->Disconnect( wxEVT_AUX2_DCLICK, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortShort->Disconnect( wxEVT_LEAVE_WINDOW, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortShort->Disconnect( wxEVT_ENTER_WINDOW, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualPortShort->Disconnect( wxEVT_MOUSEWHEEL, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
 	m_bCenter->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnManualCenter ), NULL, this );
 	m_bManualStarboardShort->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnManualStarboardShort ), NULL, this );
+	m_bManualStarboardShort->Disconnect( wxEVT_LEFT_DOWN, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardShort->Disconnect( wxEVT_LEFT_UP, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardShort->Disconnect( wxEVT_MIDDLE_DOWN, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardShort->Disconnect( wxEVT_MIDDLE_UP, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardShort->Disconnect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardShort->Disconnect( wxEVT_RIGHT_UP, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardShort->Disconnect( wxEVT_AUX1_DOWN, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardShort->Disconnect( wxEVT_AUX1_UP, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardShort->Disconnect( wxEVT_AUX2_DOWN, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardShort->Disconnect( wxEVT_AUX1_UP, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardShort->Disconnect( wxEVT_MOTION, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardShort->Disconnect( wxEVT_LEFT_DCLICK, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardShort->Disconnect( wxEVT_MIDDLE_DCLICK, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardShort->Disconnect( wxEVT_RIGHT_DCLICK, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardShort->Disconnect( wxEVT_AUX1_DCLICK, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardShort->Disconnect( wxEVT_AUX2_DCLICK, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardShort->Disconnect( wxEVT_LEAVE_WINDOW, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardShort->Disconnect( wxEVT_ENTER_WINDOW, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardShort->Disconnect( wxEVT_MOUSEWHEEL, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
 	m_bManualStarboardLong->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnManualStarboardLong ), NULL, this );
+	m_bManualStarboardLong->Disconnect( wxEVT_LEFT_DOWN, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardLong->Disconnect( wxEVT_LEFT_UP, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardLong->Disconnect( wxEVT_MIDDLE_DOWN, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardLong->Disconnect( wxEVT_MIDDLE_UP, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardLong->Disconnect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardLong->Disconnect( wxEVT_RIGHT_UP, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardLong->Disconnect( wxEVT_AUX1_DOWN, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardLong->Disconnect( wxEVT_AUX1_UP, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardLong->Disconnect( wxEVT_AUX2_DOWN, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardLong->Disconnect( wxEVT_AUX1_UP, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardLong->Disconnect( wxEVT_MOTION, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardLong->Disconnect( wxEVT_LEFT_DCLICK, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardLong->Disconnect( wxEVT_MIDDLE_DCLICK, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardLong->Disconnect( wxEVT_RIGHT_DCLICK, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardLong->Disconnect( wxEVT_AUX1_DCLICK, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardLong->Disconnect( wxEVT_AUX2_DCLICK, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardLong->Disconnect( wxEVT_LEAVE_WINDOW, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardLong->Disconnect( wxEVT_ENTER_WINDOW, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
+	m_bManualStarboardLong->Disconnect( wxEVT_MOUSEWHEEL, wxMouseEventHandler( pypilotDialogBase::OnManualEvents ), NULL, this );
 	m_bTack->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnTack ), NULL, this );
 	m_bGains->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnGains ), NULL, this );
 	m_bConfiguration->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnConfiguration ), NULL, this );
 	m_bCalibration->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnCalibration ), NULL, this );
+	m_button35->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnSettings ), NULL, this );
 	m_bStatistics->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnStatistics ), NULL, this );
-	m_bClose->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnClose ), NULL, this );
+	m_button37->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( pypilotDialogBase::OnClose ), NULL, this );
 
 }
 
@@ -800,6 +958,66 @@ StatisticsDialogBase::~StatisticsDialogBase()
 
 }
 
+SettingsDialogBase::SettingsDialogBase( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxSize( 640,400 ), wxDefaultSize );
+
+	wxFlexGridSizer* fgSizer53;
+	fgSizer53 = new wxFlexGridSizer( 0, 1, 0, 0 );
+	fgSizer53->AddGrowableCol( 0 );
+	fgSizer53->AddGrowableRow( 0 );
+	fgSizer53->SetFlexibleDirection( wxBOTH );
+	fgSizer53->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+
+	m_fgSettings = new wxFlexGridSizer( 0, 3, 0, 0 );
+	m_fgSettings->AddGrowableCol( 1 );
+	m_fgSettings->SetFlexibleDirection( wxBOTH );
+	m_fgSettings->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+
+
+	fgSizer53->Add( m_fgSettings, 1, wxEXPAND, 5 );
+
+	wxFlexGridSizer* fgSizer421;
+	fgSizer421 = new wxFlexGridSizer( 0, 2, 0, 0 );
+	fgSizer421->AddGrowableCol( 1 );
+	fgSizer421->SetFlexibleDirection( wxBOTH );
+	fgSizer421->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+
+	m_sdbSizer3 = new wxStdDialogButtonSizer();
+	m_sdbSizer3OK = new wxButton( this, wxID_OK );
+	m_sdbSizer3->AddButton( m_sdbSizer3OK );
+	m_sdbSizer3->Realize();
+
+	fgSizer421->Add( m_sdbSizer3, 1, wxEXPAND, 5 );
+
+	m_bpypilotClient = new wxButton( this, wxID_ANY, _("pypilot Client"), wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer421->Add( m_bpypilotClient, 0, wxALL, 5 );
+
+
+	fgSizer53->Add( fgSizer421, 1, wxEXPAND, 5 );
+
+
+	this->SetSizer( fgSizer53 );
+	this->Layout();
+	fgSizer53->Fit( this );
+
+	this->Centre( wxBOTH );
+
+	// Connect Events
+	this->Connect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( SettingsDialogBase::OnClose ) );
+	m_sdbSizer3OK->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( SettingsDialogBase::OnClose ), NULL, this );
+	m_bpypilotClient->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( SettingsDialogBase::OnpypilotClient ), NULL, this );
+}
+
+SettingsDialogBase::~SettingsDialogBase()
+{
+	// Disconnect Events
+	this->Disconnect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( SettingsDialogBase::OnClose ) );
+	m_sdbSizer3OK->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( SettingsDialogBase::OnClose ), NULL, this );
+	m_bpypilotClient->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( SettingsDialogBase::OnpypilotClient ), NULL, this );
+
+}
+
 CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
@@ -975,7 +1193,7 @@ CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, c
 	m_panel2->SetSizer( sbSizer4 );
 	m_panel2->Layout();
 	sbSizer4->Fit( m_panel2 );
-	m_notebook->AddPage( m_panel2, _("Compass"), true );
+	m_notebook->AddPage( m_panel2, _("Compass"), false );
 	m_panel3 = new wxPanel( m_notebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxStaticBoxSizer* sbSizer3;
 	sbSizer3 = new wxStaticBoxSizer( new wxStaticBox( m_panel3, wxID_ANY, _("Alignment") ), wxVERTICAL );
@@ -1042,45 +1260,45 @@ CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, c
 	fgSizer42->SetFlexibleDirection( wxBOTH );
 	fgSizer42->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
-	wxFlexGridSizer* fgSizer39;
-	fgSizer39 = new wxFlexGridSizer( 0, 2, 0, 0 );
-	fgSizer39->SetFlexibleDirection( wxBOTH );
-	fgSizer39->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	wxFlexGridSizer* fgSizer391;
+	fgSizer391 = new wxFlexGridSizer( 0, 2, 0, 0 );
+	fgSizer391->SetFlexibleDirection( wxBOTH );
+	fgSizer391->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
 	m_staticText49 = new wxStaticText( sbSizer7->GetStaticBox(), wxID_ANY, _("Angle"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText49->Wrap( -1 );
-	fgSizer39->Add( m_staticText49, 0, wxALL, 5 );
+	fgSizer391->Add( m_staticText49, 0, wxALL, 5 );
 
 	m_stRudderAngle = new wxStaticText( sbSizer7->GetStaticBox(), wxID_ANY, _("-----"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_stRudderAngle->Wrap( -1 );
-	fgSizer39->Add( m_stRudderAngle, 0, wxALL, 5 );
+	fgSizer391->Add( m_stRudderAngle, 0, wxALL, 5 );
 
 	m_staticText42 = new wxStaticText( sbSizer7->GetStaticBox(), wxID_ANY, _("Offset"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText42->Wrap( -1 );
-	fgSizer39->Add( m_staticText42, 0, wxALL, 5 );
+	fgSizer391->Add( m_staticText42, 0, wxALL, 5 );
 
 	m_stRudderOffset = new wxStaticText( sbSizer7->GetStaticBox(), wxID_ANY, _("-----"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_stRudderOffset->Wrap( -1 );
-	fgSizer39->Add( m_stRudderOffset, 0, wxALL, 5 );
+	fgSizer391->Add( m_stRudderOffset, 0, wxALL, 5 );
 
 	m_staticText44 = new wxStaticText( sbSizer7->GetStaticBox(), wxID_ANY, _("Scale"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText44->Wrap( -1 );
-	fgSizer39->Add( m_staticText44, 0, wxALL, 5 );
+	fgSizer391->Add( m_staticText44, 0, wxALL, 5 );
 
 	m_stRudderScale = new wxStaticText( sbSizer7->GetStaticBox(), wxID_ANY, _("-----"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_stRudderScale->Wrap( -1 );
-	fgSizer39->Add( m_stRudderScale, 0, wxALL, 5 );
+	fgSizer391->Add( m_stRudderScale, 0, wxALL, 5 );
 
 	m_staticText46 = new wxStaticText( sbSizer7->GetStaticBox(), wxID_ANY, _("Non Linearity"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText46->Wrap( -1 );
-	fgSizer39->Add( m_staticText46, 0, wxALL, 5 );
+	fgSizer391->Add( m_staticText46, 0, wxALL, 5 );
 
 	m_stRudderNonlinearity = new wxStaticText( sbSizer7->GetStaticBox(), wxID_ANY, _("-----"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_stRudderNonlinearity->Wrap( -1 );
-	fgSizer39->Add( m_stRudderNonlinearity, 0, wxALL, 5 );
+	fgSizer391->Add( m_stRudderNonlinearity, 0, wxALL, 5 );
 
 
-	fgSizer42->Add( fgSizer39, 1, wxEXPAND, 5 );
+	fgSizer42->Add( fgSizer391, 1, wxEXPAND, 5 );
 
 	wxFlexGridSizer* fgSizer40;
 	fgSizer40 = new wxFlexGridSizer( 0, 2, 0, 0 );
@@ -1130,17 +1348,6 @@ CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, c
 	m_panel4->Layout();
 	sbSizer7->Fit( m_panel4 );
 	m_notebook->AddPage( m_panel4, _("Rudder"), false );
-	m_pSettings = new wxPanel( m_notebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	m_fgSettings = new wxFlexGridSizer( 0, 3, 0, 0 );
-	m_fgSettings->AddGrowableCol( 1 );
-	m_fgSettings->SetFlexibleDirection( wxBOTH );
-	m_fgSettings->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
-
-
-	m_pSettings->SetSizer( m_fgSettings );
-	m_pSettings->Layout();
-	m_fgSettings->Fit( m_pSettings );
-	m_notebook->AddPage( m_pSettings, _("Settings"), false );
 
 	fgSizer19->Add( m_notebook, 1, wxEXPAND | wxALL, 5 );
 
@@ -1149,9 +1356,6 @@ CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, c
 	fgSizer421->AddGrowableCol( 1 );
 	fgSizer421->SetFlexibleDirection( wxBOTH );
 	fgSizer421->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
-
-	m_bpypilotClient = new wxButton( this, wxID_ANY, _("pypilot Client"), wxDefaultPosition, wxDefaultSize, 0 );
-	fgSizer421->Add( m_bpypilotClient, 0, wxALL, 5 );
 
 	m_sdbSizer3 = new wxStdDialogButtonSizer();
 	m_sdbSizer3OK = new wxButton( this, wxID_OK );
@@ -1226,7 +1430,6 @@ CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, c
 	m_bRudderPortRange->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnRudderPortRange ), NULL, this );
 	m_sRudderRange->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( CalibrationDialogBase::OnRudderRange ), NULL, this );
 	m_button172->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnAboutRudderCalibration ), NULL, this );
-	m_bpypilotClient->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnpypilotClient ), NULL, this );
 	m_sdbSizer3OK->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnClose ), NULL, this );
 }
 
@@ -1289,7 +1492,6 @@ CalibrationDialogBase::~CalibrationDialogBase()
 	m_bRudderPortRange->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnRudderPortRange ), NULL, this );
 	m_sRudderRange->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( CalibrationDialogBase::OnRudderRange ), NULL, this );
 	m_button172->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnAboutRudderCalibration ), NULL, this );
-	m_bpypilotClient->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnpypilotClient ), NULL, this );
 	m_sdbSizer3OK->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CalibrationDialogBase::OnClose ), NULL, this );
 
 }

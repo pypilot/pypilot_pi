@@ -4,6 +4,7 @@ src/pypilotDialog.cpp
 src/GainsDialog.cpp
 src/ConfigurationDialog.cpp
 src/StatisticsDialog.cpp
+src/SettingsDialog.cpp
 src/pypilotClientDialog.cpp
 src/pypilotUI.cpp
 src/icons.cpp
@@ -20,4 +21,5 @@ src/pypilotClientDialog.h
 src/pypilotDialog.h
 src/pypilotUI.h
 src/StatisticsDialog.h
+src/SettingsDialog.h
 src/wxWTranslateCatalog.h
