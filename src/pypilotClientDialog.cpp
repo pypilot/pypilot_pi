@@ -101,8 +101,8 @@ std::map<std::string, double> &pypilotClientDialog::GetWatchlist()
 
     for(Json::ValueIterator val = value_list.begin(); val != value_list.end(); val++) {
         double period = 0;
-        if((*val)["type"] == "SensorValue")
-            period = 1;
+        //if((*val)["type"] == "SensorValue")
+        period = 1;
         list[val.key().asString()] = period;
     }
     

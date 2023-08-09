@@ -56,6 +56,8 @@ public:
     void Fit();
     
 private:
+    void UpdateStatus();
+    
     void OnAP( wxCommandEvent& event );
     void OnMode( wxCommandEvent& event );
     void OnManualPortLong( wxCommandEvent& event ) { Manual(1.4); }
@@ -91,5 +93,5 @@ private:
     
     bool m_bTrueNorthMode;
     pypilot_pi &m_pypilot_pi;
-    wxString m_servoController, m_imuwarning;
+    wxString m_servoController, m_imuerror, m_imuwarning, m_servoflags;
 };
