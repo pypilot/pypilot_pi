@@ -36,7 +36,7 @@ public:
     ~StatisticsDialog();
 
     void Receive(std::string name, Json::Value &value);
-    std::list<std::string> &GetWatchlist();
+    std::map<std::string, double> &GetWatchlist();
 
 private:
     void OnClose( wxCommandEvent& event );

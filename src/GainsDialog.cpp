@@ -34,7 +34,12 @@ struct Gain
     ~Gain();
 
     void set(double val) {
-        double v = fabs(val) * 1000.0;
+        int v = val * 1000.0;
+        if(v == last_val)
+            return;
+
+        last_val = v;
+        v = abs(v);
         if(v < gauge->GetRange()) {
             gauge->SetValue(v);
             gauge->SetBackgroundColour(val > 0 ? *wxRED : val < 0 ? *wxGREEN : *wxLIGHT_GREY);
@@ -51,6 +56,7 @@ struct Gain
     double min, max;
     bool need_update, initial;
     wxDateTime last_change;
+    int last_val;
     int slider_val(double gain_val) { return (gain_val-min)*1000/(max - min); }
 
     wxStaticText *stname;
@@ -78,6 +84,8 @@ Gain::Gain(wxWindow *parent, wxString name, double min_val, double max_val)
     hsizer->Add( slider, 0, wxALL|wxEXPAND, 5 );
 
     sizer->Add( hsizer, 1, wxEXPAND, 5 );
+
+    last_val = 1e6;
 }
 
 Gain::~Gain()
@@ -294,7 +302,7 @@ void GainsDialog::OnGainSlider( wxScrollEvent& event )
     }
 }
 
-std::list<std::string> &GainsDialog::GetWatchlist()
+std::map<std::string, double> &GainsDialog::GetWatchlist()
 {
     return m_watchlist;
 }
@@ -341,16 +349,16 @@ void GainsDialog::EnumerateGains()
     std::list<std::string> gains;
     m_pypilot_pi.m_client.GetSettings(gains, "AutopilotGain");
     m_watchlist.clear();
-    m_watchlist.push_back("profile");
-    m_watchlist.push_back("profiles");
-    m_watchlist.push_back("ap.pilot");
+    m_watchlist["profile"] = 0;
+    m_watchlist["profiles"] = 0;
+    m_watchlist["ap.pilot"] = 0;
     m_gains.clear();
     
     for(std::list<std::string>::iterator i = gains.begin(); i != gains.end(); i++) {
         std::string name = *i;
         
-        m_watchlist.push_back(name);
-        m_watchlist.push_back(name+"gain");
+        m_watchlist[name] = .5;
+        m_watchlist[name+"gain"] = .2;
 
         int ret = name.find(("ap.pilot." + pilot + ".").mb_str());
         if(ret < 0)

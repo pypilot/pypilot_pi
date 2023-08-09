@@ -640,7 +640,7 @@ void pypilot_pi::OnTimer( wxTimerEvent & )
 
     std::string name;
     Json::Value val;
-     while(m_client.receive(name, val)) {
+    while(m_client.receive(name, val)) {
          //printf("msg %s %s\n", name.c_str(), val.asString().c_str());
 
          try {

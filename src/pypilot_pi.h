@@ -81,7 +81,7 @@ class pypilotClient_pi : public pypilotClient
 {
 public:
     pypilotClient_pi( pypilot_pi &_pypilot_pi )
-        : pypilotClient(false), m_pypilot_pi(_pypilot_pi) {}
+        : pypilotClient(), m_pypilot_pi(_pypilot_pi) {}
     virtual void OnConnected();
     virtual void OnDisconnected();
 

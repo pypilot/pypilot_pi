@@ -81,7 +81,10 @@ void CalibrationDialog::Receive(std::string name, Json::Value &value)
         m_stPitchRoll->SetLabel(wxString::Format("%.1f / %.1f", m_pitch, roll));
     } else if(name == "imu.alignmentCounter")
         m_gLevel->SetValue(100-jsondouble(value));
-    else if(name == "imu.accel.calibration")
+    else if(name == "imu.warning") {
+        m_stAccelCalibrationWarning->SetLabel(StringValue(value));
+        m_stCompassCalibrationWarning->SetLabel(StringValue(value));
+    } else if(name == "imu.accel.calibration")
         m_stAccelCalibration->SetLabel(StringValue(value)), Fit();
     else if(name == "imu.accel.calibration.log")
         m_tAccelCalibrationLog->WriteText(value.asString()+'\n');
@@ -163,6 +166,7 @@ std::map<std::string, double> &CalibrationDialog::GetWatchlist()
     list["imu.pitch"] = period;
     list["imu.roll"] = period;
     list["imu.alignmentCounter"] = 0;
+    list["imu.warning"] = 0;
 //        list["imu.fusionQPose"];
     list["imu.accel"] = period;
     list["imu.accel.calibration"] = 0;

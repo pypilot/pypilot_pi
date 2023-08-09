@@ -242,7 +242,7 @@ std::map<std::string, double> &pypilotDialog::GetWatchlist()
          "ap.enabled", "ap.mode", "ap.modes", "ap.heading", "ap.heading_command", "ap.tack.state",
          "servo.state", "servo.flags", "servo.controller"};
     for(unsigned int i=0; i<(sizeof watchlist)/(sizeof *watchlist); i++)
-        list[watchlist[i]] = 0;
+        list[watchlist[i]] = .2;
     
     // get updates twice a second
     list["rudder.angle"] = .5;
