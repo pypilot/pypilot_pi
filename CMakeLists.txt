@@ -18,7 +18,7 @@
 ## *   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                                       *
 ## ***
 #-----------------------------------------------------------------------------
-# Frontend2 Author: Jon Gough  Frontend2: v1.0.238.0  09/06/2023
+# Frontend2 Author: Jon Gough  Frontend2: v1.0.253.0  07/08/2023
 # buildCI:yes useODAPI:no validateJSON:no										 
 # ---------------------------------------------------------------------------
 
@@ -64,9 +64,9 @@ set(LONG_DESCRIPTION
 
 set(VERSION_MAJOR "0")
 set(VERSION_MINOR "40")
-set(VERSION_PATCH "4")
+set(VERSION_PATCH "5")
 set(VERSION_TWEAK "0")
-set(VERSION_DATE "12/06/2023")
+set(VERSION_DATE "09/08/2023")
 
 set(OCPN_MIN_VERSION "ov58")
 set(OCPN_API_VERSION_MAJOR "1")
