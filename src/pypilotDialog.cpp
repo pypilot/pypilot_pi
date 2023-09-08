@@ -38,6 +38,29 @@ v */
 wxWindow *g_Window;
 #endif
 
+class TackDialog : public TackDialogBase
+{
+public:
+    TackDialog( pypilot_pi &_pypilot_pi, wxWindow* parent)
+        : TackDialogBase(parent),
+              m_pypilot_pi(_pypilot_pi)
+        {
+        }
+
+private:
+    void OnTackPort( wxCommandEvent& event )       { tack("port"); }
+    void OnClose( wxCommandEvent& event )          { tack("none"); }
+    void OnTackStarboard( wxCommandEvent& event )  { tack("starboard"); }
+
+    void tack(wxString direction) {
+        m_pypilot_pi.m_client.set("ap.tack.direction", direction);
+        m_pypilot_pi.m_client.set("ap.tack.state", "begin");
+        Hide();
+    }
+
+    pypilot_pi &m_pypilot_pi;    
+};
+
 pypilotDialog::pypilotDialog( pypilot_pi &_pypilot_pi, wxWindow* parent)
     : pypilotDialogBase( parent ),
       m_bAPHaveRudder(false),
@@ -50,7 +73,7 @@ pypilotDialog::pypilotDialog( pypilot_pi &_pypilot_pi, wxWindow* parent)
 #endif
     wxFileConfig *pConf = GetOCPNConfigObject();
 
-    pConf->SetPath ( _T( "/Settings/pypilot" ) );
+    pConf->SetPath ( _T( "/PlugIns/pypilot" ) );
 
 #ifdef __WXGTK__
     Move(0, 0);        // workaround for gtk autocentre dialog behavior
@@ -70,13 +93,15 @@ pypilotDialog::pypilotDialog( pypilot_pi &_pypilot_pi, wxWindow* parent)
     m_ManualTimer.Connect(wxEVT_TIMER, wxTimerEventHandler
                           ( pypilotDialog::OnManualTimer ), NULL, this);
 
+    m_TackDialog = new TackDialog(m_pypilot_pi, this);
+   
     Disconnected();
 }
 
 pypilotDialog::~pypilotDialog()
 {
     wxFileConfig *pConf = GetOCPNConfigObject();
-    pConf->SetPath ( _T ( "/Settings/pypilot" ) );
+    pConf->SetPath ( _T ( "/PlugIns/pypilot" ) );
 
     wxPoint p = GetPosition();
 
@@ -132,6 +157,8 @@ void pypilotDialog::OnEvtPanGesture( wxQT_PanGestureEvent &event)
 
 void pypilotDialog::Disconnected()
 {
+    m_tack_direction = "none";
+
     m_fgControlAnglesPos->Show(false);
     m_fgControlAnglesNeg->Show(false);
     m_fgControlManual->Show(false);
@@ -186,7 +213,9 @@ void pypilotDialog::Receive(std::string name, Json::Value &value)
             m_bTack->SetLabel(_("Tack"));
         else
             m_bTack->SetLabel(_("Cancel"));
-    } else if(name == "servo.state") {
+    } else if(name == "ap.tack.direction")
+        m_tack_direction = value.asString();
+    else if(name == "servo.state") {
         if(m_servoController != "none")
             m_stServoState->SetLabel(value.asString());
     } else if(name == "servo.flags") {
@@ -240,7 +269,8 @@ std::map<std::string, double> &pypilotDialog::GetWatchlist()
     // continuous updates for these
     static const char *watchlist[] =
         {"imu.error", "imu.warning",
-         "ap.enabled", "ap.mode", "ap.modes", "ap.heading", "ap.heading_command", "ap.tack.state",
+         "ap.enabled", "ap.mode", "ap.modes", "ap.heading", "ap.heading_command",
+         "ap.tack.state", "ap.tack.direction",
          "servo.state", "servo.flags", "servo.controller"};
     for(unsigned int i=0; i<(sizeof watchlist)/(sizeof *watchlist); i++)
         list[watchlist[i]] = .2;
@@ -257,7 +287,7 @@ void pypilotDialog::RebuildControlAngles()
     bool shown = m_fgControlAnglesPos->AreAnyItemsShown();
 
     wxFileConfig *pConf = GetOCPNConfigObject();
-    pConf->SetPath ( _T( "/Settings/pypilot" ) );
+    pConf->SetPath ( _T( "/PlugIns/pypilot" ) );
     wxString ControlAngles = pConf->Read ( _T ( "ControlAngles" ), "1;10;110;" );
     while(!m_fgControlAnglesPos->IsEmpty())
         delete m_fgControlAnglesPos->GetItem((size_t)0)->GetWindow();
@@ -351,16 +381,19 @@ void pypilotDialog::OnManualEvents( wxMouseEvent& event )
 {
     double speed, length;
     int timeout;
+    
     if(event.GetEventObject() == m_bManualPortLong)
-        speed = -.9, timeout = 300;
+        speed = 1, timeout = 300;
     else if(event.GetEventObject() == m_bManualPortShort)
-        speed = -.5, timeout = 200;
+        speed = .6, timeout = 200;
     else if(event.GetEventObject() == m_bManualStarboardShort)
-        speed = .5, timeout = 200;
+        speed = -.6, timeout = 200;
     else if(event.GetEventObject() == m_bManualStarboardLong)
-        speed = .9, timeout = 300;
+        speed = -1, timeout = 300;
     else
         return;
+
+    speed *= m_pypilot_pi.m_ConfigurationDialog->m_sManualControlSpeed->GetValue();
       
     if(event.LeftDown()) {
         m_ManualCommand = speed;
@@ -442,9 +475,11 @@ void pypilotDialog::OnControlAngle( wxCommandEvent& event )
 
 void pypilotDialog::OnTack( wxCommandEvent& event )
 {
-    m_pypilot_pi.m_client.set("ap.tack.state", m_bTack->GetLabel() == _("Tack") ? "begin": "none");
+    if(m_tack_direction != "none" && !m_pypilot_pi.m_ConfigurationDialog->m_cbAlwaysConfirmTacking->GetValue())
+        m_pypilot_pi.m_client.set("ap.tack.state", m_bTack->GetLabel() == _("Tack") ? "begin": "none");
+    else
+        m_TackDialog->Show();
 }
-
 
 void pypilotDialog::OnManualCenter( wxCommandEvent& event )
 {

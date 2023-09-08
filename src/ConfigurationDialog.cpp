@@ -42,7 +42,7 @@ bool ConfigurationDialog::Show( bool show )
 {
     if(show) {
         wxFileConfig *pConf = GetOCPNConfigObject();
-        pConf->SetPath ( _T( "/Settings/pypilot" ) );
+        pConf->SetPath ( _T( "/PlugIns/pypilot" ) );
         m_cbAutoDiscover->SetValue(pConf->Read ( _T ( "AutoDiscover" ), true));
         m_cHost->SetSelection(0);
         wxString host = pConf->Read ( _T ( "Host" ), "192.168.14.1" );
@@ -51,11 +51,14 @@ bool ConfigurationDialog::Show( bool show )
             m_cHost->SetSelection(0);
         }
         m_cbTackingButton->SetValue((bool)pConf->Read ( _T ( "TackingButton" ), 1));
+        m_cbAlwaysConfirmTacking->SetValue((bool)pConf->Read ( _T ( "AlwaysConfirmTacking" ), 0L));
         m_cbCenterButton->SetValue((bool)pConf->Read ( _T ( "CenterButton" ), 1));
+
         m_cbForwardNMEA->SetValue((bool)pConf->Read ( _T ( "ForwardNMEA" ), 0L ));
         m_cbEnableGraphicOverlay->SetValue((bool)pConf->Read ( _T ( "EnableGraphicOverlay" ), 0L ));
         m_cbTrueNorthMode->SetValue((bool)pConf->Read ( _T ( "TrueNorthMode" ), 0L ));
         m_cbSwitchToNAVMode->SetValue((bool)pConf->Read ( _T ( "SwitchToNAVMode" ), 0L ));
+        m_sManualControlSpeed->SetValue((bool)pConf->Read ( _T ( "ManualControlSpeed" ), .9 ));
 
         m_lControlAngles->Clear();
         wxString ControlAngles = pConf->Read ( _T ( "ControlAngles" ), "1;10;" );
@@ -95,10 +98,18 @@ Make the buttons for tacking visible."),
     mdlg.ShowModal();
 }
 
-void ConfigurationDialog::OnAboutCenter( wxCommandEvent& event )
+void ConfigurationDialog::OnAboutAlwaysConfirmTacking( wxCommandEvent& event )
 {
     wxMessageDialog mdlg(GetOCPNCanvasWindow(), _("\
-If enabled, and rudder feedback is working, a button to center the rudder in manual mode appears."),
+Always ask tacking direction even if the autopilot can determine it."),
+                         "pypilot", wxOK | wxICON_INFORMATION);
+    mdlg.ShowModal();
+}
+
+
+void ConfigurationDialog::OnAboutCenter( wxCommandEvent& event )
+{
+    wxMessageDialog mdlg(GetOCPNCanvasWindow(), _("Still show the tacking direction dialog even if a wind sensor is used."),
                          "pypilot", wxOK | wxICON_INFORMATION);
     mdlg.ShowModal();
 }
@@ -143,6 +154,14 @@ void ConfigurationDialog::OnAboutSwitchToNAVMode( wxCommandEvent& event )
     mdlg.ShowModal();
 }
 
+void ConfigurationDialog::OnAboutManualControlSpeed( wxCommandEvent& event )
+{
+    wxMessageDialog mdlg(GetOCPNCanvasWindow(),
+                         _("Adjust the speed of manual control"),
+                         "pypilot", wxOK | wxICON_INFORMATION);
+    mdlg.ShowModal();
+}
+
 void ConfigurationDialog::OnAddControlAngle( wxCommandEvent& event )
 {
     int angle = m_sControlAngle->GetValue();
@@ -182,15 +201,17 @@ void ConfigurationDialog::OnOk( wxCommandEvent& event )
     Hide();
 
     wxFileConfig *pConf = GetOCPNConfigObject();
-    pConf->SetPath ( _T( "/Settings/pypilot" ) );
+    pConf->SetPath ( _T( "/PlugIns/pypilot" ) );
     pConf->Write ( _T ( "AutoDiscover" ), m_cbAutoDiscover->GetValue());
     pConf->Write ( _T ( "Host" ), m_cHost->GetValue().BeforeFirst(' '));
     pConf->Write ( _T ( "TackingButton" ), m_cbTackingButton->GetValue());
+    pConf->Write ( _T ( "AlwaysConfirmTacking" ), m_cbAlwaysConfirmTacking->GetValue());
     pConf->Write ( _T ( "CenterButton" ), m_cbCenterButton->GetValue());
     pConf->Write ( _T ( "ForwardNMEA" ), m_cbForwardNMEA->GetValue());
     pConf->Write ( _T ( "EnableGraphicOverlay" ), m_cbEnableGraphicOverlay->GetValue());
     pConf->Write ( _T ( "TrueNorthMode" ), m_cbTrueNorthMode->GetValue());
     pConf->Write ( _T ( "SwitchToNAVMode" ), m_cbSwitchToNAVMode->GetValue());
+    pConf->Write ( _T ( "ManualControlSpeed" ), m_sManualControlSpeed->GetValue());
 
     wxString ControlAngles;
     for(unsigned int i=0; i<m_lControlAngles->GetCount(); i++)

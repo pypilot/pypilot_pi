@@ -68,8 +68,8 @@ class pypilotDialogBase : public wxDialog
 		wxButton* m_bTack;
 		wxStaticText* m_stTackTimeout;
 		wxStaticText* m_stRudder;
-		wxButton* m_bGains;
 		wxButton* m_bConfiguration;
+		wxButton* m_bGains;
 		wxButton* m_bCalibration;
 		wxButton* m_button35;
 		wxButton* m_bStatistics;
@@ -85,8 +85,8 @@ class pypilotDialogBase : public wxDialog
 		virtual void OnManualStarboardShort( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnManualStarboardLong( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnTack( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnGains( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnConfiguration( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnGains( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnCalibration( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnSettings( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnStatistics( wxCommandEvent& event ) { event.Skip(); }
@@ -97,6 +97,31 @@ class pypilotDialogBase : public wxDialog
 
 		pypilotDialogBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("pypilot"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxCAPTION|wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxTAB_TRAVERSAL );
 		~pypilotDialogBase();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class TackDialogBase
+///////////////////////////////////////////////////////////////////////////////
+class TackDialogBase : public wxDialog
+{
+	private:
+
+	protected:
+		wxButton* m_button42;
+		wxButton* m_button43;
+		wxButton* m_button44;
+
+		// Virtual event handlers, overide them in your derived class
+		virtual void OnTackPort( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnClose( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnTackStarboard( wxCommandEvent& event ) { event.Skip(); }
+
+
+	public:
+
+		TackDialogBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0 );
+		~TackDialogBase();
 
 };
 
@@ -148,6 +173,8 @@ class ConfigurationDialogBase : public wxDialog
 		wxCheckBox* m_cbAutoDiscover;
 		wxCheckBox* m_cbTackingButton;
 		wxButton* m_button31;
+		wxCheckBox* m_cbAlwaysConfirmTacking;
+		wxButton* m_button311;
 		wxCheckBox* m_cbCenterButton;
 		wxButton* m_button32;
 		wxCheckBox* m_cbForwardNMEA;
@@ -158,6 +185,9 @@ class ConfigurationDialogBase : public wxDialog
 		wxButton* m_button18;
 		wxCheckBox* m_cbSwitchToNAVMode;
 		wxButton* m_button321;
+		wxStaticText* m_staticText54;
+		wxSpinCtrlDouble* m_sManualControlSpeed;
+		wxButton* m_button3211;
 		wxSpinCtrl* m_sControlAngle;
 		wxListBox* m_lControlAngles;
 		wxButton* m_bAddControlAngle;
@@ -173,11 +203,13 @@ class ConfigurationDialogBase : public wxDialog
 		virtual void OnClose( wxCloseEvent& event ) { event.Skip(); }
 		virtual void OnHost( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnAboutTacking( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnAboutAlwaysConfirmTacking( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnAboutCenter( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnAboutForwardNMEA( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnAboutEnableOverlay( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnAboutTrueNorth( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnAboutSwitchToNAVMode( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnAboutManualControlSpeed( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnAddControlAngle( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnRemoveControlAngle( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnInformation( wxCommandEvent& event ) { event.Skip(); }

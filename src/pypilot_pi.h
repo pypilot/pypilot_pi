@@ -91,7 +91,7 @@ private:
 };
 
 
-class pypilot_pi : public wxEvtHandler, public opencpn_plugin_116
+class pypilot_pi : public wxEvtHandler, public opencpn_plugin_115
 {
 public:
 
@@ -108,7 +108,6 @@ public:
       wxString GetCommonName();
       wxString GetShortDescription();
       wxString GetLongDescription();
-  	  wxBitmap m_panelBitmap; 
 
       int GetToolbarToolCount(void);
       void OnToolbarToolCallback(int id);

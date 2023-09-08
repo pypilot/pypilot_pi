@@ -31,6 +31,7 @@
 #include "pypilotUI.h"
 
 class pypilot_pi;
+class TackDialog;
 
 class pypilotDialog : public pypilotDialogBase
 {
@@ -90,4 +91,7 @@ private:
     bool m_bTrueNorthMode;
     pypilot_pi &m_pypilot_pi;
     wxString m_servoController, m_imuerror, m_imuwarning, m_servoflags;
+
+    TackDialog *m_TackDialog;
+    wxString m_tack_direction;
 };

@@ -82,7 +82,7 @@ void pypilotClient_pi::OnConnected() { m_pypilot_pi.OnConnected(); }
 void pypilotClient_pi::OnDisconnected() { m_pypilot_pi.OnDisconnected(); }
 
 pypilot_pi::pypilot_pi(void *ppimgr)
-    : opencpn_plugin_116(ppimgr), m_client(*this)
+    : opencpn_plugin_115(ppimgr), m_client(*this)
 {
     // Create the PlugIn icons
     initialize_images();
@@ -90,26 +90,11 @@ pypilot_pi::pypilot_pi(void *ppimgr)
 	// Create the PlugIn icons  -from shipdriver
     // loads png file for the listing panel icon
     wxFileName fn;
-    auto path = GetPluginDataDir("pypilot_pi");
+    wxString path;// = GetPluginDataDir("pypilot_pi");
     fn.SetPath(path);
     fn.AppendDir("data");
     fn.SetFullName("pypilot_panel.png");
 
-    path = fn.GetFullPath();
-
-    wxInitAllImageHandlers();
-
-    wxLogDebug(wxString("Using icon path: ") + path);
-    if (!wxImage::CanRead(path)) {
-        wxLogDebug("Initiating image handlers.");
-        wxInitAllImageHandlers();
-    }
-    wxImage panelIcon(path);
-    if (panelIcon.IsOk())
-        m_panelBitmap = wxBitmap(panelIcon);
-    else
-        wxLogWarning("Climatology panel icon has NOT been loaded");
-// End of from Shipdriver
 	
     m_declination = NAN;
     m_ap_heading = NAN;
@@ -129,7 +114,7 @@ pypilot_pi::pypilot_pi(void *ppimgr)
     m_enabled = false;
     m_mode = "";
 
-    m_ReadConfig = 20;
+    m_ReadConfig = 5;
 
     m_lastsocketinput = wxDateTime::Now();
 }
@@ -167,8 +152,8 @@ int pypilot_pi::Init(void)
 
     m_status = _("Disconnected");
     m_bHaveNAV = false;
-
     ReadConfig();
+
     return (WANTS_OVERLAY_CALLBACK |
             WANTS_OPENGL_OVERLAY_CALLBACK |
             WANTS_TOOLBAR_CALLBACK    |
@@ -183,6 +168,7 @@ bool pypilot_pi::DeInit(void)
 
     m_Timer.Stop();
     m_Timer.Disconnect(wxEVT_TIMER, wxTimerEventHandler( pypilot_pi::OnTimer ), NULL, this);
+    m_bForwardNMEA = false;
 
     delete m_pypilotDialog;
     delete m_GainsDialog;
@@ -219,7 +205,7 @@ int pypilot_pi::GetPlugInVersionMinor()
 
 wxBitmap *pypilot_pi::GetPlugInBitmap()
 {
-    return new wxBitmap(_img_pypilot_grey->ConvertToImage().Copy());
+    return _img_pypilot_grey; //new wxBitmap(_img_pypilot_grey->ConvertToImage().Copy());
 }
 
 wxString pypilot_pi::GetCommonName()
@@ -383,7 +369,7 @@ void pypilot_pi::onSDNotify(wxCommandEvent& event)
                     wxString ip = namescan.getResults().at(0).ip;
                     m_host = ip;
                     wxFileConfig *pConf = GetOCPNConfigObject();
-                    pConf->SetPath ( _T( "/Settings/pypilot" ) );
+                    pConf->SetPath ( _T( "/PlugIns/pypilot" ) );
                     pConf->Write ( _T ( "Host" ), m_host);
                     if(m_ConfigurationDialog)
                         m_ConfigurationDialog->DetectedHost(ip);
@@ -593,12 +579,16 @@ void pypilot_pi::ReadConfig()
 {
     wxFileConfig *pConf = GetOCPNConfigObject();
     if(!pConf)
-        return
+        return;
 
-    pConf->SetPath ( _T( "/Settings/pypilot" ) );
+    // for unknown reasons, the path needs to be set twice to correctly
+    // load the data in init
+    pConf->SetPath ( _T( "/" ) );
+    pConf->SetPath ( _T( "/PlugIns/pypilot" ) );
     
     wxString host = pConf->Read ( _T ( "Host" ), "192.168.14.1" );
     if(host != m_host) {
+        printf("read config %s : %s\n",  ((std::string)host).c_str(), ((std::string)m_host).c_str());
         m_client.disconnect();
         m_nmeasocket.Close();
         m_host = host;
@@ -619,12 +609,13 @@ void pypilot_pi::ReadConfig()
 void pypilot_pi::OnTimer( wxTimerEvent & )
 {
     if(m_ReadConfig) {
-        ReadConfig();
-        m_ReadConfig=0;
+        if(m_ReadConfig == 1)
+            ReadConfig();
+        m_ReadConfig--;
     }
 
     wxDateTime now = wxDateTime::Now();
-    if((now - m_lastsocketinput).GetSeconds() > 10) {
+    if((now - m_lastsocketinput).GetSeconds() > 5) {
         m_nmeasocket.Close();
         m_lastsocketinput = now;
     }
@@ -635,7 +626,7 @@ void pypilot_pi::OnTimer( wxTimerEvent & )
         m_client.connect(m_host);
 
         wxFileConfig *pConf = GetOCPNConfigObject();
-        pConf->SetPath ( _T( "/Settings/pypilot" ) );
+        pConf->SetPath ( _T( "/PlugIns/pypilot" ) );
         bool discover = pConf->Read ( _T ( "AutoDiscover" ), true );
         if(discover)
             StartZeroConfig();
@@ -710,12 +701,11 @@ void pypilot_pi::OnDisconnected()
 void pypilot_pi::SetNMEASentence(wxString &sentence)
 {
     wxFileConfig *pConf = GetOCPNConfigObject();
-    pConf->SetPath ( "/Settings/pypilot" );
+    pConf->SetPath ( "/PlugIns/pypilot" );
 
     if(m_bSwitchToNAVMode && m_bHaveNAV && m_mode != "nav" && sentence.SubString(3, 6) == "APB")
         m_client.set("ap.mode", "nav");
-            
-    
+
     if(!m_bForwardNMEA)
         return;
 
