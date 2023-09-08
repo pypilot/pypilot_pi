@@ -163,6 +163,14 @@ void pypilotDialog::Disconnected()
     m_fgControlAnglesNeg->Show(false);
     m_fgControlManual->Show(false);
 
+    m_imuerror = m_imuwarning = "";
+    UpdateStatus();
+    m_stHeading->SetLabel("");
+    m_stCommand->SetLabel("");
+    m_stRudder->SetLabel("");
+    m_stServoState->SetLabel("");
+    m_stTackState->SetLabel("");
+
     Fit();
 }
 
@@ -464,6 +472,7 @@ void pypilotDialog::OnControlAngle( wxCommandEvent& event )
             cmd = heading_resolve(a + b);
         else
             cmd = heading_resolve_pos(a + b);
+        cmd = round(cmd); // to nearest degree looks nicer
         m_stCommand->SetLabel(wxString::Format("%.1f", cmd));
         m_HeadingCommandUpdate = wxDateTime::UNow();
         if(m_bTrueNorthMode && m_cMode->GetSelection() == 0 /*compass*/)
