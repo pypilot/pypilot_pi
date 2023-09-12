@@ -51,7 +51,7 @@
 #endif // WXINTL_NO_GETTEXT_MACRO
 
 #include "ocpn_plugin.h"
-#include "plugingl/qtstylesheet.h"
+#include "qtstylesheet.h"
 
 #ifdef __MSVC__
 #include "msvcdefs.h"

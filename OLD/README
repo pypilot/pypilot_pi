@@ -1,0 +1,31 @@
+pypilot Plugin for OpenCPN
+=======================================
+OpenCPN can communicate with pypilot already via nmea to receive compass
+heading, and to autopilot, and the plugin is not strictly required.
+
+The plugin allows for configuration and tuning of the autopilot in ways
+not possible through basic nmea0183 messaging.  The plugin also allows
+for graphical overlays of the autopilot settings directly onto the chart.
+
+Compiling
+=========
+Do NOT attempt to build this plugin from within the OpenCPN source tree.
+
+Under windows, you must find the file "opencpn.lib" (Visual Studio) or "libopencpn.dll.a" (mingw) which is built in the build directory after compiling opencpn.  This file must be copied to the plugin directory.
+
+If building on openplotter 1.2.0 the development libraries are missing, therefore:
+sudo apt install libwxbase3.0-dev libbz2-dev wx-common libwxgtk3.0-dev
+
+Build as normally:
+
+$ git clone https://github.com/pypilot/pypilot_pi
+$ cd pypilot_pi
+$ mkdir build
+$ cd build
+$ cmake ..
+$ make
+$ sudo make install
+
+License
+=======
+The plugin code is licensed under the terms of the GPL v3 or, at your will, later.

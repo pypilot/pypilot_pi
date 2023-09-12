@@ -41,7 +41,7 @@
 #endif
 
 
-#include "plugingl/pidc.h"
+#include "pidc.h"
 #include "pypilot_pi.h"
 
 #include "pypilotDialog.h"
