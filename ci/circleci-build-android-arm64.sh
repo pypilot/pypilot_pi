@@ -9,6 +9,8 @@ set -xe
 
 pwd
 
+git submodule update --init opencpn-libs
+
 ls -la
 
 # FOR LOCAL BUILD - have a local version to avoid big download each run - need to stage it but not commit it. DO NOT COMMIT AND PUSH master.zip

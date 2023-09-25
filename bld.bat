@@ -24,7 +24,6 @@ REM  For Opencpn 5.8 and wxWidgets-3.2.2
 cd build
 cmake -T v143 -A Win32 -DOCPN_TARGET=MSVC ..
 cmake --build . --target package --config relwithdebinfo >output.txt
-REM cmake --build . --target package --config release >output.txt
 bash ./cloudsmith-upload.sh
 
 REM --------------------------------------
