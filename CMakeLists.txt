@@ -217,7 +217,6 @@ include_directories(BEFORE ${PROJECT_SOURCE_DIR}/include)
 #include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/jsoncpp/include)
 #include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/pluginDC/include)
 
-
 ## Change target_sources to match your project needs.
 ##==============================================================
 
@@ -231,7 +230,6 @@ if(NOT OCPN_FLATPAK_CONFIG)
     message(STATUS "${CMLOC}Adding target link libraries to ${PACKAGE_NAME}")
 
     add_subdirectory(libs/wxservdisc)
-
     include_directories( ${PROJECT_SOURCE_DIR}/libs/wxservdisc/src )
     target_link_libraries(${PACKAGE_NAME} "wxservdisc")
 
@@ -249,7 +247,8 @@ if(NOT OCPN_FLATPAK_CONFIG)
 
     add_subdirectory(opencpn-libs/plugingl)
     target_link_libraries(${PACKAGE_NAME} ocpn::plugingl)
-    
+
+ 
 
 endif(NOT OCPN_FLATPAK_CONFIG)
 
