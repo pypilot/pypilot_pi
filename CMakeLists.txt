@@ -61,9 +61,9 @@ set(LONG_DESCRIPTION
 
 set(VERSION_MAJOR "0")
 set(VERSION_MINOR "40")
-set(VERSION_PATCH "9")
+set(VERSION_PATCH "10")
 set(VERSION_TWEAK "0")
-set(VERSION_DATE  "25/09/2023")#DD/MM/YYYY format
+set(VERSION_DATE  "27/09/2023")#DD/MM/YYYY format
 set(OCPN_MIN_VERSION "ov58")
 
 set(OCPN_API_VERSION_MAJOR "1")
@@ -175,7 +175,7 @@ SET(HDRS
             src/wxWTranslateCatalog.h
     )
 
-
+# Evidently android does not support these files
 if(NOT QT_ANDROID)
   SET(SRCS ${SRCS}
      src/CalibrationDialog.cpp
@@ -206,16 +206,8 @@ SET(SRC ${SRCS} ${HDRS} )
 
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/include)
 
-#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/)
-#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/GL)
-#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/glu/include)
-#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/ocpn-api)
-#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/wxJSON/include)
-#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/wxservdisc)
-## Does not work without wxservdisc
-#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/jsoncpp)
-#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/jsoncpp/include)
-#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/pluginDC/include)
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/wxservdisc)
+## Private lib, needs wxservdisc
 
 ## Change target_sources to match your project needs.
 ##==============================================================
@@ -239,6 +231,9 @@ if(NOT OCPN_FLATPAK_CONFIG)
     add_subdirectory(opencpn-libs/api-16)
     target_link_libraries(${PACKAGE_NAME} ocpn::api)
 
+    add_subdirectory(opencpn-libs/tinyxml)
+    target_link_libraries(${PACKAGE_NAME} ocpn::tinyxml)
+
     add_subdirectory(opencpn-libs/jsoncpp)
     target_link_libraries(${PACKAGE_NAME} ocpn::jsoncpp)
 
@@ -248,7 +243,6 @@ if(NOT OCPN_FLATPAK_CONFIG)
     add_subdirectory(opencpn-libs/plugingl)
     target_link_libraries(${PACKAGE_NAME} ocpn::plugingl)
 
- 
 
 endif(NOT OCPN_FLATPAK_CONFIG)
 
