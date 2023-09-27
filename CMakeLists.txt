@@ -207,17 +207,6 @@ SET(SRC ${SRCS} ${HDRS} )
 
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/include)
 
-#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/)
-#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/GL)
-#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/glu/include)
-#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/ocpn-api)
-#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/wxJSON/include)
-#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/wxservdisc)
-## Does not work without wxservdisc
-#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/jsoncpp)
-#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/jsoncpp/include)
-#include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/pluginDC/include)
-
 ## Change target_sources to match your project needs.
 ##==============================================================
 
@@ -226,9 +215,10 @@ set( servdisc_SRC
         libs/wxservdisc/src/mdnsd.c
         libs/wxservdisc/src/wxServDisc.cpp
         )
-include_directories( ${PROJECT_SOURCE_DIR}/libs/wxservdisc/src )
 
 target_sources(${PACKAGE_NAME} PUBLIC ${SRC} ${servdisc_SRC})
+
+include_directories( ${PROJECT_SOURCE_DIR}/libs/wxservdisc/src )
 
 ##==============================================================
 
@@ -236,10 +226,6 @@ if(NOT OCPN_FLATPAK_CONFIG)
     # Build environment not available when flatpak is being configured 
 	# so following statements will not work
     message(STATUS "${CMLOC}Adding target link libraries to ${PACKAGE_NAME}")
-
- #   add_subdirectory(libs/wxservdisc)
- #   include_directories( ${PROJECT_SOURCE_DIR}/libs/wxservdisc/src )
- #   target_link_libraries(${PACKAGE_NAME} "wxservdisc")
 
     add_subdirectory(opencpn-libs/WindowsHeaders)
     target_link_libraries(${PACKAGE_NAME} windows::headers)
