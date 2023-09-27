@@ -230,9 +230,9 @@ if(NOT OCPN_FLATPAK_CONFIG)
 	# so following statements will not work
     message(STATUS "${CMLOC}Adding target link libraries to ${PACKAGE_NAME}")
 
-    add_subdirectory(libs/wxservdisc)
-    include_directories( ${PROJECT_SOURCE_DIR}/libs/wxservdisc/src )
-    target_link_libraries(${PACKAGE_NAME} "wxservdisc")
+ #   add_subdirectory(libs/wxservdisc)
+ #   include_directories( ${PROJECT_SOURCE_DIR}/libs/wxservdisc/src )
+ #   target_link_libraries(${PACKAGE_NAME} "wxservdisc")
 
     add_subdirectory(opencpn-libs/WindowsHeaders)
     target_link_libraries(${PACKAGE_NAME} windows::headers)
