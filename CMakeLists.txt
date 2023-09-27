@@ -221,7 +221,14 @@ include_directories(BEFORE ${PROJECT_SOURCE_DIR}/include)
 ## Change target_sources to match your project needs.
 ##==============================================================
 
-target_sources(${PACKAGE_NAME} PUBLIC ${SRC} )
+set( servdisc_SRC
+        libs/wxservdisc/src/1035.c
+        libs/wxservdisc/src/mdnsd.c
+        libs/wxservdisc/src/wxServDisc.cpp
+        )
+include_directories( ${PROJECT_SOURCE_DIR}/libs/wxservdisc/src )
+
+target_sources(${PACKAGE_NAME} PUBLIC ${SRC} ${servdisc_SRC})
 
 ##==============================================================
 
