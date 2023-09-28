@@ -121,6 +121,7 @@ message(STATUS "${CMLOC}Build type: ${CMAKE_BUILD_TYPE}")
 project(${PACKAGE})
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 ##========================================================
 
@@ -206,13 +207,18 @@ SET(SRC ${SRCS} ${HDRS} )
 
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/include)
 
-include_directories(BEFORE ${PROJECT_SOURCE_DIR}/libs/wxservdisc)
-## Private lib, needs wxservdisc
-
 ## Change target_sources to match your project needs.
 ##==============================================================
 
-target_sources(${PACKAGE_NAME} PUBLIC ${SRC} )
+set( servdisc_SRC
+        libs/wxservdisc/src/1035.c
+        libs/wxservdisc/src/mdnsd.c
+        libs/wxservdisc/src/wxServDisc.cpp
+        )
+
+target_sources(${PACKAGE_NAME} PUBLIC ${SRC} ${servdisc_SRC})
+
+include_directories( ${PROJECT_SOURCE_DIR}/libs/wxservdisc/src )
 
 ##==============================================================
 
@@ -220,10 +226,6 @@ if(NOT OCPN_FLATPAK_CONFIG)
     # Build environment not available when flatpak is being configured 
 	# so following statements will not work
     message(STATUS "${CMLOC}Adding target link libraries to ${PACKAGE_NAME}")
-
-    add_subdirectory(libs/wxservdisc)
-    include_directories( ${PROJECT_SOURCE_DIR}/libs/wxservdisc/src )
-    target_link_libraries(${PACKAGE_NAME} "wxservdisc")
 
     add_subdirectory(opencpn-libs/WindowsHeaders)
     target_link_libraries(${PACKAGE_NAME} windows::headers)
