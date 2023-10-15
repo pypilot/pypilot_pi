@@ -39,11 +39,13 @@ public:
 
 private:
     void OnAboutTacking( wxCommandEvent& event );
+    void OnAboutAlwaysConfirmTacking( wxCommandEvent& event );
     void OnAboutCenter( wxCommandEvent& event );
     void OnAboutForwardNMEA( wxCommandEvent& event );
     void OnAboutEnableOverlay( wxCommandEvent& event );
     void OnAboutTrueNorth( wxCommandEvent& event );
     void OnAboutSwitchToNAVMode( wxCommandEvent& event );
+    void OnAboutManualControlSpeed( wxCommandEvent& event );
     void OnAddControlAngle( wxCommandEvent& event );
     void OnRemoveControlAngle( wxCommandEvent& event );
     void OnInformation( wxCommandEvent& event );

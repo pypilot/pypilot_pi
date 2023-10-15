@@ -154,6 +154,7 @@ SET(SRCS
             src/GainsDialog.cpp
             src/ConfigurationDialog.cpp
             src/StatisticsDialog.cpp
+            src/SettingsDialog.cpp
             src/pypilotClientDialog.cpp
             src/pypilotUI.cpp
             src/icons.cpp
@@ -162,7 +163,7 @@ SET(SRCS
 SET(HDRS
             src/CalibrationPlot.h
             src/ConfigurationDialog.h
-			src/GainsDialog.h
+            src/GainsDialog.h
             src/icons.h
             src/msvcdefs.h
             src/pypilot_client.h
@@ -171,6 +172,7 @@ SET(HDRS
             src/pypilotDialog.h
             src/pypilotUI.h
             src/StatisticsDialog.h
+            src/SettingsDialog.h
             src/wxWTranslateCatalog.h
     )
 

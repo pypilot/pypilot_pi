@@ -5,7 +5,7 @@
  * Author:   Sean D'Epagnier
  *
  ***************************************************************************
- *   Copyright (C) 2018 by Sean D'Epagnier                                 *
+ *   Copyright (C) 2023 by Sean D'Epagnier                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -24,74 +24,29 @@
  ***************************************************************************
  */
 
-#ifdef __OCPN__ANDROID__
-#include <wx/qt/private/wxQtGesture.h>
-#endif
+#include <map>
 
 #include "pypilotUI.h"
 
 class pypilot_pi;
-class TackDialog;
 
-class pypilotDialog : public pypilotDialogBase
+class SettingsDialog : public SettingsDialogBase
 {
 public:
-    pypilotDialog( pypilot_pi &_pypilot_pi, wxWindow* parent);
-    ~pypilotDialog();
+    SettingsDialog( pypilot_pi &_pypilot_pi, wxWindow* parent);
 
-#ifdef __OCPN__ANDROID__
-    void OnMouseEvent( wxMouseEvent& event );
-    void OnEvtPinchGesture( wxQT_PinchGestureEvent &event);
-    void OnEvtPanGesture( wxQT_PanGestureEvent &event);
-#endif
-
-    void Disconnected();
-
-    void SetEnabled(bool enabled);
     void Receive(std::string name, Json::Value &value);
-    void SetAPColor();
     std::map<std::string, double> &GetWatchlist();
 
-    void RebuildControlAngles();
-    void ShowTacking();
-    void Fit();
-    
 private:
-    void UpdateStatus();
-    
-    void OnAP( wxCommandEvent& event );
-    void OnMode( wxCommandEvent& event );
-    void OnManualEvents( wxMouseEvent& event );
-    void OnGains( wxCommandEvent& event );
-    void OnConfiguration( wxCommandEvent& event );
-    void OnCalibration( wxCommandEvent& event );
-    void OnSettings( wxCommandEvent& event );
-    void OnStatistics( wxCommandEvent& event );
+    void OnpypilotClient( wxCommandEvent& event );
     void OnClose( wxCommandEvent& event );
-    void OnControlAngle( wxCommandEvent& event );
-    void OnTack( wxCommandEvent& event );
+    void OnSpin(wxSpinDoubleEvent& event );
 
-    void OnManualCenter( wxCommandEvent& );
-    void OnManualTimer( wxTimerEvent & );
-    void ShowCenter();
-
-    void AddButton(int angle, wxSizer *sizer);
-
-    bool m_bAPHaveRudder;
-    
-    double ApplyTrueNorth(double value);
-
-    double m_HeadingCommand;
-    wxDateTime m_HeadingCommandUpdate;
-
-    double m_ManualCommand;
-    wxDateTime m_ManualTimeout;
-    wxTimer m_ManualTimer, m_RudderPollTimer;
-    
-    bool m_bTrueNorthMode;
     pypilot_pi &m_pypilot_pi;
-    wxString m_servoController, m_imuerror, m_imuwarning, m_servoflags;
 
-    TackDialog *m_TackDialog;
-    wxString m_tack_direction;
+    std::map<std::string, wxSpinCtrlDouble*> m_settings;
+
+    std::map<std::string, double> m_settings_values;
+    wxDateTime m_settings_time;
 };

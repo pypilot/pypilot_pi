@@ -49,6 +49,7 @@
 #include "ConfigurationDialog.h"
 #include "StatisticsDialog.h"
 #include "CalibrationDialog.h"
+#include "SettingsDialog.h"
 #include "pypilotClientDialog.h"
 
 #include "icons.h"
@@ -89,26 +90,11 @@ pypilot_pi::pypilot_pi(void *ppimgr)
 	// Create the PlugIn icons  -from shipdriver
     // loads png file for the listing panel icon
     wxFileName fn;
-    auto path = GetPluginDataDir("pypilot_pi");
+    wxString path;// = GetPluginDataDir("pypilot_pi");
     fn.SetPath(path);
     fn.AppendDir("data");
     fn.SetFullName("pypilot_panel.png");
 
-    path = fn.GetFullPath();
-
-    wxInitAllImageHandlers();
-
-    wxLogDebug(wxString("Using icon path: ") + path);
-    if (!wxImage::CanRead(path)) {
-        wxLogDebug("Initiating image handlers.");
-        wxInitAllImageHandlers();
-    }
-    wxImage panelIcon(path);
-    if (panelIcon.IsOk())
-        m_panelBitmap = wxBitmap(panelIcon);
-    else
-        wxLogWarning("Climatology panel icon has NOT been loaded");
-// End of from Shipdriver
 	
     m_declination = NAN;
     m_ap_heading = NAN;
@@ -128,7 +114,7 @@ pypilot_pi::pypilot_pi(void *ppimgr)
     m_enabled = false;
     m_mode = "";
 
-    m_ReadConfig = 20;
+    m_ReadConfig = 5;
 
     m_lastsocketinput = wxDateTime::Now();
 }
@@ -160,12 +146,14 @@ int pypilot_pi::Init(void)
     m_ConfigurationDialog = NULL;
     m_StatisticsDialog = NULL;
     m_CalibrationDialog = NULL;
+    m_SettingsDialog = NULL;
+    m_SettingsDialog = NULL;
     m_pypilotClientDialog = NULL;
 
     m_status = _("Disconnected");
     m_bHaveNAV = false;
-
     ReadConfig();
+
     return (WANTS_OVERLAY_CALLBACK |
             WANTS_OPENGL_OVERLAY_CALLBACK |
             WANTS_TOOLBAR_CALLBACK    |
@@ -180,11 +168,13 @@ bool pypilot_pi::DeInit(void)
 
     m_Timer.Stop();
     m_Timer.Disconnect(wxEVT_TIMER, wxTimerEventHandler( pypilot_pi::OnTimer ), NULL, this);
+    m_bForwardNMEA = false;
 
     delete m_pypilotDialog;
     delete m_GainsDialog;
     delete m_ConfigurationDialog;
     delete m_StatisticsDialog;
+    delete m_SettingsDialog;
     delete m_CalibrationDialog;
     delete m_pypilotClientDialog;
 
@@ -226,7 +216,7 @@ int pypilot_pi::GetPlugInVersionPost()
 
 wxBitmap *pypilot_pi::GetPlugInBitmap()
 {
-    return new wxBitmap(_img_pypilot_grey->ConvertToImage().Copy());
+    return _img_pypilot_grey; //new wxBitmap(_img_pypilot_grey->ConvertToImage().Copy());
 }
 
 wxString pypilot_pi::GetCommonName()
@@ -390,7 +380,7 @@ void pypilot_pi::onSDNotify(wxCommandEvent& event)
                     wxString ip = namescan.getResults().at(0).ip;
                     m_host = ip;
                     wxFileConfig *pConf = GetOCPNConfigObject();
-                    pConf->SetPath ( _T( "/Settings/pypilot" ) );
+                    pConf->SetPath ( _T( "/PlugIns/pypilot" ) );
                     pConf->Write ( _T ( "Host" ), m_host);
                     if(m_ConfigurationDialog)
                         m_ConfigurationDialog->DetectedHost(ip);
@@ -442,6 +432,9 @@ void pypilot_pi::UpdateWatchlist()
         if(m_StatisticsDialog->IsShown())
             MergeWatchlist(watchlist, m_StatisticsDialog->GetWatchlist());
         
+        if(m_SettingsDialog->IsShown())
+            MergeWatchlist(watchlist, m_SettingsDialog->GetWatchlist());
+
         if(m_CalibrationDialog->IsShown())
             MergeWatchlist(watchlist, m_CalibrationDialog->GetWatchlist());
 
@@ -483,6 +476,7 @@ void pypilot_pi::OnToolbarToolCallback(int id)
         
         m_StatisticsDialog = new StatisticsDialog(*this, GetOCPNCanvasWindow());
         m_CalibrationDialog = new CalibrationDialog(*this, GetOCPNCanvasWindow());
+        m_SettingsDialog = new SettingsDialog(*this, GetOCPNCanvasWindow());
         m_pypilotClientDialog = new pypilotClientDialog(*this, GetOCPNCanvasWindow());
         m_GainsDialog = new GainsDialog(*this, GetOCPNCanvasWindow());
 
@@ -492,6 +486,7 @@ void pypilot_pi::OnToolbarToolCallback(int id)
         m_GainsDialog->SetIcon(icon);
         m_ConfigurationDialog->SetIcon(icon);
         m_StatisticsDialog->SetIcon(icon);
+        m_SettingsDialog->SetIcon(icon);
         m_CalibrationDialog->SetIcon(icon);
         m_pypilotClientDialog->SetIcon(icon);
     }
@@ -505,6 +500,7 @@ void pypilot_pi::OnToolbarToolCallback(int id)
         m_GainsDialog->Show(false);
         m_ConfigurationDialog->Show(false);
         m_StatisticsDialog->Show(false);
+        m_SettingsDialog->Show(false);
         m_CalibrationDialog->Show(false);
         m_pypilotClientDialog->Show(false);
     }
@@ -594,12 +590,16 @@ void pypilot_pi::ReadConfig()
 {
     wxFileConfig *pConf = GetOCPNConfigObject();
     if(!pConf)
-        return
+        return;
 
-    pConf->SetPath ( _T( "/Settings/pypilot" ) );
+    // for unknown reasons, the path needs to be set twice to correctly
+    // load the data in init
+    pConf->SetPath ( _T( "/" ) );
+    pConf->SetPath ( _T( "/PlugIns/pypilot" ) );
     
     wxString host = pConf->Read ( _T ( "Host" ), "192.168.14.1" );
     if(host != m_host) {
+        printf("read config %s : %s\n",  ((std::string)host).c_str(), ((std::string)m_host).c_str());
         m_client.disconnect();
         m_nmeasocket.Close();
         m_host = host;
@@ -620,12 +620,13 @@ void pypilot_pi::ReadConfig()
 void pypilot_pi::OnTimer( wxTimerEvent & )
 {
     if(m_ReadConfig) {
-        ReadConfig();
-        m_ReadConfig=0;
+        if(m_ReadConfig == 1)
+            ReadConfig();
+        m_ReadConfig--;
     }
 
     wxDateTime now = wxDateTime::Now();
-    if((now - m_lastsocketinput).GetSeconds() > 10) {
+    if((now - m_lastsocketinput).GetSeconds() > 5) {
         m_nmeasocket.Close();
         m_lastsocketinput = now;
     }
@@ -660,6 +661,7 @@ void pypilot_pi::OnTimer( wxTimerEvent & )
                  m_pypilotDialog->Receive(name, val);
                  m_GainsDialog->Receive(name, val);
                  m_StatisticsDialog->Receive(name, val);
+                 m_SettingsDialog->Receive(name, val);
                  m_CalibrationDialog->Receive(name, val);
                  m_pypilotClientDialog->Receive(name, val);
              }
@@ -710,12 +712,11 @@ void pypilot_pi::OnDisconnected()
 void pypilot_pi::SetNMEASentence(wxString &sentence)
 {
     wxFileConfig *pConf = GetOCPNConfigObject();
-    pConf->SetPath ( "/Settings/pypilot" );
+    pConf->SetPath ( "/PlugIns/pypilot" );
 
     if(m_bSwitchToNAVMode && m_bHaveNAV && m_mode != "nav" && sentence.SubString(3, 6) == "APB")
         m_client.set("ap.mode", "nav");
-            
-    
+
     if(!m_bForwardNMEA)
         return;
 

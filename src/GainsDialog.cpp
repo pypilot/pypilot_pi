@@ -106,7 +106,7 @@ GainsDialog::GainsDialog(pypilot_pi &_pypilot_pi, wxWindow* parent) :
 #endif
     wxFileConfig *pConf = GetOCPNConfigObject();
 
-    pConf->SetPath ( _T( "/Settings/pypilot" ) );
+    pConf->SetPath ( _T( "/PlugIns/pypilot" ) );
 
     m_Timer.Connect(wxEVT_TIMER, wxTimerEventHandler
                     ( GainsDialog::OnTimer ), NULL, this);
@@ -122,7 +122,7 @@ GainsDialog::GainsDialog(pypilot_pi &_pypilot_pi, wxWindow* parent) :
 GainsDialog::~GainsDialog()
 {
     wxFileConfig *pConf = GetOCPNConfigObject();
-    pConf->SetPath ( _T ( "/Settings/pypilot" ) );
+    pConf->SetPath ( _T ( "/PlugIns/pypilot" ) );
 
     wxPoint p = GetPosition();
 
