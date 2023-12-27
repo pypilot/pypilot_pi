@@ -41,7 +41,7 @@
 #endif
 
 
-#include "plugingl/pidc.h"
+#include "pidc.h"
 #include "pypilot_pi.h"
 
 #include "pypilotDialog.h"
@@ -82,7 +82,7 @@ void pypilotClient_pi::OnConnected() { m_pypilot_pi.OnConnected(); }
 void pypilotClient_pi::OnDisconnected() { m_pypilot_pi.OnDisconnected(); }
 
 pypilot_pi::pypilot_pi(void *ppimgr)
-    : opencpn_plugin_115(ppimgr), m_client(*this)
+    : opencpn_plugin_117(ppimgr), m_client(*this)
 {
     // Create the PlugIn icons
     initialize_images();
@@ -202,6 +202,17 @@ int pypilot_pi::GetPlugInVersionMinor()
 {
     return PLUGIN_VERSION_MINOR;
 }
+
+int pypilot_pi::GetPlugInVersionPatch()
+{
+    return PLUGIN_VERSION_PATCH;
+}
+
+int pypilot_pi::GetPlugInVersionPost()
+{
+    return PLUGIN_VERSION_TWEAK;
+}
+
 
 wxBitmap *pypilot_pi::GetPlugInBitmap()
 {
@@ -625,13 +636,13 @@ void pypilot_pi::OnTimer( wxTimerEvent & )
     if(!m_client.connected()) {
         m_client.connect(m_host);
 
-        wxFileConfig *pConf = GetOCPNConfigObject();
-        pConf->SetPath ( _T( "/PlugIns/pypilot" ) );
-        bool discover = pConf->Read ( _T ( "AutoDiscover" ), true );
-        if(discover)
-            StartZeroConfig();
-        else
-            StopZeroConfig();
+  //      wxFileConfig *pConf = GetOCPNConfigObject();
+  //      pConf->SetPath ( _T( "/Settings/pypilot" ) );
+  //      bool discover = pConf->Read ( _T ( "AutoDiscover" ), false );
+  //      if(discover)
+  //          StartZeroConfig();
+  //      else
+  //          StopZeroConfig();
         
         m_lastMessage = wxDateTime(); // invalidate
         m_Timer.Start(2000);

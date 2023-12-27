@@ -601,7 +601,8 @@ ConfigurationDialogBase::ConfigurationDialogBase( wxWindow* parent, wxWindowID i
 	fgSizer41->Add( m_cHost, 0, wxALL|wxEXPAND, 5 );
 
 	m_cbAutoDiscover = new wxCheckBox( this, wxID_ANY, _("Auto Discover"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_cbAutoDiscover->SetValue(true);
+	m_cbAutoDiscover->SetValue(false);
+    m_cbAutoDiscover->Hide();
 	fgSizer41->Add( m_cbAutoDiscover, 0, wxALL, 5 );
 
 

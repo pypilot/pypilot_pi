@@ -91,7 +91,11 @@ if(UNIX AND NOT APPLE)
     # need apt-get install rpm, for rpmbuild
     set(PACKAGE_DEPS "${PACKAGE_DEPS},opencpn, bzip2, gzip")
     message(STATUS "${CMLOC}PACKAGE_DEPS: ${PACKAGE_DEPS}")
-    set(CPACK_GENERATOR "DEB;TGZ")
+    if(NOT QT_ANDROID)
+        set(CPACK_GENERATOR "DEB;TGZ")
+    else()
+        set(CPACK_GENERATOR "TGZ")
+    endif()
 
     set(CPACK_DEBIAN_PACKAGE_NAME ${PACKAGING_NAME})
     set(CPACK_DEBIAN_PACKAGE_DEPENDS ${PACKAGE_DEPS})
@@ -107,8 +111,11 @@ if(UNIX AND NOT APPLE)
 
 endif(UNIX AND NOT APPLE)
 
+
 if(NOT STANDALONE MATCHES "BUNDLED")
-    if(APPLE)
+    # MacOS .pkg installer is deprecated in OCPN 5.6.2+
+    #if(APPLE)
+    if(FALSE)
         message(STATUS "${CMLOC}*** Staging to build PlugIn OSX Package ***")
 
         # Copy a bunch of files so the Packages installer builder can find them relative to ${CMAKE_CURRENT_BINARY_DIR} This avoids absolute paths in the chartdldr_pi.pkgproj file
@@ -133,9 +140,9 @@ if(NOT STANDALONE MATCHES "BUNDLED")
             COMMENT "create-pkg: Done."
             DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${VERBOSE_NAME}-Plugin_${PACKAGE_VERSION}_${OCPN_MIN_VERSION}.pkg)
 
-        set(CPACK_GENERATOR "TGZ")
-    endif(APPLE)
+	endif(FALSE)
 
+    set(CPACK_GENERATOR "TGZ")
     set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PACKAGE_NAME} PlugIn for OpenCPN")
     set(CPACK_PACKAGE_DESCRIPTION "${PACKAGE_NAME} PlugIn for OpenCPN")
     set(CPACK_PACKAGE_FILE_NAME "${PACKAGING_NAME_XML}")
