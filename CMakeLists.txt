@@ -19,7 +19,7 @@
 ## *   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                                       *
 #-----------------------------------------------------------------------------
 # Frontend2 Author: Jon Gough 
-# Testplugin(TP) v1.0.286.2 24/12/2023 DD/MM/YYYY format
+# Testplugin(TP) v1.0.286.3 29/12/2023 DD/MM/YYYY format
 # buildCI:yes useODAPI:no validateJSON:no
 # ---------------------------------------------------------------------------
 ## -- When changing this file do NOT change the order of the sections.    -- ##
@@ -62,9 +62,9 @@ set(LONG_DESCRIPTION
 
 set(VERSION_MAJOR "0")
 set(VERSION_MINOR "40")
-set(VERSION_PATCH "31")
-set(VERSION_TWEAK "1")
-set(VERSION_DATE  "26/12/2023")#DD/MM/YYYY format
+set(VERSION_PATCH "32")
+set(VERSION_TWEAK "0")
+set(VERSION_DATE  "29/12/2023")#DD/MM/YYYY format
 set(OCPN_MIN_VERSION "ov58")
 
 set(OCPN_API_VERSION_MAJOR "1")
@@ -172,15 +172,10 @@ SET(HDRS
             src/StatisticsDialog.h
             src/SettingsDialog.h
             src/wxWTranslateCatalog.h
-    )
+            src/CalibrationDialog.cpp
+            src/CalibrationPlot.cpp
+)
 
-# Evidently android does not support these files
-#if(NOT QT_ANDROID)
-  SET(SRCS ${SRCS}
-     src/CalibrationDialog.cpp
-     src/CalibrationPlot.cpp
-     )
-#endif(NOT QT_ANDROID)
 
 add_definitions(-DPLUGIN_USE_SVG)
 
