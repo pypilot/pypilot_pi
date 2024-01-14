@@ -176,10 +176,10 @@ SET(HDRS
 
 # Evidently android does not support these files
 #if(NOT QT_ANDROID)
-#  SET(SRCS ${SRCS}
-#     src/CalibrationDialog.cpp
-#     src/CalibrationPlot.cpp
-#     )
+  SET(SRCS ${SRCS}
+     src/CalibrationDialog.cpp
+     src/CalibrationPlot.cpp
+     )
 #endif(NOT QT_ANDROID)
 
 add_definitions(-DPLUGIN_USE_SVG)
