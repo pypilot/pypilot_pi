@@ -63,7 +63,7 @@ set(LONG_DESCRIPTION
 set(VERSION_MAJOR "0")
 set(VERSION_MINOR "40")
 set(VERSION_PATCH "31")
-set(VERSION_TWEAK "0")
+set(VERSION_TWEAK "1")
 set(VERSION_DATE  "26/12/2023")#DD/MM/YYYY format
 set(OCPN_MIN_VERSION "ov58")
 
@@ -175,12 +175,12 @@ SET(HDRS
     )
 
 # Evidently android does not support these files
-if(NOT QT_ANDROID)
-  SET(SRCS ${SRCS}
-     src/CalibrationDialog.cpp
-     src/CalibrationPlot.cpp
-     )
-endif(NOT QT_ANDROID)
+#if(NOT QT_ANDROID)
+#  SET(SRCS ${SRCS}
+#     src/CalibrationDialog.cpp
+#     src/CalibrationPlot.cpp
+#     )
+#endif(NOT QT_ANDROID)
 
 add_definitions(-DPLUGIN_USE_SVG)
 
