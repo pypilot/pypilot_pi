@@ -8,8 +8,6 @@ src/SettingsDialog.cpp
 src/pypilotClientDialog.cpp
 src/pypilotUI.cpp
 src/icons.cpp
-src/CalibrationDialog.cpp
-src/CalibrationPlot.cpp
 src/CalibrationPlot.h
 src/ConfigurationDialog.h
 src/GainsDialog.h
@@ -23,3 +21,5 @@ src/pypilotUI.h
 src/StatisticsDialog.h
 src/SettingsDialog.h
 src/wxWTranslateCatalog.h
+src/CalibrationDialog.cpp
+src/CalibrationPlot.cpp
