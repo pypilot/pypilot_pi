@@ -154,6 +154,23 @@ int pypilot_pi::Init(void)
     m_bHaveNAV = false;
     ReadConfig();
 
+#if 0
+    wxIPV4address addr;
+    addr.Hostname("192.168.14.1");
+    addr.Service(20220);
+    wxSocketClient *c = new wxSocketClient();
+    c->SetTimeout(1);
+    printf("connected1 %d %d\n", c->IsConnected(), c->IsDisconnected());
+    c->Connect(addr, true);
+
+
+    wxMilliSleep(250);
+    printf("connected %d %d\n", c->IsConnected(), c->IsDisconnected());
+    c->Notify(false);
+//    c->Destroy();
+//    delete c;
+#endif
+
     return (WANTS_OVERLAY_CALLBACK |
             WANTS_OPENGL_OVERLAY_CALLBACK |
             WANTS_TOOLBAR_CALLBACK    |
@@ -294,8 +311,10 @@ void pypilot_pi::Receive(std::string name, Json::Value &value)
 
 void pypilot_pi::UpdateStatus()
 {
-    if(m_pypilotDialog)
+    if(m_pypilotDialog) {
         m_pypilotDialog->SetLabel(m_status);
+        m_pypilotDialog->SetAPColor();
+    }
 }
 
 void pypilot_pi::SetToolbarIcon()
@@ -617,6 +636,7 @@ void pypilot_pi::ReadConfig()
     UpdateWatchlist();
 }
 
+
 void pypilot_pi::OnTimer( wxTimerEvent & )
 {
     if(m_ReadConfig) {
@@ -636,16 +656,16 @@ void pypilot_pi::OnTimer( wxTimerEvent & )
     if(!m_client.connected()) {
         m_client.connect(m_host);
 
-  //      wxFileConfig *pConf = GetOCPNConfigObject();
-  //      pConf->SetPath ( _T( "/Settings/pypilot" ) );
-  //      bool discover = pConf->Read ( _T ( "AutoDiscover" ), false );
-  //      if(discover)
-  //          StartZeroConfig();
-  //      else
-  //          StopZeroConfig();
+        wxFileConfig *pConf = GetOCPNConfigObject();
+        pConf->SetPath ( _T( "/Settings/pypilot" ) );
+        bool discover = pConf->Read ( _T ( "AutoDiscover" ), false );
+        if(discover)
+            StartZeroConfig();
+        else
+            StopZeroConfig();
         
         m_lastMessage = wxDateTime(); // invalidate
-        m_Timer.Start(2000);
+        m_Timer.Start(10000);
         return;
     }
     StopZeroConfig();
