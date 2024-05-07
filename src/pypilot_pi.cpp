@@ -658,7 +658,7 @@ void pypilot_pi::OnTimer( wxTimerEvent & )
 
         wxFileConfig *pConf = GetOCPNConfigObject();
         pConf->SetPath ( _T( "/Settings/pypilot" ) );
-        bool discover = pConf->Read ( _T ( "AutoDiscover" ), false );
+        bool discover = pConf->Read ( _T ( "AutoDiscover" ), 0L );
         if(discover)
             StartZeroConfig();
         else
