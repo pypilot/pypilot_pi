@@ -48,6 +48,9 @@ pypilotClient::pypilotClient(bool queue_mode, bool request_list)
     m_sock.SetNotify(wxSOCKET_CONNECTION_FLAG | wxSOCKET_INPUT_FLAG | wxSOCKET_LOST_FLAG);
     m_sock.Notify(true);
     m_sock.SetTimeout(1);
+
+    m_timer.Connect(wxEVT_TIMER, wxTimerEventHandler
+                    ( pypilotClient::OnTimer ), NULL, this);
 }
 
 void pypilotClient::connect(wxString host, int port)
@@ -61,7 +64,11 @@ void pypilotClient::connect(wxString host, int port)
     wxIPV4address addr;
     addr.Hostname(host);
     addr.Service(port);
+
+    m_sock.Close();
+    m_sock.Initialize();
     m_sock.Connect(addr, false);
+    m_timer.Start(100);
 }
 
 void pypilotClient::disconnect()
@@ -254,6 +261,13 @@ void pypilotClient::OnSocketEvent(wxSocketEvent& event)
         } break;
     default:;
     }
+}
+
+void pypilotClient::OnTimer( wxTimerEvent & )
+{
+    if(m_sock.Error())
+        m_sock.Close();
+    m_timer.Start(100);
 }
 
 void pypilotClient::GetSettings(std::list<std::string> &settings, std::string member)

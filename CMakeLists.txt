@@ -46,25 +46,22 @@ if(COMMAND cmake_policy)
 endif(COMMAND cmake_policy)
 
 # define plugin name, owner and versions
-set(VERBOSE_NAME "Pypilot")
+set(VERBOSE_NAME "pypilot")
 set(COMMON_NAME "pypilot")  # Search "getcommonname"in <plugin_pi>.cpp
 set(TITLE_NAME "PYPILOT")
 set(PACKAGE_CONTACT "Sean D'Epagnier")
 set(PACKAGE "pypilot")
-set(SHORT_DESCRIPTION "Pypilot PlugIn for OpenCPN")
+set(SHORT_DESCRIPTION "pypilot PlugIn for OpenCPN")
 set(LONG_DESCRIPTION
-"Control the free software autopilot pypilot. See http://pypilot.org for more details. /n /"
-"The plugin connects to pypilot directly implementing a control interface to configure, /n /"
-"calibrate and command pypilot from opencpn. For more control and tuning route-following /n /"
-"logic, consider the autopilot route plugin. /n /"
+"Control the free software autopilot pypilot. See http://pypilot.org for more details. \\nThe plugin connects to pypilot directly implementing a control interface to configure, \\ncalibrate and command pypilot from opencpn. For more control and tuning route-following \\nlogic, consider the autopilot route plugin."
 )
 
 
 set(VERSION_MAJOR "0")
-set(VERSION_MINOR "40")
-set(VERSION_PATCH "33")
+set(VERSION_MINOR "51")
+set(VERSION_PATCH "0")
 set(VERSION_TWEAK "0")
-set(VERSION_DATE  "15/01/2024")#DD/MM/YYYY format
+set(VERSION_DATE  "05/03/2024")#DD/MM/YYYY format
 set(OCPN_MIN_VERSION "ov58")
 
 set(OCPN_API_VERSION_MAJOR "1")

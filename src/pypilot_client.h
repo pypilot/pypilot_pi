@@ -62,6 +62,7 @@ protected:
 
 private:
     void OnSocketEvent(wxSocketEvent& event);
+    void OnTimer( wxTimerEvent & );
 
     wxSocketClient      m_sock;
     std::string         m_sock_buffer;
@@ -73,6 +74,8 @@ private:
     bool m_bRequestList;
 
     std::map<std::string, double> m_watchlist;
+
+    wxTimer m_timer;
 
 DECLARE_EVENT_TABLE()
 };
