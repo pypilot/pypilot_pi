@@ -734,8 +734,8 @@ if (NOT QT_ANDROID)
     string(CONCAT WXWIDGETS_FORCE_VERSION ${MAJOR} "." ${MINOR})
     if (${WX_VER_LEN} EQUAL 3)
       string(SUBSTRING $ENV{WX_VER} 2 1 PATCH)
-      # string(CONCAT WXWIDGETS_FORCE_VERSION ${WXWIDGETS_FORCE_VERSION} "."
-      # ${PATCH})
+      string(CONCAT WXWIDGETS_FORCE_VERSION ${WXWIDGETS_FORCE_VERSION} "."
+        ${PATCH})
     endif ()
   endif ()
   message(STATUS "${CMLOC}wxWidgets_Version: ${WXWIDGETS_FORCE_VERSION}")

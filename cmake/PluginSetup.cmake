@@ -81,6 +81,21 @@ message(
   STATUS
     "${CMLOC}OCPN_FLATPAK_CONFIG: ${OCPN_FLATPAK_CONFIG}, OCPN_FLATPAK_BUILD: ${OCPN_FLATPAK_BUILD}, UNIX: ${UNIX}"
 )
+
+#if (DEFINED ENV{WX_VER})
+#  message(STATUS "${CMLOC}WX_VER defined in circleci config: $ENV{WX_VER}")
+#else ()
+#  message(STATUS "${CMLOC}WX_VER not defined in circleci config")
+#  set(ENV{WX_VER} ${WX_VER})
+#endif ()
+#if (DEFINED ENV{WX_VER_PATCH})
+#  message(STATUS "${CMLOC}WX_VER_PATCH defined in circleci config: $ENV{WX_VER_PATCH}")
+#else()
+#  message(STATUS "${CMLOC}WX_VER_PATCH not defined in circleci config: $ENV{WX_VER_PATCH}")
+#  set(ENV{WX_VER_PATCH} ${WX_VER_PATCH})
+#endif ()
+#message(STATUS "${CMLOC}WX_VER: $ENV{WX_VER}, WX_VER_PATCH: $ENV{WX_VER_PATCH}")
+
 unset(PKG_TARGET_WX_VER)
 if (OCPN_FLATPAK_CONFIG OR OCPN_FLATPAK_BUILD)
   set(PKG_TARGET "flatpak")

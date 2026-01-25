@@ -96,13 +96,13 @@ if not exist "%WXWIN%" (
           mkdir %SCRIPTDIR%..\cache\wxWidgets-3.2.1
       )
       set "GITHUB_DL=https://github.com/wxWidgets/wxWidgets/releases/download"
-      wget -nv !GITHUB_DL!/v3.2.1/wxMSW-3.2.1_vc14x_Dev.7z
+      wget -nv --no-check-certificate !GITHUB_DL!/v3.2.1/wxMSW-3.2.1_vc14x_Dev.7z
       7z x -o%SCRIPTDIR%..\cache\wxWidgets-3.2.1 wxMSW-3.2.1_vc14x_Dev.7z
-      wget -nv !GITHUB_DL!/v3.2.1/wxWidgets-3.2.1-headers.7z
+      wget -nv --no-check-certificate !GITHUB_DL!/v3.2.1/wxWidgets-3.2.1-headers.7z
       7z x -o%SCRIPTDIR%..\cache\wxWidgets-3.2.1 wxWidgets-3.2.1-headers.7z
   ) else (
       echo Downloading 3.1.2
-      wget -O wxWidgets-3.1.2.7z -nv ^
+      wget -O wxWidgets-3.1.2.7z -nv --no-check-certificate ^
         https://download.opencpn.org/s/E2p4nLDzeqx4SdX/download
       7z i > nul 2>&1 || choco install -y 7zip
       7z x wxWidgets-3.1.2.7z -o%WXWIN%

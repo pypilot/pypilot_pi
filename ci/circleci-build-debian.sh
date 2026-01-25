@@ -55,7 +55,7 @@ current_branch=$(git branch --show-current)
 if [ -n "$tag" ] || [ "$current_branch" = "master" ]; then
   cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local ..
 else
-  cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/usr/local ..
+  cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=/usr/local ..
 fi
 
 make -j2

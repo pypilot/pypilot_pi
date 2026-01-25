@@ -22,12 +22,6 @@ if [ "${CIRCLECI_LOCAL,,}" = "true" ]; then
     fi
 fi
 
-sudo apt-get -q -y --allow-unauthenticated --allow-downgrades --allow-remove-essential --allow-change-held-packages update
-
-#PLUGIN=bsb4
-
-sudo apt --allow-unauthenticated --allow-downgrades --allow-remove-essential --allow-change-held-packages install flatpak flatpak-builder
-
 # Install extra build libs
 ME=$(echo ${0##*/} | sed 's/\.sh//g')
 EXTRA_LIBS=./ci/extras/extra_libs.txt
@@ -54,16 +48,11 @@ if [ -n "$CI" ]; then
     # Avoid using outdated TLS certificates, see #210.
     sudo apt install --reinstall  ca-certificates
 
-    # Use updated flatpak workaround
-#    sudo add-apt-repository -y ppa:alexlarsson/flatpak
-#    sudo apt update
-
     # Handle possible outdated key for google packages, see #486
     wget -q -O - https://cli-assets.heroku.com/apt/release.key \
         | sudo apt-key add -
     wget -q -O - https://dl.google.com/linux/linux_signing_key.pub \
         | sudo apt-key add -
-
 
     # Install flatpak and flatpak-builder - obsoleted by flathub
     sudo apt install flatpak flatpak-builder

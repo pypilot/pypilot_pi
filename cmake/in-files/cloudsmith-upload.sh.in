@@ -239,8 +239,8 @@ if [ ! -z ${LOCAL_DEPLOY+x} ]; then
         echo "Directory ~/circleci-output not found"
     fi
 elif [ $LOCAL_BUILD = false ]; then
-# Only upload if the owner did the pull request. Non-owners probably don't have security to upload to the cloudsmith repository
-    if [ "$CIRCLE_PROJECT_USERNAME" = "$CIRCLE_USERNAME" ]; then
+# Only upload if the owner did the pull request or a member of $COLLABORATORS.
+    if [ "$CIRCLE_PROJECT_USERNAME" = "$CIRCLE_USERNAME" ] || [[ -n "${collab_users+1}"  && ! -z ${CIRCLE_USERNAME}  && "$collab_users" =~ "$git_user" ]]; then
         cloudsmith push raw --republish --no-wait-for-sync \
             --name @PACKAGE_NAME@-@PACKAGE_VERSION@-@PKG_TARGET@-@COMPOUND_ARCH_DASH@@PKG_TARGET_WX_VER@@PKG_BUILD_GTK@-@PKG_TARGET_VERSION@-${OCPN_TARGET}-metadata \
             --version ${VERSION} \
