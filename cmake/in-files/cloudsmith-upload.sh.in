@@ -64,22 +64,14 @@ if [ "$CIRCLECI" ] || [ "$TRAVIS" ]; then
     if [ "$DEPLOY_USE_ORB" != "true" ]; then
         if pyenv versions 2>&1 >/dev/null; then
           pyenv versions
-          if ! pyenv global 3.11.3 2>&1 >/dev/null; then
-            if ! pyenv global 3.9.1 2>&1 >/dev/null; then
-              if ! pyenv global 3.8.6 2>&1 >/dev/null; then
-                if ! pyenv global 3.7.1 2>&1 >/dev/null; then
-                  if ! pyenv global 3.7.0 2>&1>/dev/null; then
-                    if ! pyenv global 3.5.2 2>&1>/dev/null; then
-                      sudo apt install software-properties-common
-                      sudo apt update
-                      sudo apt install -y python3.8 python3-pip
-                      sudo rm /usr/bin/python3
-                      sudo ln -s /usr/bin/python3.8 /usr/bin/python3
-                    fi
-                  fi
-                fi
-              fi
-            fi
+          version_1=$(python --version | cut -d '.' -f1 | cut -d ' ' -f2)
+          version_2=$(python --version | cut -d '.' -f2)
+          if [ $version_1 -lt 3 ] || [ $version_2 -lt 5 ]; then
+            sudo apt install software-properties-common
+            sudo apt update
+            sudo apt install -y python3.8 python3-pip
+            sudo rm /usr/bin/python3
+            sudo ln -s /usr/bin/python3.8 /usr/bin/python3
           fi
           python3 --version
           sudo python3 -m pip install cloudsmith-cli
@@ -247,8 +239,8 @@ if [ ! -z ${LOCAL_DEPLOY+x} ]; then
         echo "Directory ~/circleci-output not found"
     fi
 elif [ $LOCAL_BUILD = false ]; then
-# Only upload if the owner did the pull request. Non-owners probably don't have security to upload to the cloudsmith repository
-    if [ "$CIRCLE_PROJECT_USERNAME" = "$CIRCLE_USERNAME" ]; then
+# Only upload if the owner did the pull request or a member of $COLLABORATORS.
+    if [ "$CIRCLE_PROJECT_USERNAME" = "$CIRCLE_USERNAME" ] || [[ -n "${collab_users+1}"  && ! -z ${CIRCLE_USERNAME}  && "$collab_users" =~ "$git_user" ]]; then
         cloudsmith push raw --republish --no-wait-for-sync \
             --name @PACKAGE_NAME@-@PACKAGE_VERSION@-@PKG_TARGET@-@COMPOUND_ARCH_DASH@@PKG_TARGET_WX_VER@@PKG_BUILD_GTK@-@PKG_TARGET_VERSION@-${OCPN_TARGET}-metadata \
             --version ${VERSION} \

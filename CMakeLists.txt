@@ -18,8 +18,7 @@
 ## *   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx,                                       *
 ## *   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                                       *
 #-----------------------------------------------------------------------------
-# Frontend2 Author: Jon Gough Testplugin(TP)
-# v1.0.304.0 20/09/2024 DD/MM/YYYY
+# Frontend2 Author: Jon Gough Testplugin(TP) v1.0.358.1 21/01/2026 DD/MM/YYYY
 # buildCI:yes useODAPI:no validateJSON:no
 # ---------------------------------------------------------------------------
 ## -- When changing this file do NOT change the order of the sections.    -- ##
@@ -32,7 +31,7 @@ set(CMLOC "CMakeLists: ")
 
 # define minimum cmake version
 cmake_minimum_required(VERSION 3.5.1)
-if (COMMAND cmake_policy)
+if(COMMAND cmake_policy)
   if (POLICY CMP0043)
     cmake_policy(SET CMP0043 NEW)
   endif (POLICY CMP0043)
@@ -62,14 +61,14 @@ set(LONG_DESCRIPTION
 
 set(VERSION_MAJOR "0")
 set(VERSION_MINOR "53")
-set(VERSION_PATCH "0")
+set(VERSION_PATCH "4")
 set(VERSION_TWEAK "0")
-set(VERSION_DATE  "10/12/2024")#DD/MM/YYYY format
+set(VERSION_DATE  "25/01/2026")#DD/MM/YYYY format
 set(OCPN_MIN_VERSION "ov58")
 
 set(OCPN_API_VERSION_MAJOR "1")
-set(OCPN_API_VERSION_MINOR "17")
-set(TP_COMMENT "  * Release using CI")
+set(OCPN_API_VERSION_MINOR "18")
+set(TP_COMMENT " Release using CI")
 
 set(PARENT "opencpn")
 
@@ -77,10 +76,10 @@ set(PARENT "opencpn")
 #Default is github.com. Now set in pluginconfigure.cmake
 #set(GIT_REPOSITORY_SERVER "github.com")
 
-# Specifies Cloudsmith upload repository suffix for each catalog
-set(PROD "prod") # Standard Repos
-set(BETA "beta") # Standard Repos
-set(ALPHA "alpha") # Standard Repos
+## Specifies Cloudsmith upload repository suffix for each catalog
+set(PROD "prod")   #Standard Repos
+set(BETA "beta")   #Standard Repos
+set(ALPHA "alpha") #Standard Repos
 
 # Set if  Cloudsmith Base Repository name does not match your Git Repository name.
 #set(CLOUDSMITH_BASE_REPOSITORY "${GIT_REPOSITORY_NAME}")
@@ -91,7 +90,9 @@ set (CLOUDSMITH_BASE_REPOSITORY "pypilot")  #without the pi
 set(CLOUDSMITH_USER "opencpn")
 # set(CLOUDSMITH_USER "jon-gough")
 
-set(XML_INFO_URL "https://opencpn-manuals.github.io/main/pypilot/index.html")
+set(XML_INFO_URL
+    "https://opencpn-manuals.github.io/main/pypilot/index.html"
+)
 set(XML_SUMMARY ${SHORT_DESCRIPTION})
 set(XML_DESCRIPTION ${LONG_DESCRIPTION})
 
@@ -122,8 +123,8 @@ set_property(
 )
 message(STATUS "${CMLOC}Build type: ${CMAKE_BUILD_TYPE}")
 
-## ----- Statements below used to setup standard variables required by the CMAKE process --##
-## -- Do not remove - ##
+# ----- Statements below used to setup standard variables required by the CMAKE  -##
+# ----- process -- Do not remove -##
 
 project(${PACKAGE})
 
@@ -142,7 +143,8 @@ set(CMAKE_VERBOSE_MAKEFILE "Activate verbose mode for make files" ON)
 
 option(Plugin_CXX11 "Use c++11" OFF)
 
-## --Below needed for build process.
+## ----- Modify section above if there are special requirements for the plugin --##
+## ----- Do not change next section - needed to configure build process ---------##
 ##===========================================================
 
 include("PluginConfigure")
@@ -229,8 +231,8 @@ include_directories( ${PROJECT_SOURCE_DIR}/libs/wxservdisc/src )
 ##==============================================================
 
 if (NOT OCPN_FLATPAK_CONFIG)
-  # Build environment not available when flatpak is being configured
-  # so following statements will not work
+  # Build environment not available when flatpak is being configured so
+  # following statements will not work
   message(STATUS "${CMLOC}Adding target link libraries to ${PACKAGE_NAME}")
 
   if (WIN32)
@@ -238,7 +240,7 @@ if (NOT OCPN_FLATPAK_CONFIG)
     target_link_libraries(${PACKAGE_NAME} windows::headers)
   endif (WIN32)
 
-  add_subdirectory(opencpn-libs/api-17)
+  add_subdirectory(opencpn-libs/api-18)
   target_link_libraries(${PACKAGE_NAME} ocpn::api)
 
   add_subdirectory(opencpn-libs/tinyxml)

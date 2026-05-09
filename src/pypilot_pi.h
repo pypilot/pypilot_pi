@@ -91,7 +91,7 @@ private:
 };
 
 
-class pypilot_pi : public wxEvtHandler, public opencpn_plugin_117
+class pypilot_pi : public wxEvtHandler, public opencpn_plugin_118
 
 {
 public:
