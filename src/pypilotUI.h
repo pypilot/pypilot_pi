@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version 3.9.0 Sep 12 2020)
+// C++ code generated with wxFormBuilder (version 3.10.1-354-g9e568c3f)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO *NOT* EDIT THIS FILE!
@@ -75,7 +75,7 @@ class pypilotDialogBase : public wxDialog
 		wxButton* m_bStatistics;
 		wxButton* m_button37;
 
-		// Virtual event handlers, overide them in your derived class
+		// Virtual event handlers, override them in your derived class
 		virtual void OnClose( wxCloseEvent& event ) { event.Skip(); }
 		virtual void OnAP( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMode( wxCommandEvent& event ) { event.Skip(); }
@@ -96,6 +96,7 @@ class pypilotDialogBase : public wxDialog
 	public:
 
 		pypilotDialogBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("pypilot"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxCAPTION|wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxTAB_TRAVERSAL );
+
 		~pypilotDialogBase();
 
 };
@@ -112,7 +113,7 @@ class TackDialogBase : public wxDialog
 		wxButton* m_button43;
 		wxButton* m_button44;
 
-		// Virtual event handlers, overide them in your derived class
+		// Virtual event handlers, override them in your derived class
 		virtual void OnTackPort( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnClose( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnTackStarboard( wxCommandEvent& event ) { event.Skip(); }
@@ -121,6 +122,7 @@ class TackDialogBase : public wxDialog
 	public:
 
 		TackDialogBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0 );
+
 		~TackDialogBase();
 
 };
@@ -144,7 +146,7 @@ class GainsDialogBase : public wxDialog
 		wxStdDialogButtonSizer* m_sdbSizer4;
 		wxButton* m_sdbSizer4OK;
 
-		// Virtual event handlers, overide them in your derived class
+		// Virtual event handlers, override them in your derived class
 		virtual void OnClose( wxCloseEvent& event ) { event.Skip(); }
 		virtual void OnProfile( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnAddProfile( wxCommandEvent& event ) { event.Skip(); }
@@ -156,6 +158,7 @@ class GainsDialogBase : public wxDialog
 	public:
 
 		GainsDialogBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("pypilot Gains"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER );
+
 		~GainsDialogBase();
 
 };
@@ -199,7 +202,7 @@ class ConfigurationDialogBase : public wxDialog
 		wxButton* m_sdbSizer2OK;
 		wxButton* m_sdbSizer2Cancel;
 
-		// Virtual event handlers, overide them in your derived class
+		// Virtual event handlers, override them in your derived class
 		virtual void OnClose( wxCloseEvent& event ) { event.Skip(); }
 		virtual void OnHost( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnAboutTacking( wxCommandEvent& event ) { event.Skip(); }
@@ -220,6 +223,7 @@ class ConfigurationDialogBase : public wxDialog
 	public:
 
 		ConfigurationDialogBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("pypilot Configuration"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxCAPTION|wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER );
+
 		~ConfigurationDialogBase();
 
 };
@@ -237,13 +241,14 @@ class pypilotClientDialogBase : public wxDialog
 		wxStdDialogButtonSizer* m_sdbSizer5;
 		wxButton* m_sdbSizer5OK;
 
-		// Virtual event handlers, overide them in your derived class
+		// Virtual event handlers, override them in your derived class
 		virtual void OnOK( wxCommandEvent& event ) { event.Skip(); }
 
 
 	public:
 
 		pypilotClientDialogBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 600,600 ), long style = wxDEFAULT_DIALOG_STYLE|wxMAXIMIZE_BOX|wxRESIZE_BORDER );
+
 		~pypilotClientDialogBase();
 
 };
@@ -281,7 +286,7 @@ class StatisticsDialogBase : public wxDialog
 		wxStdDialogButtonSizer* m_sdbSizer2;
 		wxButton* m_sdbSizer2OK;
 
-		// Virtual event handlers, overide them in your derived class
+		// Virtual event handlers, override them in your derived class
 		virtual void OnClose( wxCloseEvent& event ) { event.Skip(); }
 		virtual void OnResetAmpHours( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnClose( wxCommandEvent& event ) { event.Skip(); }
@@ -290,6 +295,7 @@ class StatisticsDialogBase : public wxDialog
 	public:
 
 		StatisticsDialogBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("pypilot Statistics"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE );
+
 		~StatisticsDialogBase();
 
 };
@@ -307,7 +313,7 @@ class SettingsDialogBase : public wxDialog
 		wxButton* m_sdbSizer3OK;
 		wxButton* m_bpypilotClient;
 
-		// Virtual event handlers, overide them in your derived class
+		// Virtual event handlers, override them in your derived class
 		virtual void OnClose( wxCloseEvent& event ) { event.Skip(); }
 		virtual void OnClose( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnpypilotClient( wxCommandEvent& event ) { event.Skip(); }
@@ -316,6 +322,7 @@ class SettingsDialogBase : public wxDialog
 	public:
 
 		SettingsDialogBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE );
+
 		~SettingsDialogBase();
 
 };
@@ -378,7 +385,7 @@ class CalibrationDialogBase : public wxDialog
 		wxStdDialogButtonSizer* m_sdbSizer3;
 		wxButton* m_sdbSizer3OK;
 
-		// Virtual event handlers, overide them in your derived class
+		// Virtual event handlers, override them in your derived class
 		virtual void OnClose( wxCloseEvent& event ) { event.Skip(); }
 		virtual void OnMouseEventsAccel( wxMouseEvent& event ) { event.Skip(); }
 		virtual void OnPaintAccelPlot( wxPaintEvent& event ) { event.Skip(); }
@@ -403,6 +410,7 @@ class CalibrationDialogBase : public wxDialog
 	public:
 
 		CalibrationDialogBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("pypilot Calibration"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 800,600 ), long style = wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER );
+
 		~CalibrationDialogBase();
 
 };

@@ -32,6 +32,7 @@ CalibrationDialog::CalibrationDialog(pypilot_pi &_pypilot_pi, wxWindow* parent) 
     CalibrationDialogBase(parent),
     m_pypilot_pi(_pypilot_pi)
 {
+    #if 0
 #ifdef __OCPN__ANDROID__
         GetHandle()->setStyleSheet( qtStyleSheet);
 #endif
@@ -41,6 +42,7 @@ CalibrationDialog::CalibrationDialog(pypilot_pi &_pypilot_pi, wxWindow* parent) 
     m_refreshtimer.Connect(wxEVT_TIMER, wxTimerEventHandler
                     ( CalibrationDialog::RefreshTimer ), NULL, this);
     m_refreshtimer.Start(1000);
+    #endif
 }
 
 static wxString StringValue(Json::Value &value)
@@ -228,7 +230,7 @@ void CalibrationDialog::OnAboutRudderCalibration( wxCommandEvent& event )
 1) set 'Range' to a known angle\n\
 2) manually center the rudder and press 'Centered'.\n\
 3) manually turn rudder to starboard this angle and press 'Starboard Range'\n\
-4) manually turn rudder to port this angle and press 'Port Range'\
+4) manually turn rudder to port this angle and press 'Port Range'\n\
 5) set 'Range' to the maximum  allowed autopilot movement"),
                          "pypilot", wxOK | wxICON_INFORMATION);
     mdlg.ShowModal();

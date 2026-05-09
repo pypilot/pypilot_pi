@@ -33,30 +33,15 @@ struct Gain
     Gain(wxWindow *parent, wxString name, double min_val, double max_val);
     ~Gain();
 
-    void set(double val) {
-        int v = val * 1000.0;
-        if(v == last_val)
-            return;
-
-        last_val = v;
-        v = abs(v);
-        if(v < gauge->GetRange()) {
-            gauge->SetValue(v);
-            gauge->SetBackgroundColour(val > 0 ? *wxRED : val < 0 ? *wxGREEN : *wxLIGHT_GREY);
-        } else {
-            gauge->SetValue(0);
-            gauge->SetBackgroundColour(*wxBLUE);
-        }
-    }
-
     wxFlexGridSizer *sizer;
-    wxStaticText *value;
-    wxGauge *gauge;
+    wxStaticText *stvalue;
+    wxPanel *gauge;
     wxSlider *slider;
     double min, max;
     bool need_update, initial;
     wxDateTime last_change;
-    int last_val;
+
+    float value;
     int slider_val(double gain_val) { return (gain_val-min)*1000/(max - min); }
 
     wxStaticText *stname;
@@ -71,27 +56,28 @@ Gain::Gain(wxWindow *parent, wxString name, double min_val, double max_val)
 
     stname = new wxStaticText( parent, wxID_ANY, name);
     sizer->Add( stname, 0, wxALL, 5 );
-    value = new wxStaticText( parent, wxID_ANY, "   N/A   ");
-    sizer->Add( value, 0, wxALL, 5 );
+    stvalue = new wxStaticText( parent, wxID_ANY, "   N/A   ");
+    sizer->Add( stvalue, 0, wxALL, 5 );
 
     wxFlexGridSizer *hsizer = new wxFlexGridSizer( 1, 0, 0, 0 );
     hsizer->AddGrowableRow( 0 );
     hsizer->SetFlexibleDirection( wxVERTICAL );
                 
-    gauge = new wxGauge( parent, -1, 1000, wxDefaultPosition, wxDefaultSize, wxSL_VERTICAL );
+    gauge = new wxPanel( parent );
     hsizer->Add( gauge, 0, wxALL|wxEXPAND, 5 );
+    
     slider = new wxSlider( parent, wxID_ANY, 0, 0, 1000, wxDefaultPosition, wxDefaultSize, wxSL_VERTICAL| wxSL_INVERSE);
     hsizer->Add( slider, 0, wxALL|wxEXPAND, 5 );
 
     sizer->Add( hsizer, 1, wxEXPAND, 5 );
 
-    last_val = 1e6;
+    value = 0;
 }
 
 Gain::~Gain()
 {
     delete stname;
-    delete value;
+    delete stvalue;
     delete gauge;
     delete slider;
     delete sizer;
@@ -197,8 +183,10 @@ void GainsDialog::Receive(std::string name, Json::Value &value)
         }
     } else if(hasEnding(name, "gain")) {
         name = name.substr(0, name.size()-4);
-        if(m_gains.find(name) != m_gains.end())
-            m_gains[name]->set(jsondouble(value));
+        if(m_gains.find(name) != m_gains.end()) {
+            m_gains[name]->value = jsondouble(value);
+            m_gains[name]->gauge->Refresh();
+        }
     } else if(Begins(name, "ap.pilot")) {
         double val = jsondouble(value);
         m_gainvals[name] = val;
@@ -278,10 +266,10 @@ void GainsDialog::OnTimer( wxTimerEvent & )
         if(g->slider->GetValue() != slider_val &&
            (!g->last_change.IsValid() || (wxDateTime::UNow() - g->last_change).GetMilliseconds() > 1000)) {
             g->slider->SetValue(slider_val);
-            g->value->SetLabel(wxString::Format("%.5f", gain_val));
+            g->stvalue->SetLabel(wxString::Format("%.5f", gain_val));
         } else if(g->initial) {
             g->initial = false;  // if gain is also set to zero
-            g->value->SetLabel(wxString::Format("%.5f", gain_val));
+            g->stvalue->SetLabel(wxString::Format("%.5f", gain_val));
         }        
     }
 }
@@ -294,12 +282,40 @@ void GainsDialog::OnGainSlider( wxScrollEvent& event )
         if(g->slider == slider) {
             int slider_val = g->slider->GetValue();
             double gain_value = slider_val * (g->max - g->min) / 1000.0 + g->min;
-            g->value->SetLabel(wxString::Format("%.5f", gain_value));
+            g->stvalue->SetLabel(wxString::Format("%.5f", gain_value));
             g->last_change = wxDateTime::UNow();
             g->need_update = true;
             break;
         }
     }
+}
+
+void GainsDialog::OnPaintGauge(wxPaintEvent &event)
+{
+    wxPanel *gauge = static_cast<wxPanel*>(event.GetEventObject());
+
+    wxSize s = gauge->GetSize();
+        
+    wxPaintDC dc( gauge );
+    dc.SetPen(*wxTRANSPARENT_PEN);
+
+    float av = 0;
+    for(const auto &m : m_gains)
+        if(m.second->gauge == gauge)
+            av = m.second->value;
+
+    if (fabsf(av) < 1.0f) {
+        if(av > 0.001f)
+            dc.SetBrush(wxBrush(*wxRED));
+        else if(av < -0.001f)
+            dc.SetBrush(wxBrush(*wxGREEN));
+        else
+            dc.SetBrush(wxBrush(*wxLIGHT_GREY));
+    } else
+        dc.SetBrush(wxBrush(*wxBLUE));
+
+    int h = int(s.y*fabsf(av));
+    dc.DrawRectangle(0, s.y-h, s.x, h);
 }
 
 std::map<std::string, double> &GainsDialog::GetWatchlist()
@@ -373,11 +389,13 @@ void GainsDialog::EnumerateGains()
         if(start >=0 )
             lname = name.substr(start + 1);
         Gain *g = new Gain(m_swGains, lname, min_val, max_val);
+        g->gauge->Connect( wxEVT_PAINT, wxPaintEventHandler( GainsDialog::OnPaintGauge ), NULL, this );
         int events[] = {wxEVT_SCROLL_TOP, wxEVT_SCROLL_BOTTOM,
                         wxEVT_SCROLL_LINEUP, wxEVT_SCROLL_LINEDOWN,
                         wxEVT_SCROLL_PAGEUP, wxEVT_SCROLL_PAGEDOWN,
                         wxEVT_SCROLL_THUMBTRACK, wxEVT_SCROLL_THUMBRELEASE,
                         wxEVT_SCROLL_CHANGED};
+
         for(unsigned int i=0; i<(sizeof events) / (sizeof *events); i++)
             g->slider->Connect( events[i], wxScrollEventHandler( GainsDialog::OnGainSlider ), NULL, this );
         m_fgGains->Add( g->sizer, 1, wxEXPAND, 5 );

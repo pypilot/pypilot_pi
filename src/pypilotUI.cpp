@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version 3.9.0 Sep 12 2020)
+// C++ code generated with wxFormBuilder (version 3.10.1-354-g9e568c3f)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO *NOT* EDIT THIS FILE!
@@ -150,12 +150,12 @@ pypilotDialogBase::pypilotDialogBase( wxWindow* parent, wxWindowID id, const wxS
 	m_bManualStarboardShort = new wxButton( this, wxID_ANY, _(">"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_bManualStarboardShort->SetMaxSize( wxSize( 40,-1 ) );
 
-	m_fgControlManual->Add( m_bManualStarboardShort, 0, wxALIGN_RIGHT|wxALL|wxEXPAND, 5 );
+	m_fgControlManual->Add( m_bManualStarboardShort, 0, wxALL|wxEXPAND, 5 );
 
 	m_bManualStarboardLong = new wxButton( this, wxID_ANY, _(">>"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_bManualStarboardLong->SetMaxSize( wxSize( 40,-1 ) );
 
-	m_fgControlManual->Add( m_bManualStarboardLong, 0, wxALIGN_RIGHT|wxALL|wxEXPAND, 5 );
+	m_fgControlManual->Add( m_bManualStarboardLong, 0, wxALL|wxEXPAND, 5 );
 
 
 	fgSizer38->Add( m_fgControlManual, 1, wxEXPAND, 5 );
@@ -601,8 +601,7 @@ ConfigurationDialogBase::ConfigurationDialogBase( wxWindow* parent, wxWindowID i
 	fgSizer41->Add( m_cHost, 0, wxALL|wxEXPAND, 5 );
 
 	m_cbAutoDiscover = new wxCheckBox( this, wxID_ANY, _("Auto Discover"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_cbAutoDiscover->SetValue(false);
-    m_cbAutoDiscover->Hide();
+	m_cbAutoDiscover->SetValue(true);
 	fgSizer41->Add( m_cbAutoDiscover, 0, wxALL, 5 );
 
 
@@ -1079,7 +1078,7 @@ SettingsDialogBase::~SettingsDialogBase()
 
 CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
 {
-	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+	this->SetSizeHints( wxSize( 600,300 ), wxDefaultSize );
 
 	wxFlexGridSizer* fgSizer19;
 	fgSizer19 = new wxFlexGridSizer( 0, 1, 0, 0 );
@@ -1104,6 +1103,8 @@ CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, c
 	m_fgSizerAccel->Add( m_staticText461, 0, wxALL, 5 );
 
 	m_accelCalibrationPlot = new CalibrationPlot(m_panel1, "accel");
+	m_accelCalibrationPlot->SetMinSize( wxSize( 300,300 ) );
+
 	m_fgSizerAccel->Add( m_accelCalibrationPlot, 0, wxALL|wxEXPAND, 5 );
 
 	wxFlexGridSizer* fgSizer46;
@@ -1169,7 +1170,7 @@ CalibrationDialogBase::CalibrationDialogBase( wxWindow* parent, wxWindowID id, c
 	m_panel1->SetSizer( sbSizer6 );
 	m_panel1->Layout();
 	sbSizer6->Fit( m_panel1 );
-	m_notebook->AddPage( m_panel1, _("Accelerometers"), false );
+	m_notebook->AddPage( m_panel1, _("Accelerometers"), true );
 	m_panel2 = new wxPanel( m_notebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxStaticBoxSizer* sbSizer4;
 	sbSizer4 = new wxStaticBoxSizer( new wxStaticBox( m_panel2, wxID_ANY, _("Compass") ), wxVERTICAL );

@@ -127,15 +127,15 @@ pypilot_pi::pypilot_pi(void *ppimgr)
 
 int pypilot_pi::Init(void)
 {
-    AddLocaleCatalog( PLUGIN_CATALOG_NAME );
+    AddLocaleCatalog( wxS("opencpn-${PKG_NAME}") );
 
 // See line 265 for various colored icons for Mode - sail, compass, etc.
 #ifdef PLUGIN_USE_SVG
-    m_leftclick_tool_id = InsertPlugInToolSVG( _T( "Pypilot" ), _svg_pypilot, _svg_pypilot_rollover, _svg_pypilot_toggled, wxITEM_CHECK, _( "Pypilot" ), _T( "" ), NULL, PYPILOT_TOOL_POSITION, 0, this);
+    m_leftclick_tool_id = InsertPlugInToolSVG( _T( "pypilot" ), _svg_pypilot, _svg_pypilot_rollover, _svg_pypilot_toggled, wxITEM_CHECK, _( "pypilot" ), _T( "" ), NULL, PYPILOT_TOOL_POSITION, 0, this);
 #else
     m_leftclick_tool_id  = InsertPlugInTool
-        (_T(""), _img_plots, _img_plots, wxITEM_NORMAL,
-         _("Plots"), _T(""), NULL, PYPILOT_TOOL_POSITION, 0, this);
+        (_T(""), _img_pypilot_grey, _img_pypilot_grey, wxITEM_NORMAL,
+         _("pypilot"), _T(""), NULL, PYPILOT_TOOL_POSITION, 0, this);
 #endif
     m_Timer.Connect(wxEVT_TIMER, wxTimerEventHandler
                     ( pypilot_pi::OnTimer ), NULL, this);
@@ -202,12 +202,14 @@ bool pypilot_pi::DeInit(void)
 
 int pypilot_pi::GetAPIVersionMajor()
 {
-    return OCPN_API_VERSION_MAJOR;
+    return atoi(API_VERSION);
 }
 
 int pypilot_pi::GetAPIVersionMinor()
 {
-    return OCPN_API_VERSION_MINOR;
+    std::string v(API_VERSION);
+    size_t dotpos = v.find('.');
+    return atoi(v.substr(dotpos + 1).c_str());
 }
 
 int pypilot_pi::GetPlugInVersionMajor()
@@ -230,7 +232,6 @@ int pypilot_pi::GetPlugInVersionPost()
     return PLUGIN_VERSION_TWEAK;
 }
 
-
 wxBitmap *pypilot_pi::GetPlugInBitmap()
 {
     return _img_pypilot_grey; //new wxBitmap(_img_pypilot_grey->ConvertToImage().Copy());
@@ -238,17 +239,17 @@ wxBitmap *pypilot_pi::GetPlugInBitmap()
 
 wxString pypilot_pi::GetCommonName()
 {
-    return _T(PLUGIN_COMMON_NAME);
+    return _T(PLUGIN_API_NAME);
 }
 
 wxString pypilot_pi::GetShortDescription()
 {
-    return _T(PLUGIN_COMMON_NAME);	
+    return _T(PLUGIN_API_NAME);
 }
 
 wxString pypilot_pi::GetLongDescription()
 {
-    return _(PLUGIN_LONG_DESCRIPTION);
+    return _(PKG_DESCRIPTION);
 }
 
 int pypilot_pi::GetToolbarToolCount(void)

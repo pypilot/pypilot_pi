@@ -162,7 +162,8 @@ void CalibrationPlot::OnPaint()
 
     int w, h;
     GetClientSize( &w, &h );
-    glViewport( 0, 0, (GLint) w, (GLint) h );
+    float sf = GetContentScaleFactor();
+    glViewport( 0, 0, (GLint) w*sf, (GLint) h*sf );
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();

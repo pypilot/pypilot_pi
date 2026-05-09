@@ -1,0 +1,20 @@
+#ifndef CONFIG_H__
+#define CONFIG_H__
+
+#define PKG_NAME          "@PKG_NAME@"
+#define API_VERSION       "@API_VERSION@"
+
+#define PLUGIN_VERSION_MAJOR @PROJECT_VERSION_MAJOR@
+#define PLUGIN_VERSION_MINOR @PROJECT_VERSION_MINOR@
+#define PLUGIN_VERSION_PATCH @PROJECT_VERSION_PATCH@
+#define PLUGIN_VERSION_TWEAK @PROJECT_VERSION_TWEAK@
+
+#define PKG_PRERELEASE "@PKG_PRERELEASE@"
+#define PKG_BUILD_INFO "@pkg_vers_build_info@"
+#define PKG_SUMMARY _("@PKG_SUMMARY@")
+#define PLUGIN_API_NAME "@PLUGIN_API_NAME@"
+static const char* const PKG_DESCRIPTION = _(R"~~(@PKG_DESCRIPTION@)~~");
+
+#define PLUGIN
+
+#endif  //  CONFIG_H__

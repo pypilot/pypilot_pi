@@ -387,7 +387,7 @@ void pypilotDialog::OnMode( wxCommandEvent& event )
 
 void pypilotDialog::OnManualEvents( wxMouseEvent& event )
 {
-    double speed, length;
+    double speed;
     int timeout;
     
     if(event.GetEventObject() == m_bManualPortLong)
@@ -447,7 +447,6 @@ void pypilotDialog::OnSettings( wxCommandEvent& event )
 
 void pypilotDialog::OnStatistics( wxCommandEvent& event )
 {
-    (!m_pypilot_pi.m_StatisticsDialog->IsShown());
     m_pypilot_pi.m_StatisticsDialog->Show(!m_pypilot_pi.m_StatisticsDialog->IsShown());
     m_pypilot_pi.UpdateWatchlist();
 #ifdef __OCPN__ANDROID__

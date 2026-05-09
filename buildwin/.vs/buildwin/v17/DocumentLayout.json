@@ -1,0 +1,92 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "E:\\Code\\shipdriver_pi\\buildwin\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\Code\\shipdriver_pi\\buildwin\\wxwidgets-3.2.4-584.patch||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:wxwidgets-3.2.4-584.patch||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\Code\\shipdriver_pi\\buildwin\\win_deps.bat||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:win_deps.bat||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\Code\\shipdriver_pi\\buildwin\\ShipDriver.without.clone.bat||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:ShipDriver.without.clone.bat||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\Code\\shipdriver_pi\\buildwin\\ShipDriver.clone.bat||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:ShipDriver.clone.bat||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "wxwidgets-3.2.4-584.patch",
+              "DocumentMoniker": "E:\\Code\\shipdriver_pi\\buildwin\\wxwidgets-3.2.4-584.patch",
+              "RelativeDocumentMoniker": "wxwidgets-3.2.4-584.patch",
+              "ToolTip": "E:\\Code\\shipdriver_pi\\buildwin\\wxwidgets-3.2.4-584.patch",
+              "RelativeToolTip": "wxwidgets-3.2.4-584.patch",
+              "ViewState": "AQIAAAwAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2024-05-09T23:11:30.327Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "win_deps.bat",
+              "DocumentMoniker": "E:\\Code\\shipdriver_pi\\buildwin\\win_deps.bat",
+              "RelativeDocumentMoniker": "win_deps.bat",
+              "ToolTip": "E:\\Code\\shipdriver_pi\\buildwin\\win_deps.bat",
+              "RelativeToolTip": "win_deps.bat",
+              "ViewState": "AQIAAHIAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000614|",
+              "WhenOpened": "2024-05-09T23:11:20.777Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "ShipDriver.without.clone.bat",
+              "DocumentMoniker": "E:\\Code\\shipdriver_pi\\buildwin\\ShipDriver.without.clone.bat",
+              "RelativeDocumentMoniker": "ShipDriver.without.clone.bat",
+              "ToolTip": "E:\\Code\\shipdriver_pi\\buildwin\\ShipDriver.without.clone.bat",
+              "RelativeToolTip": "ShipDriver.without.clone.bat",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000614|",
+              "WhenOpened": "2024-05-09T23:10:56.224Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "ShipDriver.clone.bat",
+              "DocumentMoniker": "E:\\Code\\shipdriver_pi\\buildwin\\ShipDriver.clone.bat",
+              "RelativeDocumentMoniker": "ShipDriver.clone.bat",
+              "ToolTip": "E:\\Code\\shipdriver_pi\\buildwin\\ShipDriver.clone.bat",
+              "RelativeToolTip": "ShipDriver.clone.bat",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAEAAAA/AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000614|",
+              "WhenOpened": "2024-05-09T23:10:27.813Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

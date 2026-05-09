@@ -1,0 +1,11 @@
+#  How often android is built. 
+#    0: never
+#    1: always
+#    other numbers: For example 10 means every tenth build.
+android_build_rate=1
+
+# Should android build be uploaded to cloudsmith? <true|false>
+android_upload="true"
+
+# Should android builds be pushed to catalog clone? <true|false>
+android_git_push="true"

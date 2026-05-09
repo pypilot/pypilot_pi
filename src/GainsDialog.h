@@ -51,6 +51,7 @@ private:
     void OnClose( wxCommandEvent& event );
     void OnTimer( wxTimerEvent & );
     void OnGainSlider( wxScrollEvent& event );
+    void OnPaintGauge(wxPaintEvent& event);
 
     void EnumeratePilots();
     void EnumerateGains();

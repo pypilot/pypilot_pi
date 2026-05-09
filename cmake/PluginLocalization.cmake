@@ -1,57 +1,27 @@
-# ---------------------------------------------------------------------------
-# Author:      Pavel Kalian / Sean D'Epagnier Copyright: License:     GPLv3+
-# ---------------------------------------------------------------------------
+# ~~~
+# Summary:      Generate and install translations
+# Author:       Pavel Kalian / Sean D'Epagnier
+# Copyright (c) 2014 Pavel Kallian
+# License:      GPLv3+
+# ~~~
 
-set(SAVE_CMLOC ${CMLOC})
-set(CMLOC "PluginLocalization: ")
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
 
-if (OCPN_FLATPAK_CONFIG)
-  set(CMLOC ${SAVE_CMLOC})
-  return()
-endif (OCPN_FLATPAK_CONFIG)
-
-message(STATUS "${CMLOC}Starting POTFILE generation")
-
-set(POTFILE ${CMAKE_CURRENT_SOURCE_DIR}/po/POTFILES.in)
-file(REMOVE ${POTFILE}.test)
-file(WRITE ${POTFILE}.test "")
-message(
-  STATUS
-    "${CMLOC}Checking file: ${CMAKE_CURRENT_SOURCE_DIR}/po/${PACKAGE_NAME}.pot"
-)
-if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/po/${PACKAGE_NAME}.pot)
-  message(
-    STATUS "${CMLOC}Found: ${CMAKE_CURRENT_SOURCE_DIR}/po/${PACKAGE_NAME}.pot"
-  )
-else ()
-  file(WRITE ${CMAKE_CURRENT_SOURCE_DIR}/po/${PACKAGE_NAME}.pot "")
-  message(
-    STATUS
-      "${CMLOC}Creating empty ${CMAKE_CURRENT_SOURCE_DIR}/po/${PACKAGE_NAME}.pot"
-  )
-endif ()
-foreach (POTLINE IN ITEMS ${SRCS})
-  file(APPEND ${POTFILE}.test "${POTLINE}\n")
-endforeach (POTLINE)
-foreach (POTLINE IN ITEMS ${HDRS})
-  file(APPEND ${POTFILE}.test "${POTLINE}\n")
-endforeach (POTLINE)
-# convert crlf to lf for consistency and make copy_if_different work correctly
-configure_file(${POTFILE}.test ${POTFILE}.test NEWLINE_STYLE UNIX)
-execute_process(
-  COMMAND ${CMAKE_COMMAND} -E copy_if_different ${POTFILE}.test ${POTFILE}
-  OUTPUT_QUIET ERROR_QUIET
-)
 
 find_program(GETTEXT_XGETTEXT_EXECUTABLE xgettext)
+
 string(REPLACE "_pi" "" I18N_NAME ${PACKAGE_NAME})
+
 if (GETTEXT_XGETTEXT_EXECUTABLE)
   add_custom_command(
     OUTPUT po/${PACKAGE_NAME}.pot.dummy
     COMMAND
-      ${GETTEXT_XGETTEXT_EXECUTABLE} --force-po -F
-      --package-name=${PACKAGE_NAME} --package-version="${PACKAGE_VERSION}"
-      --output=po/${PACKAGE_NAME}.pot --keyword=_ --width=80
+      ${GETTEXT_XGETTEXT_EXECUTABLE} --force-po --package-name=${PACKAGE_NAME}
+      --package-version="${PROJECT_VERSION}" --output=po/${PACKAGE_NAME}.pot
+      --keyword=_ --width=80
       --files-from=${CMAKE_CURRENT_SOURCE_DIR}/po/POTFILES.in
     DEPENDS po/POTFILES.in po/${PACKAGE_NAME}.pot
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
@@ -62,7 +32,6 @@ if (GETTEXT_XGETTEXT_EXECUTABLE)
     COMMENT "[${PACKAGE_NAME}]-pot-update: Done."
     DEPENDS po/${PACKAGE_NAME}.pot.dummy
   )
-
 endif (GETTEXT_XGETTEXT_EXECUTABLE)
 
 macro (GETTEXT_UPDATE_PO _potFile)
@@ -80,9 +49,7 @@ macro (GETTEXT_UPDATE_PO _potFile)
       DEPENDS ${_absPotFile} ${_absFile}
       COMMENT "${I18N_NAME}-po-update [${_poBasename}]: Updated po file."
     )
-
     set(_poFiles ${_poFiles} ${_absFile}.dummy)
-
   endforeach (_currentPoFile)
 
   add_custom_target(
@@ -99,12 +66,6 @@ endif (GETTEXT_MSGMERGE_EXECUTABLE)
 
 set(_gmoFiles)
 macro (GETTEXT_BUILD_MO)
-  file(MAKE_DIRECTORY "Resources")
-  message(STATUS "${CMLOC}Creating Resources directory")
-  add_custom_target(
-    create_resources_dir ALL COMMAND ${CMAKE_COMMAND} -E make_directory
-                                     "./Resources"
-  )
   foreach (_poFile ${ARGN})
     get_filename_component(_absFile ${_poFile} ABSOLUTE)
     get_filename_component(_poBasename ${_absFile} NAME_WE)
@@ -118,26 +79,17 @@ macro (GETTEXT_BUILD_MO)
       DEPENDS ${_absFile}
       COMMENT "${I18N_NAME}-i18n [${_poBasename}]: Created mo file."
     )
-
     if (APPLE)
       install(
         FILES ${_gmoFile}
         DESTINATION OpenCPN.app/Contents/Resources/${_poBasename}.lproj
         RENAME opencpn-${PACKAGE_NAME}.mo
       )
-      message(
-        STATUS
-          "${CMLOC}Install language files to: OpenCPN.app/Contents/Resources/${_poBasename}.lproj renamed to: opencpn-${PACKAGE_NAME}.mo"
-      )
     else (APPLE)
       install(
         FILES ${_gmoFile}
-        DESTINATION ${PREFIX_DATA}/locale/${_poBasename}/LC_MESSAGES
+        DESTINATION share/locale/${_poBasename}/LC_MESSAGES
         RENAME opencpn-${PACKAGE_NAME}.mo
-      )
-      message(
-        STATUS
-          "${CMLOC}Install language files to: ${PREFIX_DATA}/locale/${_poBasename}/LC_MESSAGES renamed to: opencpn-${PACKAGE_NAME}.mo"
       )
     endif (APPLE)
 
@@ -154,6 +106,5 @@ if (GETTEXT_MSGFMT_EXECUTABLE)
     DEPENDS ${_gmoFiles}
   )
   add_dependencies(${PACKAGE_NAME} ${I18N_NAME}-i18n)
+  add_dependencies( tarball ${I18N_NAME}-i18n)
 endif (GETTEXT_MSGFMT_EXECUTABLE)
-
-set(CMLOC ${SAVE_CMLOC})
