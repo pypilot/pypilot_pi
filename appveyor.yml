@@ -9,6 +9,11 @@ image:
 platform:
   - Win32
 
+# Host-side packaging tools need current 64-bit Python wheels. The plugin
+# target remains Win32, selected by vcvars32 and CMake -A Win32.
+environment:
+  PYTHON: C:\Python312-x64
+
 configuration: RelWithDebInfo
 test: false
 
