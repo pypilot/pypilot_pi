@@ -30,14 +30,23 @@ set CMAKE_HOME=C:\Program Files\CMake
 if not exist "%CMAKE_HOME%\bin\cmake.exe" choco install --no-progress -y cmake
 pathman add "%CMAKE_HOME%\bin" > nul
 
-:: Install choco poedit and add it's persistent user path element
+:: Install command-line gettext tools without the graphical Poedit installer.
 ::
-set POEDIT_HOME=C:\Program Files (x86)\Poedit\Gettexttools
-if not exist "%POEDIT_HOME%" choco install --no-progress -y poedit
-pathman add "%POEDIT_HOME%\bin" > nul
+set "GETTEXT_HOME=%ProgramFiles%\gettext-iconv"
+if not exist "%GETTEXT_HOME%\bin\msgfmt.exe" (
+    choco install --no-progress -y gettext
+    if errorlevel 1 exit /b 1
+)
+pathman add "%GETTEXT_HOME%\bin" > nul
+set "PATH=%GETTEXT_HOME%\bin;%PATH%"
+msgfmt --version > nul 2>&1
+if errorlevel 1 exit /b 1
+msgmerge --version > nul 2>&1
+if errorlevel 1 exit /b 1
 
 :: Update required python stuff
 ::
+if defined PYTHON set "PATH=%PYTHON%;%PYTHON%\Scripts;%PATH%"
 python --version > nul 2>&1 && python -m ensurepip > nul 2>&1
 if errorlevel 1 choco install --no-progress -y python
 python --version
@@ -45,7 +54,9 @@ python -m ensurepip
 python -m pip install --upgrade pip
 python -m pip install -q setuptools wheel
 python -m pip install -q cloudsmith-cli
+if errorlevel 1 exit /b 1
 python -m pip install -q cryptography
+if errorlevel 1 exit /b 1
 
 :: Install pre-compiled wxWidgets and other DLL; add required paths.
 ::
@@ -76,4 +87,7 @@ echo set "wxWidgets_ROOT_DIR=%wxWidgets_ROOT_DIR%" > %CONFIG_FILE%
 echo set "wxWidgets_LIB_DIR=%wxWidgets_LIB_DIR%" >> %CONFIG_FILE%
 
 
-refreshenv
+call refreshenv
+:: Preserve an explicitly selected host Python after refreshing the user PATH.
+if defined PYTHON set "PATH=%PYTHON%;%PYTHON%\Scripts;%PATH%"
+exit /b 0
