@@ -390,8 +390,17 @@ void pypilot_pi::onSDNotify(wxCommandEvent& event)
         int timeout = 3000;
 	for(it=entries.begin(); it != entries.end(); it++) {
             wxString name = it->name;
-            //int port = it->port;  //use QTYPE_SRV to get port, for now assume 23322
-            wxServDisc namescan(0, name, QTYPE_A);
+            wxServDisc servicescan(0, name, QTYPE_SRV);
+            while(timeout > 0 && !servicescan.getResultCount()) {
+                wxMilliSleep(25);
+                timeout -= 25;
+            }
+            if(!servicescan.getResultCount())
+                continue;
+
+            // The service instance and its host can have different DNS names.
+            wxString hostname = servicescan.getResults().at(0).name;
+            wxServDisc namescan(0, hostname, QTYPE_A);
 
             while(timeout > 0) {
                 wxMilliSleep(25);
@@ -658,8 +667,8 @@ void pypilot_pi::OnTimer( wxTimerEvent & )
         m_client.connect(m_host);
 
         wxFileConfig *pConf = GetOCPNConfigObject();
-        pConf->SetPath ( _T( "/Settings/pypilot" ) );
-        bool discover = pConf->Read ( _T ( "AutoDiscover" ), 0L );
+        pConf->SetPath ( _T( "/PlugIns/pypilot" ) );
+        bool discover = pConf->Read ( _T ( "AutoDiscover" ), true );
         if(discover)
             StartZeroConfig();
         else
