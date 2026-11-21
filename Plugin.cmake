@@ -95,10 +95,7 @@ macro(add_plugin_libraries)
 
   message(STATUS "${CMLOC}Adding target link libraries to ${PACKAGE_NAME}")
 
-  if (WIN32)
-    add_subdirectory(opencpn-libs/WindowsHeaders)
-    target_link_libraries(${PACKAGE_NAME} windows::headers)
-  endif (WIN32)
+  # PluginLibs already adds and links WindowsHeaders on Windows.
 
   add_subdirectory(opencpn-libs/tinyxml)
   target_link_libraries(${PACKAGE_NAME} ocpn::tinyxml)
